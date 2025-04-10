@@ -44,10 +44,8 @@ public class Amigo : Entidade
         if (Telefone.Length < 12)
             erros += "O campo 'Telefone' deve seguir o formato 00 0000-0000.";
     }
-
     public Emprestimo ObterEmprestimos()
     {
         return Emprestimo;
     }
-
 }
