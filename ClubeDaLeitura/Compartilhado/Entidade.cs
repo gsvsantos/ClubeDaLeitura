@@ -2,4 +2,5 @@
 
 public class Entidade
 {
+    public int Id;
 }
