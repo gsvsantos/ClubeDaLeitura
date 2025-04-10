@@ -2,4 +2,5 @@
 
 public class TelaAmigo
 {
+    public RepositorioAmigo RepositorioAmigo;
 }
