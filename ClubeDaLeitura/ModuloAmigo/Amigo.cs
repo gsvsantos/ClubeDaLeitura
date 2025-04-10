@@ -1,5 +1,11 @@
-﻿namespace ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.Compartilhado;
 
-public class Amigo
+namespace ClubeDaLeitura.ModuloAmigo;
+
+public class Amigo : Entidade
 {
+    public string Responsavel;
+    public string Nome;
+    public string Telefone;
+    private static int id = 0;
 }
