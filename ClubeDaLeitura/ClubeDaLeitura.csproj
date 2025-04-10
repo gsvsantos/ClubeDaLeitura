@@ -12,7 +12,6 @@
     <Folder Include="ModuloCaixa\" />
     <Folder Include="ModuloEmprestimo\" />
     <Folder Include="ModuloRevista\" />
-    <Folder Include="Compartilhado\" />
   </ItemGroup>
 
 </Project>
