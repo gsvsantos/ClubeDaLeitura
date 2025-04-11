@@ -1,4 +1,6 @@
-﻿namespace ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.ModuloEmprestimo;
+
+namespace ClubeDaLeitura.ModuloAmigo;
 
 public class RepositorioAmigo
 {
@@ -45,5 +47,29 @@ public class RepositorioAmigo
                 return a;
         }
         return null!;
+    }
+    public bool VerificarNovoRegistro(Amigo novoAmigo)
+    {
+        for (int i = 0; i < Amigos.Length; i++)
+        {
+            if (novoAmigo.Nome == Amigos[i].Nome && novoAmigo.Telefone == Amigos[i].Telefone)
+                return true;
+        }
+        return false;
+    }
+    public bool VerificarEmprestimosAmigo(Amigo amigoEscolhido)
+    {
+        int emprestimos = 0;
+
+        foreach (Emprestimo e in amigoEscolhido.Emprestimos)
+        {
+            if (e != null)
+                emprestimos++;
+        }
+
+        if (emprestimos > 0)
+            return true;
+        else
+            return false;
     }
 }
