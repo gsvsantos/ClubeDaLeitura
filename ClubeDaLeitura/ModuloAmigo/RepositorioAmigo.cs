@@ -4,6 +4,7 @@ public class RepositorioAmigo
 {
     public Amigo[] Amigos = new Amigo[100];
     public int IndiceListaAmigos = 0;
+    public bool ListaVazia = false;
 
     public void RegistrarAmigo(Amigo novoAmigo)
     {
@@ -14,11 +15,11 @@ public class RepositorioAmigo
     {
         return Amigos;
     }
-    public void EditarAmigo(Amigo amigoEscolhido, Amigo amigoEditado)
+    public void EditarAmigo(Amigo amigoEscolhido, Amigo dadosEditados)
     {
-        amigoEscolhido.Nome = amigoEditado.Nome;
-        amigoEscolhido.Responsavel = amigoEditado.Responsavel;
-        amigoEscolhido.Telefone = amigoEditado.Telefone;
+        amigoEscolhido.Nome = dadosEditados.Nome;
+        amigoEscolhido.Responsavel = dadosEditados.Responsavel;
+        amigoEscolhido.Telefone = dadosEditados.Telefone;
     }
     public void ExcluirAmigo(Amigo amigoEscolhido)
     {
@@ -34,11 +35,13 @@ public class RepositorioAmigo
             }
         }
     }
-    public Amigo SelecionarPorId(Amigo amigo)
+    public Amigo SelecionarPorId(int idAmigoEscolhido)
     {
         foreach (Amigo a in Amigos)
         {
-            if (a.Id == amigo.Id)
+            if (a == null)
+                continue;
+            if (a.Id == idAmigoEscolhido)
                 return a;
         }
         return null!;

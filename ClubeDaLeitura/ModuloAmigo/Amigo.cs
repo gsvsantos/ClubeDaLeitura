@@ -11,23 +11,22 @@ public class Amigo : Entidade
     public Emprestimo Emprestimo;
     private static int id = 0;
 
-    public Amigo(string nome, string responsavel, string telefone, Emprestimo emprestimo)
+    public Amigo(string nome, string responsavel, string telefone)
     {
         Nome = nome;
         Responsavel = responsavel;
         Telefone = telefone;
-        Emprestimo = emprestimo;
     }
     public void GerarId()
     {
         Id = ++id;
     }
-    public void Validar()
+    public string Validar()
     {
         string erros = "";
 
         if (string.IsNullOrWhiteSpace(Nome))
-            erros += "O campo 'Nome' é obrigatório.\n";
+            erros += "\nO campo 'Nome' é obrigatório.\n";
 
         if (Nome.Length < 3)
             erros += "O campo 'Nome' precisa conter ao menos 3 caracteres.\n";
@@ -43,11 +42,11 @@ public class Amigo : Entidade
 
         if (Telefone.Length < 12)
             erros += "O campo 'Telefone' deve seguir o formato 00 0000-0000.";
-    }
 
+        return erros;
+    }
     public Emprestimo ObterEmprestimos()
     {
         return Emprestimo;
     }
-
 }
