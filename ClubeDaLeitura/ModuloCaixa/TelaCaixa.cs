@@ -2,4 +2,5 @@
 
 public class TelaCaixa
 {
+    public RepositorioCaixa RepositorioCaixa;
 }
