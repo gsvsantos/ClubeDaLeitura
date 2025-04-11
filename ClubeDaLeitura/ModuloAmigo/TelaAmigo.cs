@@ -1,4 +1,6 @@
-﻿namespace ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.ModuloEmprestimo;
+
+namespace ClubeDaLeitura.ModuloAmigo;
 
 public class TelaAmigo
 {
@@ -52,6 +54,14 @@ public class TelaAmigo
             Console.ReadKey();
             RegistrarAmigo();
             return;
+        }
+
+        if (RepositorioAmigo.VerificarNovoRegistro(novoAmigo))
+        {
+            Console.WriteLine("Já existe um cadastro com esses dados!");
+            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Console.ReadKey();
+            RegistrarAmigo();
         }
 
         RepositorioAmigo.RegistrarAmigo(novoAmigo);
@@ -120,6 +130,8 @@ public class TelaAmigo
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
 
+        Emprestimo[] emprestimosAmigoEscolhido = amigoEscolhido.ObterEmprestimos();
+
         if (exibirCabecalho)
             ExibirCabecalho();
 
@@ -140,12 +152,11 @@ public class TelaAmigo
         if (comId)
             Console.WriteLine(
                 "{0, -6} | {1, -20} | {2, -20}",
-                amigoEscolhido.Id, amigoEscolhido.Nome, amigoEscolhido.Emprestimo); // Alterar para amigoEscolhido.Emprestimo.Id, amigoEscolhido.Emprestimo.Situacao, amigoEscolhido.Emprestimo.Revista.Titulo 
+                emprestimosAmigoEscolhido.Id, emprestimosAmigoEscolhido.Situacao, emprestimosAmigoEscolhido.Revista.Titulo);
         else
             Console.WriteLine(
                 "{0, -20} | {1, -35}",
-                amigoEscolhido.Nome, amigoEscolhido.Emprestimo); // amigoEscolhido.Emprestimo.Situacao, amigoEscolhido.Emprestimo.Revista.Titulo 
-
+                emprestimosAmigoEscolhido.Situacao, emprestimosAmigoEscolhido.Revista.Titulo);
 
     }
     public void EditarAmigo()
@@ -202,6 +213,12 @@ public class TelaAmigo
         int idAmigoEscolhido = Convert.ToInt32(Console.ReadLine());
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+
+        if (RepositorioAmigo.VerificarEmprestimosAmigo(amigoEscolhido))
+        {
+            Console.WriteLine($"O {amigoEscolhido.Nome} ainda tem emprestimos em aberto!");
+            return;
+        }
 
         RepositorioAmigo.ExcluirAmigo(amigoEscolhido);
 
