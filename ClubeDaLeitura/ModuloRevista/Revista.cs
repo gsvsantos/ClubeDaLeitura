@@ -29,7 +29,7 @@ public class Revista : Entidade
         string erros = "";
 
         if (string.IsNullOrWhiteSpace(Titulo))
-            erros += "\nO campo 'Titulo' é obrigatório.\n";
+            erros += "\nO campo 'Título' é obrigatório.\n";
         else
         {
             if (Titulo.Length < 2 || !Titulo.All(c => char.IsLetter(c) || c == ' '))
