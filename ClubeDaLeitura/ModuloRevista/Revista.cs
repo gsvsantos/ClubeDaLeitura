@@ -19,4 +19,5 @@ public class Revista
         StatusEmprestimo = "Disponível";
         Caixa = caixa;
     }
+
 }
