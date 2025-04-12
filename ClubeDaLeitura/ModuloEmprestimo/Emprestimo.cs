@@ -19,4 +19,36 @@ public class Emprestimo : Entidade
         Data = DateTime.Now;
         Situacao = situacao;
     }
+    public void GerarId()
+    {
+        Id = ++id;
+    }
+    public string Validar()
+    {
+        string erros = "";
+
+        if (Amigo == null)
+            erros += "\nVocê precisa selecionar ao menos um Amigo.\n";
+
+        if (Revista == null) // Acrescentar verificação da disponibilidade da revista.
+            erros += "\nVocê precisa selecionar ao menos uma Revista.";
+
+        if (string.IsNullOrEmpty(Situacao))
+            erros += "\nCampo 'Situacao' é obrigatório.";
+        else
+        {
+            if (Situacao != "Aberto" || Situacao != "Concluído")
+                erros += "\nCampo 'Situacao' precisa ser 'Aberta' ou 'Concluído'!";
+        }
+        return erros;
+    }
+    public void RegistrarDevolucao()
+    {
+        Situacao = "Concluído";
+        Revista.Devolver();
+    }
+    public DateTime ObterDataDevolucao()
+    {
+        return Data.AddDays(Revista.Caixa.DiasEmprestimo);
+    }
 }
