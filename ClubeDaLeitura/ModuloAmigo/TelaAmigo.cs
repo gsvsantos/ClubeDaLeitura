@@ -12,20 +12,16 @@ public class TelaAmigo
     }
     public string ApresentarMenu()
     {
-        Console.Clear();
         ExibirCabecalho();
-
-        Console.WriteLine();
 
         Console.WriteLine("1 >> Registrar Amigo");
         Console.WriteLine("2 >> Visualizar Lista de Amigos");
-        Console.WriteLine("3 >> Visualizar Emprestimos do Amigo");
+        Console.WriteLine("3 >> Visualizar Empréstimos de um Amigo");
         Console.WriteLine("4 >> Editar Amigo");
         Console.WriteLine("5 >> Excluir Amigo");
         Console.WriteLine("S >> Voltar");
 
-        Console.WriteLine();
-        Console.Write("Opção: ");
+        Console.Write("\nOpção: ");
 
         return Console.ReadLine()!.ToUpper();
     }
@@ -34,13 +30,13 @@ public class TelaAmigo
         Console.Clear();
         Console.WriteLine("--------------------------------------------");
         Console.WriteLine("Gestão de Amigos");
-        Console.WriteLine("--------------------------------------------");
+        Console.WriteLine("--------------------------------------------\n");
     }
     public void RegistrarAmigo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nRegistrando Amigo...");
+        Console.WriteLine("Registrando Amigo...");
         Console.WriteLine("--------------------------------------------\n");
 
         Amigo novoAmigo = ObterDadosAmigo();
@@ -56,23 +52,25 @@ public class TelaAmigo
             return;
         }
 
-        if (RepositorioAmigo.VerificarNovoRegistro(novoAmigo))
+        if (RepositorioAmigo.VerificarTelefoneNovoRegistro(novoAmigo))
         {
-            Console.WriteLine("Já existe um cadastro com esses dados!");
+            Console.WriteLine("\nJá existe um cadastro com esse número!");
             Console.Write("\nPressione [Enter] para tentar novamente!");
             Console.ReadKey();
             RegistrarAmigo();
+            return;
         }
 
         RepositorioAmigo.RegistrarAmigo(novoAmigo);
-        Console.WriteLine("Amigo registrado com sucesso!");
+
+        Console.WriteLine("\nAmigo registrado com sucesso!");
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("\nVisualizando Amigos...");
+        Console.WriteLine("Visualizando Amigos...");
         Console.WriteLine("--------------------------------------------\n");
 
         if (comId)
@@ -97,6 +95,7 @@ public class TelaAmigo
 
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
+
             if (comId)
                 Console.WriteLine(
                     "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
@@ -106,6 +105,7 @@ public class TelaAmigo
                     "{0, -20} | {1, -20} | {2, -20}",
                     a.Nome, a.Responsavel, a.Telefone);
         }
+
         if (quantidadeAmigos == 0)
         {
             Console.WriteLine("\nNenhum amigo registrado!");
@@ -116,7 +116,7 @@ public class TelaAmigo
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nEmprestimos Registrados...");
+        Console.WriteLine("Empréstimos Registrados...");
         Console.WriteLine("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
@@ -124,9 +124,24 @@ public class TelaAmigo
         if (RepositorioAmigo.ListaVazia)
             return;
 
-        Console.WriteLine("\n--------------------------------------------");
-        Console.Write("Selecione o ID de um Amigo: ");
-        int idAmigoEscolhido = Convert.ToInt32(Console.ReadLine());
+        bool idValido;
+        int idAmigoEscolhido;
+
+        do
+        {
+            Console.WriteLine("\n--------------------------------------------");
+            Console.Write("Selecione o ID de um Amigo: ");
+            idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
+
+            if (!idValido)
+            {
+                Console.WriteLine("\nO ID selecionado é inválido!");
+                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Console.ReadKey();
+                MostrarListaEmprestimos(true, false);
+                return;
+            }
+        } while (!idValido);
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
 
@@ -135,35 +150,44 @@ public class TelaAmigo
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine();
-        Console.WriteLine($"Visualizando Emprestimos de {amigoEscolhido.Nome}...");
-        Console.WriteLine("--------------------------------------------");
-        Console.WriteLine();
+        Console.WriteLine($"Visualizando Empréstimos de {amigoEscolhido.Nome}...");
+        Console.WriteLine("--------------------------------------------\n");
+
+        if (emprestimosAmigoEscolhido.Any(e => e == null))
+        {
+            Console.WriteLine($"O {amigoEscolhido.Nome} ainda não fez nenhum empréstimo.");
+            return;
+        }
 
         if (comId)
             Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20}",
-                "Id", "Status", "Revista Emprestada");
+                "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
+                "Id", "Revista", "Data de Devolução", "Situação");
         else
             Console.WriteLine(
-                "{0, -20} | {1, -35} |",
-                "Status", "Revista Emprestada");
+                "{0, -20} | {1, -20} | {2, -20}",
+                "Revista", "Data de Devolução", "Situação");
 
-        if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20}",
-                emprestimosAmigoEscolhido.Id, emprestimosAmigoEscolhido.Situacao, emprestimosAmigoEscolhido.Revista.Titulo);
-        else
-            Console.WriteLine(
-                "{0, -20} | {1, -35}",
-                emprestimosAmigoEscolhido.Situacao, emprestimosAmigoEscolhido.Revista.Titulo);
+        foreach (Emprestimo e in emprestimosAmigoEscolhido)
+        {
+            if (e == null)
+                continue;
 
+            if (comId)
+                Console.WriteLine(
+                    "{0, -6} | {2, -35} | {3, -20} | {4, -20}",
+                    e.Id, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
+            else
+                Console.WriteLine(
+                    "{0, -20} | {1, -20} | {2, -20}",
+                    e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
+        }
     }
     public void EditarAmigo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nEditando Amigo...");
+        Console.WriteLine("Editando Amigo...");
         Console.WriteLine("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
@@ -171,12 +195,35 @@ public class TelaAmigo
         if (RepositorioAmigo.ListaVazia)
             return;
 
-        Console.WriteLine("\n--------------------------------------------");
-        Console.Write("Selecione o ID de um Amigo: ");
-        int idAmigoEscolhido = Convert.ToInt32(Console.ReadLine());
+        bool idValido;
+        int idAmigoEscolhido;
 
-        Console.WriteLine();
+        do
+        {
+            Console.WriteLine("\n--------------------------------------------");
+            Console.Write("Selecione o ID de um Amigo: ");
+            idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
+
+            if (!idValido)
+            {
+                Console.WriteLine("\nO ID selecionado é inválido!");
+                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Console.ReadKey();
+                EditarAmigo();
+                return;
+            }
+        } while (!idValido);
+
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+
+        if (amigoEscolhido == null)
+        {
+            Console.WriteLine("\nO ID escolhido não está registrado.");
+            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Console.ReadKey();
+            EditarAmigo();
+            return;
+        }
 
         Amigo dadosEditados = ObterDadosAmigo();
 
@@ -191,16 +238,24 @@ public class TelaAmigo
             return;
         }
 
+        if (RepositorioAmigo.VerificarTelefoneEditarRegistro(amigoEscolhido, dadosEditados))
+        {
+            Console.WriteLine("\nJá existe um cadastro com esse número!");
+            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Console.ReadKey();
+            EditarAmigo();
+            return;
+        }
+
         RepositorioAmigo.EditarAmigo(amigoEscolhido, dadosEditados);
 
-        Console.WriteLine();
-        Console.WriteLine("Amigo editado com sucesso!");
+        Console.WriteLine("\nAmigo editado com sucesso!");
     }
     public void ExcluirAmigo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nExcluindo Amigo...");
+        Console.WriteLine("Excluindo Amigo...");
         Console.WriteLine("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
@@ -208,32 +263,55 @@ public class TelaAmigo
         if (RepositorioAmigo.ListaVazia)
             return;
 
-        Console.WriteLine("\n--------------------------------------------");
-        Console.Write("Selecione o ID de um Amigo: ");
-        int idAmigoEscolhido = Convert.ToInt32(Console.ReadLine());
+        bool idValido;
+        int idAmigoEscolhido;
+
+        do
+        {
+            Console.WriteLine("\n--------------------------------------------");
+            Console.Write("Selecione o ID de um Amigo: ");
+            idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
+
+            if (!idValido)
+            {
+                Console.WriteLine("\nO ID selecionado é inválido!");
+                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Console.ReadKey();
+                ExcluirAmigo();
+                return;
+            }
+        } while (!idValido);
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
 
+        if (amigoEscolhido == null)
+        {
+            Console.WriteLine("\nO ID escolhido não está registrado.");
+            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Console.ReadKey();
+            ExcluirAmigo();
+            return;
+        }
+
         if (RepositorioAmigo.VerificarEmprestimosAmigo(amigoEscolhido))
         {
-            Console.WriteLine($"O {amigoEscolhido.Nome} ainda tem emprestimos em aberto!");
+            Console.WriteLine($"\nO {amigoEscolhido.Nome} ainda tem empréstimos em aberto!");
             return;
         }
 
         RepositorioAmigo.ExcluirAmigo(amigoEscolhido);
 
-        Console.WriteLine();
-        Console.WriteLine("Amigo excluído com sucesso!");
+        Console.WriteLine("\nAmigo excluído com sucesso!");
     }
     public Amigo ObterDadosAmigo()
     {
-        Console.Write("Digite o nome do Amigo: ");
+        Console.Write("Digite o Nome do Amigo: ");
         string nome = Console.ReadLine()!;
 
-        Console.Write("Digite o nome do Responsável: ");
+        Console.Write("Digite o Nome do Responsável: ");
         string responsável = Console.ReadLine()!;
 
-        Console.Write("Digite o número de telefone do Responsável: ");
+        Console.Write("Digite o Número de Telefone do Responsável: ");
         string telefone = Console.ReadLine()!;
 
         Amigo amigo = new Amigo(nome, responsável, telefone);

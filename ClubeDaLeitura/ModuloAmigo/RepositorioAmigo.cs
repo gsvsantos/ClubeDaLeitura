@@ -29,7 +29,6 @@ public class RepositorioAmigo
         {
             if (Amigos[i] == null)
                 continue;
-
             else if (Amigos[i].Id == amigoEscolhido.Id)
             {
                 Amigos[i] = null!;
@@ -43,23 +42,45 @@ public class RepositorioAmigo
         {
             if (a == null)
                 continue;
+
             if (a.Id == idAmigoEscolhido)
                 return a;
         }
+
         return null!;
     }
-    public bool VerificarNovoRegistro(Amigo novoAmigo)
+    public bool VerificarTelefoneNovoRegistro(Amigo novoAmigo)
     {
         for (int i = 0; i < Amigos.Length; i++)
         {
-            if (novoAmigo.Nome == Amigos[i].Nome && novoAmigo.Telefone == Amigos[i].Telefone)
+            if (Amigos[i] == null)
+                continue;
+
+            if (novoAmigo.Telefone == Amigos[i].Telefone && novoAmigo.Id == 0)
                 return true;
         }
+
+        return false;
+    }
+    public bool VerificarTelefoneEditarRegistro(Amigo amigoEscolhido, Amigo dadosEditados)
+    {
+        for (int i = 0; i < Amigos.Length; i++)
+        {
+            if (Amigos[i] == null)
+                continue;
+
+            if (dadosEditados.Telefone == Amigos[i].Telefone && amigoEscolhido.Id != Amigos[i].Id)
+                return true;
+        }
+
         return false;
     }
     public bool VerificarEmprestimosAmigo(Amigo amigoEscolhido)
     {
         int emprestimos = 0;
+
+        if (amigoEscolhido.Emprestimos == null)
+            return false;
 
         foreach (Emprestimo e in amigoEscolhido.Emprestimos)
         {
