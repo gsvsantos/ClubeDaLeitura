@@ -8,7 +8,7 @@ public class Caixa : Entidade
     public string Etiqueta;
     public int Cor;
     public int DiasEmprestimo;
-    public Revista[] Revistas;
+    public Revista[] Revistas = new Revista[40];
     private static int id = 0;
 
     public Caixa(string etiqueta, int cor, int diasEmprestimo)
@@ -25,7 +25,7 @@ public class Caixa : Entidade
     {
         string erros = "";
 
-        if (string.IsNullOrEmpty(Etiqueta))
+        if (string.IsNullOrWhiteSpace(Etiqueta))
             erros += "\nO campo 'Nome' é obrigatório.\n";
         else
         {
@@ -35,7 +35,8 @@ public class Caixa : Entidade
             if (Etiqueta.Length > 50)
                 erros += "O campo 'Etiqueta' não pode ter mais que 50 caracteres.\n";
         }
-        if (string.IsNullOrEmpty(Cor.ToString()))
+
+        if (string.IsNullOrWhiteSpace(Cor.ToString()))
             erros += "O campo 'Cor' é obrigatório.\n";
         else
         {
@@ -43,13 +44,13 @@ public class Caixa : Entidade
             if (!enumConsoleColor.Contains(Cor))
                 erros += "O campo 'Cor' precisa ser uma das cores da tabela!\n";
         }
+
         if (string.IsNullOrEmpty(DiasEmprestimo.ToString()))
             erros += "O campo 'Dias de Emprestimo' é obrigatório.\n";
         else
-        {
-            if (DiasEmprestimo != 3 || DiasEmprestimo != 7)
-                erros += "O campo 'Dias de Emprestimo' está inválido! Verifique novamente a raridade da revista!";
-        }
+            if (DiasEmprestimo != 3 && DiasEmprestimo != 7)
+            erros += "O campo 'Dias de Emprestimo' está inválido! Verifique novamente a raridade da revista!";
+
         return erros;
     }
     public void AdicionarRevista(Revista novaRevista)
@@ -69,6 +70,7 @@ public class Caixa : Entidade
         {
             if (Revistas[i] == null)
                 continue;
+
             if (Revistas[i].Id == revistaEscolhida.Id)
             {
                 Revistas[i] = null!;
