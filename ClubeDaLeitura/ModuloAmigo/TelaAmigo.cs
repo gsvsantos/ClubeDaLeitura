@@ -153,7 +153,7 @@ public class TelaAmigo
         Console.WriteLine($"Visualizando Empréstimos de {amigoEscolhido.Nome}...");
         Console.WriteLine("--------------------------------------------\n");
 
-        if (emprestimosAmigoEscolhido.Any(e => e == null))
+        if (emprestimosAmigoEscolhido.All(e => e == null))
         {
             Console.WriteLine($"O {amigoEscolhido.Nome} ainda não fez nenhum empréstimo.");
             return;
