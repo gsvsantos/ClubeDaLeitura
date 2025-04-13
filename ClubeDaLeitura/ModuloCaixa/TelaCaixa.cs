@@ -60,7 +60,7 @@ public class TelaCaixa
 
         RepositorioCaixa.RegistrarCaixa(novaCaixa);
 
-        Console.WriteLine("\nCaixa registrado com sucesso!");
+        Console.WriteLine("\nCaixa registrada com sucesso!");
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
@@ -220,7 +220,7 @@ public class TelaCaixa
 
         if (RepositorioCaixa.VerificarRevistasCaixa(caixaEscolhida))
         {
-            Console.WriteLine($"\nAinda tem revistas na caixa {caixaEscolhida.Etiqueta}!");
+            Console.WriteLine($"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.");
             return;
         }
 
@@ -240,7 +240,7 @@ public class TelaCaixa
         Console.WriteLine("Registrando Caixa...");
         Console.WriteLine("--------------------------------------------\n");
 
-        Console.Write("Digite os Dias de Empréstimos das Revistas nesta Caixa (3 para revistas comuns e 7 para revistas raras): ");
+        Console.Write("Digite o número de Dias de Empréstimo das Revistas nesta Caixa (3 para revistas comuns e 7 para revistas raras): ");
         int diasEmprestimo = Convert.ToInt32(Console.ReadLine()!);
 
         Caixa caixa = new Caixa(etiqueta, cor, diasEmprestimo);
@@ -272,7 +272,7 @@ public class TelaCaixa
 
             if (!idValido)
             {
-                Console.WriteLine("\nEsse não é um número válido!");
+                Console.WriteLine("\nEssa não é uma opção da paleta de cores.");
                 Console.Write("\nPressione [Enter] para tentar novamente!");
                 Console.ReadKey();
                 PegarCorPaletaCores();

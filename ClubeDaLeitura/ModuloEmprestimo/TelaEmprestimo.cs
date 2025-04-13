@@ -74,11 +74,11 @@ public class TelaEmprestimo
 
         if (comId)
             Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -35} | {3, -20} | {4, -20}",
+                "{0, -6} | {1, -20} | {2, -30} | {3, -20} | {4, -20}",
                 "Id", "Amigo", "Revista", "Data de Devolução", "Situação");
         else
             Console.WriteLine(
-                "{0, -20} | {1, -35} | {2, -20} | {3, -20}",
+                "{0, -20} | {1, -30} | {2, -20} | {3, -20}",
                 "Amigo", "Revista", "Data de Devolução", "Situação");
 
         Emprestimo[] emprestimosRegistrados = RepositorioEmprestimo.PegarListaRegistrados();
@@ -99,11 +99,11 @@ public class TelaEmprestimo
 
             if (comId)
                 Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -35} | {3, -20} | {4, -20}",
+                    "{0, -6} | {1, -20} | {2, -30} | {3, -20} | {4, -20}",
                     e.Id, e.Amigo.Nome, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
             else
                 Console.WriteLine(
-                    "{0, -20} | {1, -35} | {2, -20} | {3, -20}",
+                    "{0, -20} | {1, -30} | {2, -20} | {3, -20}",
                     e.Amigo.Nome, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
         }
 
@@ -355,7 +355,7 @@ public class TelaEmprestimo
 
         if (RepositorioEmprestimo.VerificarDevolucao(emprestimoEscolhido))
         {
-            Console.WriteLine("\nA devolução escolhida não esta em aberto!");
+            Console.WriteLine("\nA devolução escolhida não está em aberto!");
             Console.Write("\nPressione [Enter] para tentar novamente!");
             Console.ReadKey();
             RegistrarDevolucao();

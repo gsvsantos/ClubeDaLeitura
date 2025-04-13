@@ -30,8 +30,8 @@ public class Program
 
             Console.WriteLine("1 >> Gerenciar Amigos");
             Console.WriteLine("2 >> Gerenciar Caixas");
-            Console.WriteLine("3 >> Gerenciar Empréstimos");
-            Console.WriteLine("4 >> Gerenciar Revistas");
+            Console.WriteLine("3 >> Gerenciar Revistas");
+            Console.WriteLine("4 >> Gerenciar Empréstimos");
             Console.WriteLine("S >> Voltar");
 
             Console.WriteLine();
@@ -131,6 +131,48 @@ public class Program
             }
             if (opcao == "3")
             {
+                bool menuRevista = true;
+                while (menuRevista)
+                {
+                    string opcaoMenuAmigo = telaRevista.ApresentarMenu();
+                    switch (opcaoMenuAmigo)
+                    {
+                        case "1":
+                            telaRevista.RegistrarRevista();
+                            Console.WriteLine();
+                            Console.Write("Pressione [Enter] para continuar.");
+                            Console.ReadKey();
+                            break;
+                        case "2":
+                            telaRevista.MostrarListaRegistrados(true, false);
+                            Console.WriteLine();
+                            Console.Write("Pressione [Enter] para continuar.");
+                            Console.ReadKey();
+                            break;
+                        case "3":
+                            telaRevista.EditarRevista();
+                            Console.WriteLine();
+                            Console.Write("Pressione [Enter] para continuar.");
+                            Console.ReadKey();
+                            break;
+                        case "4":
+                            telaRevista.ExcluirRevista();
+                            Console.WriteLine();
+                            Console.Write("Pressione [Enter] para continuar.");
+                            Console.ReadKey();
+                            break;
+                        case "S":
+                            menuRevista = false;
+                            continue;
+                        default:
+                            Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+            }
+            if (opcao == "4")
+            {
                 bool menuEmprestimo = true;
                 while (menuEmprestimo)
                 {
@@ -169,48 +211,6 @@ public class Program
                             break;
                         case "S":
                             menuEmprestimo = false;
-                            continue;
-                        default:
-                            Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");
-                            Console.ReadKey();
-                            break;
-                    }
-                }
-            }
-            if (opcao == "4")
-            {
-                bool menuRevista = true;
-                while (menuRevista)
-                {
-                    string opcaoMenuAmigo = telaRevista.ApresentarMenu();
-                    switch (opcaoMenuAmigo)
-                    {
-                        case "1":
-                            telaRevista.RegistrarRevista();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
-                            Console.ReadKey();
-                            break;
-                        case "2":
-                            telaRevista.MostrarListaRegistrados(true, false);
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
-                            Console.ReadKey();
-                            break;
-                        case "3":
-                            telaRevista.EditarRevista();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
-                            Console.ReadKey();
-                            break;
-                        case "4":
-                            telaRevista.ExcluirRevista();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
-                            Console.ReadKey();
-                            break;
-                        case "S":
-                            menuRevista = false;
                             continue;
                         default:
                             Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");

@@ -161,11 +161,11 @@ public class TelaAmigo
 
         if (comId)
             Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
+                "{0, -6} | {1, -30} | {2, -20} | {3, -20}",
                 "Id", "Revista", "Data de Devolução", "Situação");
         else
             Console.WriteLine(
-                "{0, -20} | {1, -20} | {2, -20}",
+                "{0, -30} | {1, -20} | {2, -20}",
                 "Revista", "Data de Devolução", "Situação");
 
         foreach (Emprestimo e in emprestimosAmigoEscolhido)
@@ -175,11 +175,11 @@ public class TelaAmigo
 
             if (comId)
                 Console.WriteLine(
-                    "{0, -6} | {2, -35} | {3, -20} | {4, -20}",
+                    "{0, -6} | {1, -30} | {2, -20} | {3, -20}",
                     e.Id, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
             else
                 Console.WriteLine(
-                    "{0, -20} | {1, -20} | {2, -20}",
+                    "{0, -30} | {1, -20} | {2, -20}",
                     e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
         }
     }
@@ -295,7 +295,7 @@ public class TelaAmigo
 
         if (RepositorioAmigo.VerificarEmprestimosAmigo(amigoEscolhido))
         {
-            Console.WriteLine($"\nO {amigoEscolhido.Nome} ainda tem empréstimos em aberto!");
+            Console.WriteLine($"\nO {amigoEscolhido.Nome} ainda possui empréstimos em aberto e não pode ser excluído.");
             return;
         }
 
