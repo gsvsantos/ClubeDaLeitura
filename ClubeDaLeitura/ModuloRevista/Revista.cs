@@ -38,6 +38,7 @@ public class Revista : Entidade
             if (Titulo.Length > 100)
                 erros += "O campo 'Titulo' não pode ter mais que 100 caracteres.\n";
         }
+
         if (string.IsNullOrWhiteSpace(NumeroEdicao.ToString()))
             erros += "O campo 'Número de Edição' é obrigatório.\n";
         else
@@ -45,6 +46,7 @@ public class Revista : Entidade
             if (NumeroEdicao < 0)
                 erros += "O campo 'Número de Edição' precisa ser um número positivo.\n";
         }
+
         if (string.IsNullOrWhiteSpace(AnoPublicacao))
             erros += "O campo 'Ano de Publicação' é obrigatório.\n";
         else
