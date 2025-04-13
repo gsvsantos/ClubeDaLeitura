@@ -31,15 +31,16 @@ public class Emprestimo : Entidade
             erros += "\nVocê precisa selecionar ao menos um Amigo.\n";
 
         if (Revista == null) // Acrescentar verificação da disponibilidade da revista.
-            erros += "\nVocê precisa selecionar ao menos uma Revista.";
+            erros += "Você precisa selecionar ao menos uma Revista.\n";
 
         if (string.IsNullOrEmpty(Situacao))
-            erros += "\nCampo 'Situacao' é obrigatório.";
+            erros += "Campo 'Situacao' é obrigatório.\n";
         else
         {
-            if (Situacao != "Aberto" || Situacao != "Concluído")
-                erros += "\nCampo 'Situacao' precisa ser 'Aberta' ou 'Concluído'!";
+            if (Situacao != "Aberto" && Situacao != "Concluído")
+                erros += "Campo 'Situacao' precisa ser 'Aberto' ou 'Concluído'!\n";
         }
+
         return erros;
     }
     public void RegistrarDevolucao()

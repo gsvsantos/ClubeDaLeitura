@@ -1,14 +1,16 @@
-﻿namespace ClubeDaLeitura.ModuloRevista;
+﻿
+namespace ClubeDaLeitura.ModuloRevista;
 
 public class RepositorioRevista
 {
-    public bool ListaVazia = false;
     public Revista[] Revistas = new Revista[100];
     public int IndiceListaRevista = 0;
+    public bool ListaVazia = false;
 
     public void RegistrarRevista(Revista novaRevista)
     {
         novaRevista.GerarId();
+        novaRevista.Caixa.AdicionarRevista(novaRevista);
         Revistas[IndiceListaRevista++] = novaRevista;
     }
     public Revista[] PegarListaRegistrados()
@@ -23,11 +25,12 @@ public class RepositorioRevista
     }
     public void ExcluirRevista(Revista revistaEscolhida)
     {
+        revistaEscolhida.Caixa.RemoverRevista(revistaEscolhida);
+
         for (int i = 0; i < Revistas.Length; i++)
         {
             if (Revistas[i] == null)
                 continue;
-
             else if (Revistas[i].Id == revistaEscolhida.Id)
             {
                 Revistas[i] = null!;
@@ -41,16 +44,51 @@ public class RepositorioRevista
         {
             if (r == null)
                 continue;
+
             if (r.Id == idRevistaEscolhida)
                 return r;
         }
+
         return null!;
     }
-    public bool VerificarRevistaDisponivel(Revista revista)
+    public bool VerificarRevistaDisponivel(Revista revistaEscolhida)
     {
-        if (revista.StatusEmprestimo == "Disponível")
+        if (revistaEscolhida.StatusEmprestimo == "Disponível")
             return true;
         else
             return false;
+    }
+    public bool VerificarRevistaEmprestada(Revista revistaEscolhida)
+    {
+        if (revistaEscolhida.StatusEmprestimo == "Emprestada")
+            return true;
+        else
+            return false;
+    }
+    public bool VerificarTituloNovoRegistro(Revista novaRevista)
+    {
+        for (int i = 0; i < Revistas.Length; i++)
+        {
+            if (Revistas[i] == null)
+                continue;
+
+            if (novaRevista.Titulo == Revistas[i].Titulo && novaRevista.NumeroEdicao == Revistas[i].NumeroEdicao && novaRevista.Id == 0)
+                return true;
+        }
+
+        return false;
+    }
+    public bool VerificarTituloEditarRegistro(Revista revistaEscolhida, Revista dadosEditados)
+    {
+        for (int i = 0; i < Revistas.Length; i++)
+        {
+            if (Revistas[i] == null)
+                continue;
+
+            if (dadosEditados.Titulo == Revistas[i].Titulo && dadosEditados.NumeroEdicao == Revistas[i].NumeroEdicao && revistaEscolhida.Id != Revistas[i].Id)
+                return true;
+        }
+
+        return false;
     }
 }

@@ -10,10 +10,7 @@ public class TelaCaixa
     }
     public string ApresentarMenu()
     {
-        Console.Clear();
         ExibirCabecalho();
-
-        Console.WriteLine();
 
         Console.WriteLine("1 >> Registrar Caixa");
         Console.WriteLine("2 >> Visualizar Lista de Caixas");
@@ -21,8 +18,7 @@ public class TelaCaixa
         Console.WriteLine("4 >> Excluir Caixa");
         Console.WriteLine("S >> Voltar");
 
-        Console.WriteLine();
-        Console.Write("Opção: ");
+        Console.Write("\nOpção: ");
 
         return Console.ReadLine()!.ToUpper();
     }
@@ -31,13 +27,13 @@ public class TelaCaixa
         Console.Clear();
         Console.WriteLine("--------------------------------------------");
         Console.WriteLine("Gestão de Caixas");
-        Console.WriteLine("--------------------------------------------");
+        Console.WriteLine("--------------------------------------------\n");
     }
     public void RegistrarCaixa()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nRegistrando Caixa...");
+        Console.WriteLine("Registrando Caixa...");
         Console.WriteLine("--------------------------------------------\n");
 
         Caixa novaCaixa = ObterDadosCaixa();
@@ -52,33 +48,36 @@ public class TelaCaixa
             RegistrarCaixa();
             return;
         }
+
         if (RepositorioCaixa.VerificarEtiquetas(novaCaixa))
         {
-            Console.WriteLine("Já existe uma caixa registrada com essa etiqueta!");
+            Console.WriteLine("\nJá existe uma caixa com essa etiqueta!");
             Console.Write("\nPressione [Enter] para tentar novamente!");
             Console.ReadKey();
             RegistrarCaixa();
+            return;
         }
 
         RepositorioCaixa.RegistrarCaixa(novaCaixa);
-        Console.WriteLine("Caixa registrado com sucesso!");
+
+        Console.WriteLine("\nCaixa registrada com sucesso!");
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("\nVisualizando Caixas...");
+        Console.WriteLine("Visualizando Caixas...");
         Console.WriteLine("--------------------------------------------\n");
 
         if (comId)
             Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20}",
-                "Id", "Etiqueta", "Dias de Empréstimo");
+                "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
+                "Id", "Etiqueta", "Dias de Empréstimo", "Revistas na Caixa");
         else
             Console.WriteLine(
-                "{0, -20} | {1, -20}",
-                "Etiqueta", "Dias de Empréstimo");
+                "{0, -20} | {1, -20} | {2, -20}",
+                "Etiqueta", "Dias de Empréstimo", "Revistas na Caixa");
 
         Caixa[] caixasRegistradas = RepositorioCaixa.PegarListaRegistrados();
 
@@ -93,15 +92,17 @@ public class TelaCaixa
 
             quantidadeCaixas++;
             RepositorioCaixa.ListaVazia = false;
+
             if (comId)
                 Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -20}",
-                    c.Id, c.Etiqueta, c.DiasEmprestimo);
+                    "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
+                    c.Id, c.Etiqueta, c.DiasEmprestimo, c.Revistas.Count(r => r != null));
             else
                 Console.WriteLine(
-                    "{0, -20} | {1, -20}",
-                    c.Etiqueta, c.DiasEmprestimo);
+                    "{0, -20} | {1, -20} | {2, -20}",
+                    c.Etiqueta, c.DiasEmprestimo, c.Revistas.Count(r => r != null));
         }
+
         if (quantidadeCaixas == 0)
         {
             Console.WriteLine("\nNenhuma caixa registrada!");
@@ -112,7 +113,7 @@ public class TelaCaixa
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nEditando Caixa...");
+        Console.WriteLine("Editando Caixa...");
         Console.WriteLine("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
@@ -120,12 +121,35 @@ public class TelaCaixa
         if (RepositorioCaixa.ListaVazia)
             return;
 
-        Console.WriteLine("\n--------------------------------------------");
-        Console.Write("Selecione o ID de uma Caixa: ");
-        int idCaixaEscolhida = Convert.ToInt32(Console.ReadLine());
+        bool idValido;
+        int idCaixaEscolhida;
 
-        Console.WriteLine();
+        do
+        {
+            Console.WriteLine("\n--------------------------------------------");
+            Console.Write("Selecione o ID de uma Caixa: ");
+            idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
+
+            if (!idValido)
+            {
+                Console.WriteLine("\nO ID selecionado é inválido!");
+                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Console.ReadKey();
+                EditarCaixa();
+                return;
+            }
+        } while (!idValido);
+
         Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
+
+        if (caixaEscolhida == null)
+        {
+            Console.WriteLine("\nO ID escolhido não está registrado.");
+            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Console.ReadKey();
+            EditarCaixa();
+            return;
+        }
 
         Caixa dadosEditados = ObterDadosCaixa();
 
@@ -139,9 +163,10 @@ public class TelaCaixa
             EditarCaixa();
             return;
         }
+
         if (RepositorioCaixa.VerificarEtiquetas(dadosEditados))
         {
-            Console.WriteLine("Já existe uma caixa com essa etiqueta!");
+            Console.WriteLine("\nJá existe uma caixa com essa etiqueta!");
             Console.Write("\nPressione [Enter] para tentar novamente!");
             Console.ReadKey();
             EditarCaixa();
@@ -149,14 +174,13 @@ public class TelaCaixa
 
         RepositorioCaixa.EditarCaixa(caixaEscolhida, dadosEditados);
 
-        Console.WriteLine();
-        Console.WriteLine("Caixa editado com sucesso!");
+        Console.WriteLine("\nCaixa editada com sucesso!");
     }
     public void ExcluirCaixa()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("\nExcluindo Caixa...");
+        Console.WriteLine("Excluindo Caixa...");
         Console.WriteLine("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
@@ -164,36 +188,99 @@ public class TelaCaixa
         if (RepositorioCaixa.ListaVazia)
             return;
 
-        Console.WriteLine("\n--------------------------------------------");
-        Console.Write("Selecione o ID de uma Caixa: ");
-        int idCaixaEscolhida = Convert.ToInt32(Console.ReadLine());
+        bool idValido;
+        int idCaixaEscolhida;
+
+        do
+        {
+            Console.WriteLine("\n--------------------------------------------");
+            Console.Write("Selecione o ID de uma Caixa: ");
+            idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
+
+            if (!idValido)
+            {
+                Console.WriteLine("\nO ID selecionado é inválido!");
+                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Console.ReadKey();
+                ExcluirCaixa();
+                return;
+            }
+        } while (!idValido);
 
         Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
 
+        if (caixaEscolhida == null)
+        {
+            Console.WriteLine("\nO ID escolhido não está registrado.");
+            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Console.ReadKey();
+            ExcluirCaixa();
+            return;
+        }
+
         if (RepositorioCaixa.VerificarRevistasCaixa(caixaEscolhida))
         {
-            Console.WriteLine($"Ainda tem revistas na caixa {caixaEscolhida.Etiqueta}");
+            Console.WriteLine($"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.");
             return;
         }
 
         RepositorioCaixa.ExcluirCaixa(caixaEscolhida);
 
-        Console.WriteLine();
-        Console.WriteLine("Caixa excluído com sucesso!");
+        Console.WriteLine("\nCaixa excluída com sucesso!");
     }
     public Caixa ObterDadosCaixa()
     {
-        Console.Write("Digite o nome da Etiqueta da Caixa: ");
+        Console.Write("Digite o Nome da Etiqueta da Caixa: ");
         string etiqueta = Console.ReadLine()!;
 
-        Console.Write("Escolha uma cor da paleta: ");
-        int cor = Convert.ToInt32(Console.ReadLine()!);
+        int cor = PegarCorPaletaCores();
 
-        Console.Write("Digite os dias de empréstimos das revistas nesta caixa: ");
+        ExibirCabecalho();
+
+        Console.WriteLine("Registrando Caixa...");
+        Console.WriteLine("--------------------------------------------\n");
+
+        Console.Write("Digite o número de Dias de Empréstimo das Revistas nesta Caixa (3 para revistas comuns e 7 para revistas raras): ");
         int diasEmprestimo = Convert.ToInt32(Console.ReadLine()!);
 
         Caixa caixa = new Caixa(etiqueta, cor, diasEmprestimo);
 
         return caixa;
+    }
+    public int PegarCorPaletaCores()
+    {
+        ExibirCabecalho();
+
+        Console.WriteLine("Paleta de Cores");
+        Console.WriteLine("--------------------------------------------");
+
+        for (int i = 0; i <= 15; i++)
+        {
+            Console.ForegroundColor = (ConsoleColor)i;
+            Console.WriteLine($"{i} >> {(ConsoleColor)i}");
+        }
+        Console.ResetColor();
+
+        bool idValido;
+        int cor;
+
+        do
+        {
+            Console.WriteLine("\n--------------------------------------------");
+            Console.Write("Selecione uma cor da paleta: ");
+            idValido = int.TryParse(Console.ReadLine(), out cor);
+
+            if (!idValido)
+            {
+                Console.WriteLine("\nEssa não é uma opção da paleta de cores.");
+                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Console.ReadKey();
+                PegarCorPaletaCores();
+                break;
+            }
+            break;
+        } while (!idValido);
+
+        return cor;
     }
 }
