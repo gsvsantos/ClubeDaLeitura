@@ -22,8 +22,12 @@ public class TelaAmigo
         Console.WriteLine("S >> Voltar");
 
         Console.Write("\nOpção: ");
+        string opcao = Console.ReadLine()!;
 
-        return Console.ReadLine()!.ToUpper();
+        if (opcao == null)
+            return null!;
+        else
+            return opcao.Trim().ToUpper();
     }
     public void ExibirCabecalho()
     {

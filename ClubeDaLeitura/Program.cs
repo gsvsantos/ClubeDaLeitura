@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloCaixa;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloRevista;
@@ -21,23 +22,9 @@ public class Program
 
         do
         {
-            Console.Clear();
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Clube da Leitura");
-            Console.WriteLine("--------------------------------------------");
+            string[] opcoesValidas = ["1", "2", "3", "4", "S"];
 
-            Console.WriteLine();
-
-            Console.WriteLine("1 >> Gerenciar Amigos");
-            Console.WriteLine("2 >> Gerenciar Caixas");
-            Console.WriteLine("3 >> Gerenciar Revistas");
-            Console.WriteLine("4 >> Gerenciar Empréstimos");
-            Console.WriteLine("S >> Voltar");
-
-            Console.WriteLine();
-
-            Console.Write("Opção: ");
-            string opcao = Console.ReadLine()!.ToUpper();
+            string opcao = MenuPrincipal.ApresentarMenuPrincipal();
 
             if (opcao == "1")
             {
@@ -224,6 +211,11 @@ public class Program
                 Console.Clear();
                 Console.WriteLine("Adeus (T_T)/\n\n");
                 return;
+            }
+            if (!opcoesValidas.Contains(opcao))
+            {
+                Console.Write("\nOpção inválida!\nPressione [Enter] para continuar.");
+                Console.ReadKey();
             }
         } while (true);
     }
