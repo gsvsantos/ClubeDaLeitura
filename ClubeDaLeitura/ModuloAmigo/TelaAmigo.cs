@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.ModuloEmprestimo;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
@@ -14,30 +15,34 @@ public class TelaAmigo
     {
         ExibirCabecalho();
 
-        Console.WriteLine("1 >> Registrar Amigo");
-        Console.WriteLine("2 >> Visualizar Lista de Amigos");
-        Console.WriteLine("3 >> Visualizar Empréstimos de um Amigo");
-        Console.WriteLine("4 >> Editar Amigo");
-        Console.WriteLine("5 >> Excluir Amigo");
-        Console.WriteLine("S >> Voltar");
+        ColorirEscrita.ComQuebraLinha("1 >> Registrar Amigo");
+        ColorirEscrita.ComQuebraLinha("2 >> Visualizar Lista de Amigos");
+        ColorirEscrita.ComQuebraLinha("3 >> Visualizar Empréstimos de um Amigo");
+        ColorirEscrita.ComQuebraLinha("4 >> Editar Amigo");
+        ColorirEscrita.ComQuebraLinha("5 >> Excluir Amigo");
+        ColorirEscrita.ComQuebraLinha("S >> Voltar");
 
-        Console.Write("\nOpção: ");
+        ColorirEscrita.SemQuebraLinha("\nOpção: ");
+        string opcao = Console.ReadLine()!;
 
-        return Console.ReadLine()!.ToUpper();
+        if (opcao == null)
+            return null!;
+        else
+            return opcao.Trim().ToUpper();
     }
     public void ExibirCabecalho()
     {
         Console.Clear();
-        Console.WriteLine("--------------------------------------------");
-        Console.WriteLine("Gestão de Amigos");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Gestão de Amigos");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
     }
     public void RegistrarAmigo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Registrando Amigo...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Registrando Amigo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         Amigo novoAmigo = ObterDadosAmigo();
 
@@ -45,8 +50,8 @@ public class TelaAmigo
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarAmigo();
             return;
@@ -54,8 +59,8 @@ public class TelaAmigo
 
         if (RepositorioAmigo.VerificarTelefoneNovoRegistro(novoAmigo))
         {
-            Console.WriteLine("\nJá existe um cadastro com esse número!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nJá existe um cadastro com esse número!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarAmigo();
             return;
@@ -63,24 +68,32 @@ public class TelaAmigo
 
         RepositorioAmigo.RegistrarAmigo(novoAmigo);
 
-        Console.WriteLine("\nAmigo registrado com sucesso!");
+        Notificador.ExibirMensagem("\nAmigo registrado com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Amigos...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Amigos...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
-                "Id", "Nome", "Responsável", "Telefone");
+        {
+            string[] cabecalho = ["Id", "Nome", "Responsável", "Telefone"];
+            int[] espacamentos = [6, 20, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -20} | {1, -20} | {2, -20}",
-                "Nome", "Responsável", "Telefone");
+        {
+            string[] cabecalho = ["Nome", "Responsável", "Telefone"];
+            int[] espacamentos = [20, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Amigo[] amigosRegistrados = RepositorioAmigo.PegarListaRegistrados();
 
@@ -97,18 +110,26 @@ public class TelaAmigo
             RepositorioAmigo.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
-                    a.Id, a.Nome, a.Responsavel, a.Telefone);
+            {
+                string[] linha = [a.Id.ToString(), a.Nome, a.Responsavel, a.Telefone];
+                int[] espacamentos = [6, 20, 20, 20];
+                ConsoleColor[] coresLinha = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresLinha);
+            }
             else
-                Console.WriteLine(
-                    "{0, -20} | {1, -20} | {2, -20}",
-                    a.Nome, a.Responsavel, a.Telefone);
+            {
+                string[] linha = [a.Nome, a.Responsavel, a.Telefone];
+                int[] espacamentos = [20, 20, 20];
+                ConsoleColor[] coresLinha = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresLinha);
+            }
         }
 
         if (quantidadeAmigos == 0)
         {
-            Console.WriteLine("\nNenhum amigo registrado!");
+            Notificador.ExibirMensagem("\nNenhum amigo registrado!", ConsoleColor.Red);
             RepositorioAmigo.ListaVazia = true;
         }
     }
@@ -116,8 +137,8 @@ public class TelaAmigo
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Empréstimos Registrados...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Empréstimos Registrados...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -129,14 +150,14 @@ public class TelaAmigo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Amigo: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Amigo: ");
             idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 MostrarListaEmprestimos(true, false);
                 return;
@@ -150,23 +171,31 @@ public class TelaAmigo
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine($"Visualizando Empréstimos de {amigoEscolhido.Nome}...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha($"Visualizando Empréstimos de {amigoEscolhido.Nome}...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (emprestimosAmigoEscolhido.All(e => e == null))
         {
-            Console.WriteLine($"O {amigoEscolhido.Nome} ainda não fez nenhum empréstimo.");
+            Notificador.ExibirMensagem($"O {amigoEscolhido.Nome} ainda não fez nenhum empréstimo.", ConsoleColor.Red);
             return;
         }
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -30} | {2, -20} | {3, -20}",
-                "Id", "Revista", "Data de Devolução", "Situação");
+        {
+            string[] cabecalho = ["Id", "Revista", "Data de Devolução", "Situação"];
+            int[] espacamentos = [6, 30, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -30} | {1, -20} | {2, -20}",
-                "Revista", "Data de Devolução", "Situação");
+        {
+            string[] cabecalho = ["Revista", "Data de Devolução", "Situação"];
+            int[] espacamentos = [30, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         foreach (Emprestimo e in emprestimosAmigoEscolhido)
         {
@@ -174,21 +203,29 @@ public class TelaAmigo
                 continue;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -30} | {2, -20} | {3, -20}",
-                    e.Id, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
+            {
+                string[] linha = [e.Id.ToString(), e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao];
+                int[] espacamentos = [6, 30, 20, 20];
+                ConsoleColor[] coresLinha = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresLinha);
+            }
             else
-                Console.WriteLine(
-                    "{0, -30} | {1, -20} | {2, -20}",
-                    e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
+            {
+                string[] linha = [e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao];
+                int[] espacamentos = [30, 20, 20];
+                ConsoleColor[] coresLinha = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresLinha);
+            }
         }
     }
     public void EditarAmigo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Editando Amigo...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Editando Amigo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -200,14 +237,14 @@ public class TelaAmigo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Amigo: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Amigo: ");
             idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 EditarAmigo();
                 return;
@@ -218,8 +255,8 @@ public class TelaAmigo
 
         if (amigoEscolhido == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarAmigo();
             return;
@@ -231,8 +268,8 @@ public class TelaAmigo
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarAmigo();
             return;
@@ -240,8 +277,8 @@ public class TelaAmigo
 
         if (RepositorioAmigo.VerificarTelefoneEditarRegistro(amigoEscolhido, dadosEditados))
         {
-            Console.WriteLine("\nJá existe um cadastro com esse número!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nJá existe um cadastro com esse número!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarAmigo();
             return;
@@ -249,14 +286,14 @@ public class TelaAmigo
 
         RepositorioAmigo.EditarAmigo(amigoEscolhido, dadosEditados);
 
-        Console.WriteLine("\nAmigo editado com sucesso!");
+        Notificador.ExibirMensagem("\nAmigo editado com sucesso!", ConsoleColor.Green);
     }
     public void ExcluirAmigo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Excluindo Amigo...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Excluindo Amigo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -268,14 +305,14 @@ public class TelaAmigo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Amigo: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Amigo: ");
             idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 ExcluirAmigo();
                 return;
@@ -286,8 +323,8 @@ public class TelaAmigo
 
         if (amigoEscolhido == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             ExcluirAmigo();
             return;
@@ -295,23 +332,23 @@ public class TelaAmigo
 
         if (RepositorioAmigo.VerificarEmprestimosAmigo(amigoEscolhido))
         {
-            Console.WriteLine($"\nO {amigoEscolhido.Nome} ainda possui empréstimos em aberto e não pode ser excluído.");
+            Notificador.ExibirMensagem($"\nO {amigoEscolhido.Nome} ainda possui empréstimos em aberto e não pode ser excluído.", ConsoleColor.Red);
             return;
         }
 
         RepositorioAmigo.ExcluirAmigo(amigoEscolhido);
 
-        Console.WriteLine("\nAmigo excluído com sucesso!");
+        Notificador.ExibirMensagem("\nAmigo excluído com sucesso!", ConsoleColor.Green);
     }
     public Amigo ObterDadosAmigo()
     {
-        Console.Write("Digite o Nome do Amigo: ");
+        ColorirEscrita.SemQuebraLinha("Digite o Nome do Amigo: ");
         string nome = Console.ReadLine()!;
 
-        Console.Write("Digite o Nome do Responsável: ");
+        ColorirEscrita.SemQuebraLinha("Digite o Nome do Responsável: ");
         string responsável = Console.ReadLine()!;
 
-        Console.Write("Digite o Número de Telefone do Responsável: ");
+        ColorirEscrita.SemQuebraLinha("Digite o Número de Telefone do Responsável: ");
         string telefone = Console.ReadLine()!;
 
         Amigo amigo = new Amigo(nome, responsável, telefone);

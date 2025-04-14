@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Globalization;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloCaixa;
 
 namespace ClubeDaLeitura.ModuloRevista;
@@ -51,13 +52,16 @@ public class Revista : Entidade
             erros += "O campo 'Ano de Publicação' é obrigatório.\n";
         else
         {
-            if (AnoPublicacao.Length > 4 && AnoPublicacao.All(char.IsDigit))
+            if (AnoPublicacao.Length != 4 && !AnoPublicacao.All(char.IsDigit))
                 erros += "O campo 'Ano de Publicação' está inválido! Insira somente o ano (yyyy).\n";
 
-            if (!DateTime.TryParse($"01/01/{AnoPublicacao}", out DateTime anoPublicacao))
+            if (!DateTime.TryParse($"01/01/{AnoPublicacao}", CultureInfo.InvariantCulture, out DateTime anoPublicacao))
                 erros += "O campo 'Ano de Publicação' está inválido! Insira somente o ano (yyyy).\n";
             else
             {
+                if (anoPublicacao < DateTime.Parse("17/02/1895"))
+                    erros += "O campo 'Ano de Publicação' não pode ser anterior a primeira HQ lançada! (1895 - YellowKid).\n";
+
                 if (anoPublicacao > DateTime.Now)
                     erros += "O campo 'Ano de Publicação' não pode ser um ano futurístico.\n";
             }

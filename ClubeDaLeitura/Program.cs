@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloCaixa;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloRevista;
@@ -21,23 +22,9 @@ public class Program
 
         do
         {
-            Console.Clear();
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine("Clube da Leitura");
-            Console.WriteLine("--------------------------------------------");
+            string[] opcoesValidas = ["1", "2", "3", "4", "S"];
 
-            Console.WriteLine();
-
-            Console.WriteLine("1 >> Gerenciar Amigos");
-            Console.WriteLine("2 >> Gerenciar Caixas");
-            Console.WriteLine("3 >> Gerenciar Revistas");
-            Console.WriteLine("4 >> Gerenciar Empréstimos");
-            Console.WriteLine("S >> Voltar");
-
-            Console.WriteLine();
-
-            Console.Write("Opção: ");
-            string opcao = Console.ReadLine()!.ToUpper();
+            string opcao = MenuPrincipal.ApresentarMenuPrincipal();
 
             if (opcao == "1")
             {
@@ -49,39 +36,35 @@ public class Program
                     {
                         case "1":
                             telaAmigo.RegistrarAmigo();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "2":
                             telaAmigo.MostrarListaRegistrados(true, false);
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "3":
                             telaAmigo.MostrarListaEmprestimos(true, false);
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "4":
                             telaAmigo.EditarAmigo();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "5":
                             telaAmigo.ExcluirAmigo();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "S":
                             menuAmigo = false;
                             continue;
                         default:
-                            Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");
+                            Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                     }
@@ -97,33 +80,30 @@ public class Program
                     {
                         case "1":
                             telaCaixa.RegistrarCaixa();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "2":
                             telaCaixa.MostrarListaRegistrados(true, false);
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "3":
                             telaCaixa.EditarCaixa();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "4":
                             telaCaixa.ExcluirCaixa();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "S":
                             menuCaixa = false;
                             continue;
                         default:
-                            Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");
+                            Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                     }
@@ -139,33 +119,30 @@ public class Program
                     {
                         case "1":
                             telaRevista.RegistrarRevista();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "2":
                             telaRevista.MostrarListaRegistrados(true, false);
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "3":
                             telaRevista.EditarRevista();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "4":
                             telaRevista.ExcluirRevista();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "S":
                             menuRevista = false;
                             continue;
                         default:
-                            Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");
+                            Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                     }
@@ -181,39 +158,35 @@ public class Program
                     {
                         case "1":
                             telaEmprestimo.RegistrarEmprestimo();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "2":
                             telaEmprestimo.MostrarListaRegistrados(true, false);
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "3":
                             telaEmprestimo.EditarEmprestimo();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "4":
                             telaEmprestimo.ExcluirEmprestimo();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "5":
                             telaEmprestimo.RegistrarDevolucao();
-                            Console.WriteLine();
-                            Console.Write("Pressione [Enter] para continuar.");
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                         case "S":
                             menuEmprestimo = false;
                             continue;
                         default:
-                            Console.WriteLine("Opção inválida!\nPressione [Enter] para continuar.");
+                            Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
                             break;
                     }
@@ -224,6 +197,12 @@ public class Program
                 Console.Clear();
                 Console.WriteLine("Adeus (T_T)/\n\n");
                 return;
+            }
+            if (!opcoesValidas.Contains(opcao))
+            {
+                Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                Console.ReadKey();
             }
         } while (true);
     }

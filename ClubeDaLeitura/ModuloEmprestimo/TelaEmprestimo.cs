@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
@@ -19,30 +20,34 @@ public class TelaEmprestimo
     {
         ExibirCabecalho();
 
-        Console.WriteLine("1 >> Registrar Empréstimo");
-        Console.WriteLine("2 >> Visualizar Lista de Empréstimos");
-        Console.WriteLine("3 >> Editar Empréstimo");
-        Console.WriteLine("4 >> Excluir Empréstimo");
-        Console.WriteLine("5 >> Registrar Devolução");
-        Console.WriteLine("S >> Voltar");
+        ColorirEscrita.ComQuebraLinha("1 >> Registrar Empréstimo");
+        ColorirEscrita.ComQuebraLinha("2 >> Visualizar Lista de Empréstimos");
+        ColorirEscrita.ComQuebraLinha("3 >> Editar Empréstimo");
+        ColorirEscrita.ComQuebraLinha("4 >> Excluir Empréstimo");
+        ColorirEscrita.ComQuebraLinha("5 >> Registrar Devolução");
+        ColorirEscrita.ComQuebraLinha("S >> Voltar");
 
-        Console.Write("\nOpção: ");
+        ColorirEscrita.SemQuebraLinha("\nOpção: ");
+        string opcao = Console.ReadLine()!;
 
-        return Console.ReadLine()!.ToUpper();
+        if (opcao == null)
+            return null!;
+        else
+            return opcao.Trim().ToUpper();
     }
     public void ExibirCabecalho()
     {
         Console.Clear();
-        Console.WriteLine("--------------------------------------------");
-        Console.WriteLine("Gestão de Empréstimos");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Gestão de Empréstimos");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
     }
     public void RegistrarEmprestimo()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Registrando Empréstimo...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Registrando Empréstimo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         Emprestimo novoEmprestimo = ObterDadosEmprestimo();
 
@@ -53,8 +58,8 @@ public class TelaEmprestimo
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarEmprestimo();
             return;
@@ -62,24 +67,32 @@ public class TelaEmprestimo
 
         RepositorioEmprestimo.RegistrarEmprestimo(novoEmprestimo);
 
-        Console.WriteLine("\nEmpréstimo registrado com sucesso!");
+        Notificador.ExibirMensagem("\nEmpréstimo registrado com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Empréstimos...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Empréstimos...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -30} | {3, -20} | {4, -20}",
-                "Id", "Amigo", "Revista", "Data de Devolução", "Situação");
+        {
+            string[] cabecalho = ["Id", "Amigo", "Revista", "Data de Devolução", "Situação"];
+            int[] espacamentos = [6, 20, 30, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -20} | {1, -30} | {2, -20} | {3, -20}",
-                "Amigo", "Revista", "Data de Devolução", "Situação");
+        {
+            string[] cabecalho = ["Amigo", "Revista", "Data de Devolução", "Situação"];
+            int[] espacamentos = [20, 30, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Emprestimo[] emprestimosRegistrados = RepositorioEmprestimo.PegarListaRegistrados();
 
@@ -98,18 +111,26 @@ public class TelaEmprestimo
             RepositorioEmprestimo.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -30} | {3, -20} | {4, -20}",
-                    e.Id, e.Amigo.Nome, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
+            {
+                string[] cabecalho = [e.Id.ToString(), e.Amigo.Nome, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao];
+                int[] espacamentos = [6, 20, 30, 20, 20];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
+            }
             else
-                Console.WriteLine(
-                    "{0, -20} | {1, -30} | {2, -20} | {3, -20}",
-                    e.Amigo.Nome, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao);
+            {
+                string[] cabecalho = [e.Amigo.Nome, e.Revista.Titulo, e.ObterDataDevolucao().ToShortDateString(), e.Situacao];
+                int[] espacamentos = [20, 30, 20, 20];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
+            }
         }
 
         if (quantidadeEmprestimos == 0)
         {
-            Console.WriteLine("\nNenhum empréstimo registrado!");
+            Notificador.ExibirMensagem("\nNenhum empréstimo registrado!", ConsoleColor.Red);
             RepositorioEmprestimo.ListaVazia = true;
         }
     }
@@ -117,76 +138,8 @@ public class TelaEmprestimo
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Editando Empréstimo...");
-        Console.WriteLine("--------------------------------------------");
-
-        MostrarListaRegistrados(false, true);
-
-        if (RepositorioAmigo.ListaVazia)
-            return;
-
-        bool idValido;
-        int idEmprestimoEscolhido;
-
-        do
-        {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Empréstimo: ");
-            idValido = int.TryParse(Console.ReadLine(), out idEmprestimoEscolhido);
-
-            if (!idValido)
-            {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
-                Console.ReadKey();
-                EditarEmprestimo();
-                return;
-            }
-        } while (!idValido);
-
-        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarPorId(idEmprestimoEscolhido);
-
-        if (emprestimoEscolhido == null)
-        {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
-            Console.ReadKey();
-            EditarEmprestimo();
-            return;
-        }
-
-        Emprestimo dadosEditados = ObterDadosEmprestimo();
-
-        string erros = dadosEditados.Validar();
-
-        if (erros.Length > 0)
-        {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
-            Console.ReadKey();
-            EditarEmprestimo();
-            return;
-        }
-
-        if (RepositorioEmprestimo.VerificarDevolucao(dadosEditados))
-        {
-            Console.WriteLine("\nEsse empréstimo já foi concluído.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
-            Console.ReadKey();
-            EditarEmprestimo();
-            return;
-        }
-
-        RepositorioEmprestimo.EditarEmprestimo(emprestimoEscolhido, dadosEditados);
-
-        Console.WriteLine("\nEmpréstimo editado com sucesso!");
-    }
-    public void ExcluirEmprestimo()
-    {
-        ExibirCabecalho();
-
-        Console.WriteLine("Excluindo Empréstimo...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Editando Empréstimo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -198,14 +151,14 @@ public class TelaEmprestimo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Empréstimo: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Empréstimo: ");
             idValido = int.TryParse(Console.ReadLine(), out idEmprestimoEscolhido);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 EditarEmprestimo();
                 return;
@@ -216,33 +169,113 @@ public class TelaEmprestimo
 
         if (emprestimoEscolhido == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            EditarEmprestimo();
+            return;
+        }
+
+        Emprestimo dadosEditados = ObterDadosEmprestimo();
+
+        string erros = dadosEditados.Validar();
+
+        if (erros.Length > 0)
+        {
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            EditarEmprestimo();
+            return;
+        }
+
+        if (RepositorioEmprestimo.VerificarDevolucao(dadosEditados))
+        {
+            Notificador.ExibirMensagem("\nEsse empréstimo já foi concluído.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            EditarEmprestimo();
+            return;
+        }
+
+        RepositorioEmprestimo.EditarEmprestimo(emprestimoEscolhido, dadosEditados);
+
+        Notificador.ExibirMensagem("\nEmpréstimo editado com sucesso!", ConsoleColor.Green);
+    }
+    public void ExcluirEmprestimo()
+    {
+        ExibirCabecalho();
+
+        ColorirEscrita.ComQuebraLinha("Excluindo Empréstimo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
+
+        MostrarListaRegistrados(false, true);
+
+        if (RepositorioEmprestimo.ListaVazia)
+            return;
+
+        bool idValido;
+        int idEmprestimoEscolhido;
+
+        do
+        {
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Empréstimo: ");
+            idValido = int.TryParse(Console.ReadLine(), out idEmprestimoEscolhido);
+
+            if (!idValido)
+            {
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+                Console.ReadKey();
+                EditarEmprestimo();
+                return;
+            }
+        } while (!idValido);
+
+        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarPorId(idEmprestimoEscolhido);
+
+        if (emprestimoEscolhido == null)
+        {
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             ExcluirEmprestimo();
             return;
         }
 
-        RepositorioEmprestimo.ExcluirEmprestimo(emprestimoEscolhido);
+        if (RepositorioEmprestimo.VerificarEmprestimoAtivo(emprestimoEscolhido.Amigo))
+        {
+            Notificador.ExibirMensagem("\nEsse empréstimo ainda está em aberto!", ConsoleColor.Red);
+            return;
+        }
 
-        Console.WriteLine("\nEmpréstimo excluído com sucesso!");
+        Notificador.ExibirMensagem("\nEmpréstimo excluído com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaRevistas(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Revistas...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Revistas...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -30} | {2, -15} | {3, -20} | {4, -20} | {5, -20}",
-                "Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status");
+        {
+            string[] cabecalho = ["Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
+            int[] espacamentos = [6, 25, 14, 18, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -30} | {1, -15} | {2, -20} | {3, -20} | {4, -20}",
-                "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status");
+        {
+            string[] cabecalho = ["Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
+            int[] espacamentos = [25, 14, 18, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Revista[] revistasRegistradas = RepositorioRevista.PegarListaRegistrados();
 
@@ -259,17 +292,26 @@ public class TelaEmprestimo
             RepositorioRevista.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -30} | {2, -15} | {3, -20} | {4, -20} | {5, -20}",
-                    r.Id, r.Titulo, r.NumeroEdicao, r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo);
+            {
+                string[] cabecalho = [r.Id.ToString(), r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
+                int[] espacamentos = [6, 25, 14, 18, 20, 20];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
+            }
             else
-                Console.WriteLine(
-                    "{0, -30} | {1, -15} | {2, -20} | {3, -20} | {4, -20}",
-                    r.Titulo, r.NumeroEdicao, r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo);
+            {
+                string[] cabecalho = [r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
+                int[] espacamentos = [25, 14, 18, 20, 20];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
+            }
         }
+
         if (quantidadeRevistas == 0)
         {
-            Console.WriteLine("\nNenhuma revista registrada!");
+            Notificador.ExibirMensagem("\nNenhuma revista registrada!", ConsoleColor.Red);
             RepositorioRevista.ListaVazia = true;
         }
     }
@@ -278,17 +320,25 @@ public class TelaEmprestimo
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Amigos...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Amigos...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
-                "Id", "Nome", "Responsável", "Telefone");
+        {
+            string[] cabecalho = ["Id", "Nome", "Responsável", "Telefone"];
+            int[] espacamentos = [6, 20, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -20} | {1, -20} | {2, -20}",
-                "Nome", "Responsável", "Telefone");
+        {
+            string[] cabecalho = ["Nome", "Responsável", "Telefone"];
+            int[] espacamentos = [20, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Amigo[] amigosRegistrados = RepositorioAmigo.PegarListaRegistrados();
 
@@ -305,18 +355,26 @@ public class TelaEmprestimo
             RepositorioAmigo.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
-                    a.Id, a.Nome, a.Responsavel, a.Telefone);
+            {
+                string[] linha = [a.Id.ToString(), a.Nome, a.Responsavel, a.Telefone];
+                int[] espacamentos = [6, 20, 20, 20];
+                ConsoleColor[] coresLinha = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresLinha);
+            }
             else
-                Console.WriteLine(
-                    "{0, -20} | {1, -20} | {2, -20}",
-                    a.Nome, a.Responsavel, a.Telefone);
+            {
+                string[] linha = [a.Nome, a.Responsavel, a.Telefone];
+                int[] espacamentos = [20, 20, 20];
+                ConsoleColor[] coresLinha = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresLinha);
+            }
         }
 
         if (quantidadeAmigos == 0)
         {
-            Console.WriteLine("\nNenhum amigo registrado!");
+            Notificador.ExibirMensagem("\nNenhum amigo registrado!", ConsoleColor.Red);
             RepositorioAmigo.ListaVazia = true;
         }
     }
@@ -324,8 +382,8 @@ public class TelaEmprestimo
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Devolução Empréstimo...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Devolução Empréstimo...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -337,14 +395,14 @@ public class TelaEmprestimo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Empréstimo: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Empréstimo: ");
             idValido = int.TryParse(Console.ReadLine(), out idEmprestimoEscolhido);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 RegistrarDevolucao();
                 return;
@@ -353,17 +411,26 @@ public class TelaEmprestimo
 
         Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarPorId(idEmprestimoEscolhido);
 
+        if (emprestimoEscolhido == null)
+        {
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            RegistrarDevolucao();
+            return;
+        }
+
         if (RepositorioEmprestimo.VerificarDevolucao(emprestimoEscolhido))
         {
-            Console.WriteLine("\nA devolução escolhida não está em aberto!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nA devolução escolhida não está em aberto!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarDevolucao();
         }
 
         emprestimoEscolhido.RegistrarDevolucao();
 
-        Console.WriteLine("\nDevolução feita com sucesso!");
+        Notificador.ExibirMensagem("\nDevolução feita com sucesso!", ConsoleColor.Green);
 
     }
     public Emprestimo ObterDadosEmprestimo()
@@ -379,13 +446,13 @@ public class TelaEmprestimo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de um Amigo: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de um Amigo: ");
             idAmigoValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
 
             if (!idAmigoValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 return null!;
             }
         } while (!idAmigoValido);
@@ -394,7 +461,7 @@ public class TelaEmprestimo
 
         if (RepositorioEmprestimo.VerificarEmprestimoAtivo(amigoEscolhido))
         {
-            Console.WriteLine("\nEsse amigo já tem um empréstimo em aberto!");
+            Notificador.ExibirMensagem("\nEsse amigo já tem um empréstimo em aberto!", ConsoleColor.Red);
             return null!;
         }
 
@@ -408,13 +475,13 @@ public class TelaEmprestimo
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de uma Revista: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Revista: ");
             idRevistaValido = int.TryParse(Console.ReadLine(), out idRevistaEscolhida);
 
             if (!idRevistaValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 return null!;
             }
         } while (!idRevistaValido);
@@ -423,7 +490,7 @@ public class TelaEmprestimo
 
         if (!RepositorioRevista.VerificarRevistaDisponivel(revistaEscolhida))
         {
-            Console.WriteLine("\nEssa revista não está disponível!");
+            Notificador.ExibirMensagem("\nEssa revista não está disponível!", ConsoleColor.Red);
             return null!;
         }
 
@@ -431,5 +498,4 @@ public class TelaEmprestimo
 
         return emprestimo;
     }
-
 }
