@@ -181,6 +181,9 @@ public class TelaRevista
 
         Revista dadosEditados = ObterDadosRevista();
 
+        if (dadosEditados == null)
+            return;
+
         string erros = dadosEditados.Validar();
 
         if (erros.Length > 0)
