@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.ModuloCaixa;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloCaixa;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
@@ -16,13 +17,13 @@ public class TelaRevista
     {
         ExibirCabecalho();
 
-        Console.WriteLine("1 >> Registrar Revista");
-        Console.WriteLine("2 >> Visualizar Lista de Revistas");
-        Console.WriteLine("3 >> Editar Revista");
-        Console.WriteLine("4 >> Excluir Revista");
-        Console.WriteLine("S >> Voltar");
+        ColorirEscrita.ComQuebraLinha("1 >> Registrar Revista");
+        ColorirEscrita.ComQuebraLinha("2 >> Visualizar Lista de Revistas");
+        ColorirEscrita.ComQuebraLinha("3 >> Editar Revista");
+        ColorirEscrita.ComQuebraLinha("4 >> Excluir Revista");
+        ColorirEscrita.ComQuebraLinha("S >> Voltar");
 
-        Console.Write("\nOpção: ");
+        ColorirEscrita.SemQuebraLinha("\nOpção: ");
         string opcao = Console.ReadLine()!;
 
         if (opcao == null)
@@ -33,16 +34,16 @@ public class TelaRevista
     public void ExibirCabecalho()
     {
         Console.Clear();
-        Console.WriteLine("--------------------------------------------");
-        Console.WriteLine("Gestão de Revistas");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Gestão de Revistas");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
     }
     public void RegistrarRevista()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Registrando Revista...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Registrando Revista...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         Revista novaRevista = ObterDadosRevista();
 
@@ -53,8 +54,8 @@ public class TelaRevista
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarRevista();
             return;
@@ -62,8 +63,8 @@ public class TelaRevista
 
         if (RepositorioRevista.VerificarTituloNovoRegistro(novaRevista))
         {
-            Console.WriteLine("\nJá existe uma revista dessa edição!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nJá existe uma revista dessa edição!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarRevista();
             return;
@@ -71,24 +72,32 @@ public class TelaRevista
 
         RepositorioRevista.RegistrarRevista(novaRevista);
 
-        Console.WriteLine("\nRevista registrada com sucesso!");
+        Notificador.ExibirMensagem("\nRevista registrada com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Revistas...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Revistas...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -30} | {2, -15} | {3, -20} | {4, -20} | {5, -20}",
-                "Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status");
+        {
+            string[] cabecalho = ["Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
+            int[] espacamentos = [6, 25, 14, 18, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -30} | {1, -15} | {2, -20} | {3, -20} | {4, -20}",
-                "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status");
+        {
+            string[] cabecalho = ["Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
+            int[] espacamentos = [25, 14, 18, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Revista[] revistasRegistradas = RepositorioRevista.PegarListaRegistrados();
 
@@ -105,18 +114,26 @@ public class TelaRevista
             RepositorioRevista.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -30} | {2, -15} | {3, -20} | {4, -20} | {5, -20}",
-                    r.Id, r.Titulo, r.NumeroEdicao, r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo);
+            {
+                string[] cabecalho = [r.Id.ToString(), r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
+                int[] espacamentos = [6, 25, 14, 18, 20, 20];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
+            }
             else
-                Console.WriteLine(
-                    "{0, -30} | {1, -15} | {2, -20} | {3, -20} | {4, -20}",
-                    r.Titulo, r.NumeroEdicao, r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo);
+            {
+                string[] cabecalho = [r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
+                int[] espacamentos = [25, 14, 18, 20, 20];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
+
+                ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
+            }
         }
 
         if (quantidadeRevistas == 0)
         {
-            Console.WriteLine("\nNenhuma revista registrada!");
+            Notificador.ExibirMensagem("\nNenhuma revista registrada!", ConsoleColor.Red);
             RepositorioRevista.ListaVazia = true;
         }
     }
@@ -124,8 +141,8 @@ public class TelaRevista
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Editando Revista...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Editando Revista...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -137,14 +154,14 @@ public class TelaRevista
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de uma Revista: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Revista: ");
             idValido = int.TryParse(Console.ReadLine(), out idRevistaEscolhida);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 EditarRevista();
                 return;
@@ -155,8 +172,8 @@ public class TelaRevista
 
         if (revistaEscolhida == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarRevista();
             return;
@@ -168,8 +185,8 @@ public class TelaRevista
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarRevista();
             return;
@@ -177,8 +194,8 @@ public class TelaRevista
 
         if (RepositorioRevista.VerificarTituloEditarRegistro(revistaEscolhida, dadosEditados))
         {
-            Console.WriteLine("\nJá existe uma revista dessa edição!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nJá existe uma revista dessa edição!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarRevista();
             return;
@@ -186,14 +203,14 @@ public class TelaRevista
 
         RepositorioRevista.EditarRevista(revistaEscolhida, dadosEditados);
 
-        Console.WriteLine("\nRevista editada com sucesso!");
+        Notificador.ExibirMensagem("\nRevista editada com sucesso!", ConsoleColor.Green);
     }
     public void ExcluirRevista()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Excluindo Revista...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Excluindo Revista...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -205,14 +222,14 @@ public class TelaRevista
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de uma Revista: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Revista: ");
             idValido = int.TryParse(Console.ReadLine(), out idRevistaEscolhida);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 ExcluirRevista();
                 return;
@@ -223,8 +240,8 @@ public class TelaRevista
 
         if (revistaEscolhida == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             ExcluirRevista();
             return;
@@ -232,30 +249,38 @@ public class TelaRevista
 
         if (RepositorioRevista.VerificarRevistaEmprestada(revistaEscolhida))
         {
-            Console.WriteLine($"\nA revista {revistaEscolhida.Titulo} ainda está com um amigo!");
+            Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} ainda está com um amigo!", ConsoleColor.Red);
             return;
         }
 
         RepositorioRevista.ExcluirRevista(revistaEscolhida);
 
-        Console.WriteLine("\nRevista excluída com sucesso!");
+        Notificador.ExibirMensagem("\nRevista excluída com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaCaixas(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Caixas...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Caixas...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20}",
-                "Id", "Etiqueta", "Dias de Empréstimo");
+        {
+            string[] cabecalho = ["Id", "Etiqueta", "Dias de Empréstimo", "Revistas na Caixa"];
+            int[] espacamentos = [6, 20, 20, 20,];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -20} | {1, -20}",
-                "Etiqueta", "Dias de Empréstimo");
+        {
+            string[] cabecalho = ["Etiqueta", "Dias de Empréstimo", "Revistas na Caixa"];
+            int[] espacamentos = [20, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Caixa[] caixasRegistradas = RepositorioCaixa.PegarListaRegistrados();
 
@@ -272,44 +297,31 @@ public class TelaRevista
             RepositorioCaixa.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -20}",
-                    c.Id, c.Etiqueta, c.DiasEmprestimo);
+            {
+                string[] linha = [c.Id.ToString(), c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                int[] espacamentos = [6, 20, 20, 20,];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, (ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresCabecalho);
+            }
             else
-                Console.WriteLine(
-                    "{0, -20} | {1, -20}",
-                    c.Etiqueta, c.DiasEmprestimo);
+            {
+                string[] linha = [c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                int[] espacamentos = [20, 20, 20];
+                ConsoleColor[] coresCabecalho = [(ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresCabecalho);
+            }
         }
 
         if (quantidadeCaixas == 0)
         {
-            Console.WriteLine("\nNenhuma caixa registrada!");
+            Notificador.ExibirMensagem("\nNenhuma caixa registrada!", ConsoleColor.Red);
             RepositorioCaixa.ListaVazia = true;
         }
     }
     public Revista ObterDadosRevista()
     {
-        Console.Write("Digite o Título da Revista: ");
-        string titulo = Console.ReadLine()!;
-
-        bool numeroValido;
-        int numeroEdicao;
-
-        do
-        {
-            Console.Write("Digite o N° de Edição da Revista: ");
-            numeroValido = int.TryParse(Console.ReadLine(), out numeroEdicao);
-
-            if (!numeroValido)
-            {
-                Console.WriteLine("\nEsse não é um número válido!");
-                return null!;
-            }
-        } while (!numeroValido);
-
-        Console.Write("Digite o Ano de Publicação da Revista: ");
-        string anoPublicacao = Console.ReadLine()!;
-
         MostrarListaCaixas(true, true);
 
         if (RepositorioCaixa.ListaVazia)
@@ -320,18 +332,40 @@ public class TelaRevista
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de uma Caixa para guardar a revista: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Caixa para guardar a revista: ");
             idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 return null!;
             }
         } while (!idValido);
 
         Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
+
+        ColorirEscrita.SemQuebraLinha("\nDigite o Título da Revista: ");
+        string titulo = Console.ReadLine()!;
+
+        bool numeroValido;
+        int numeroEdicao;
+
+        do
+        {
+            ColorirEscrita.SemQuebraLinha("Digite o N° de Edição da Revista: ");
+            numeroValido = int.TryParse(Console.ReadLine(), out numeroEdicao);
+
+            if (!numeroValido)
+            {
+                Notificador.ExibirMensagem("\nEsse não é um número válido!", ConsoleColor.Red);
+                return null!;
+            }
+        } while (!numeroValido);
+
+        ColorirEscrita.SemQuebraLinha("Digite o Ano de Publicação da Revista: ");
+        string anoPublicacao = Console.ReadLine()!;
+
 
         Revista revista = new Revista(titulo, numeroEdicao, anoPublicacao, caixaEscolhida);
 

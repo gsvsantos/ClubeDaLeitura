@@ -1,4 +1,6 @@
-﻿namespace ClubeDaLeitura.ModuloCaixa;
+﻿using ClubeDaLeitura.Compartilhado;
+
+namespace ClubeDaLeitura.ModuloCaixa;
 
 public class TelaCaixa
 {
@@ -12,13 +14,13 @@ public class TelaCaixa
     {
         ExibirCabecalho();
 
-        Console.WriteLine("1 >> Registrar Caixa");
-        Console.WriteLine("2 >> Visualizar Lista de Caixas");
-        Console.WriteLine("3 >> Editar Caixa");
-        Console.WriteLine("4 >> Excluir Caixa");
-        Console.WriteLine("S >> Voltar");
+        ColorirEscrita.ComQuebraLinha("1 >> Registrar Caixa");
+        ColorirEscrita.ComQuebraLinha("2 >> Visualizar Lista de Caixas");
+        ColorirEscrita.ComQuebraLinha("3 >> Editar Caixa");
+        ColorirEscrita.ComQuebraLinha("4 >> Excluir Caixa");
+        ColorirEscrita.ComQuebraLinha("S >> Voltar");
 
-        Console.Write("\nOpção: ");
+        ColorirEscrita.SemQuebraLinha("\nOpção: ");
         string opcao = Console.ReadLine()!;
 
         if (opcao == null)
@@ -29,25 +31,28 @@ public class TelaCaixa
     public void ExibirCabecalho()
     {
         Console.Clear();
-        Console.WriteLine("--------------------------------------------");
-        Console.WriteLine("Gestão de Caixas");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Gestão de Caixas");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
     }
     public void RegistrarCaixa()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Registrando Caixa...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Registrando Caixa...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         Caixa novaCaixa = ObterDadosCaixa();
+
+        if (novaCaixa == null)
+            return;
 
         string erros = novaCaixa.Validar();
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarCaixa();
             return;
@@ -55,8 +60,8 @@ public class TelaCaixa
 
         if (RepositorioCaixa.VerificarEtiquetas(novaCaixa))
         {
-            Console.WriteLine("\nJá existe uma caixa com essa etiqueta!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             RegistrarCaixa();
             return;
@@ -64,24 +69,32 @@ public class TelaCaixa
 
         RepositorioCaixa.RegistrarCaixa(novaCaixa);
 
-        Console.WriteLine("\nCaixa registrada com sucesso!");
+        Notificador.ExibirMensagem("\nCaixa registrada com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
 
-        Console.WriteLine("Visualizando Caixas...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Visualizando Caixas...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
         if (comId)
-            Console.WriteLine(
-                "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
-                "Id", "Etiqueta", "Dias de Empréstimo", "Revistas na Caixa");
+        {
+            string[] cabecalho = ["Id", "Etiqueta", "Dias de Empréstimo", "Revistas na Caixa"];
+            int[] espacamentos = [6, 20, 20, 20,];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
         else
-            Console.WriteLine(
-                "{0, -20} | {1, -20} | {2, -20}",
-                "Etiqueta", "Dias de Empréstimo", "Revistas na Caixa");
+        {
+            string[] cabecalho = ["Etiqueta", "Dias de Empréstimo", "Revistas na Caixa"];
+            int[] espacamentos = [20, 20, 20];
+            ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue];
+
+            ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
+        }
 
         Caixa[] caixasRegistradas = RepositorioCaixa.PegarListaRegistrados();
 
@@ -98,18 +111,26 @@ public class TelaCaixa
             RepositorioCaixa.ListaVazia = false;
 
             if (comId)
-                Console.WriteLine(
-                    "{0, -6} | {1, -20} | {2, -20} | {3, -20}",
-                    c.Id, c.Etiqueta, c.DiasEmprestimo, c.Revistas.Count(r => r != null));
+            {
+                string[] linha = [c.Id.ToString(), c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                int[] espacamentos = [6, 20, 20, 20,];
+                ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, (ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresCabecalho);
+            }
             else
-                Console.WriteLine(
-                    "{0, -20} | {1, -20} | {2, -20}",
-                    c.Etiqueta, c.DiasEmprestimo, c.Revistas.Count(r => r != null));
+            {
+                string[] linha = [c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                int[] espacamentos = [20, 20, 20];
+                ConsoleColor[] coresCabecalho = [(ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
+
+                ColorirEscrita.PintarLinha(linha, espacamentos, coresCabecalho);
+            }
         }
 
         if (quantidadeCaixas == 0)
         {
-            Console.WriteLine("\nNenhuma caixa registrada!");
+            Notificador.ExibirMensagem("\nNenhuma caixa registrada!", ConsoleColor.Red);
             RepositorioCaixa.ListaVazia = true;
         }
     }
@@ -117,8 +138,8 @@ public class TelaCaixa
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Editando Caixa...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Editando Caixa...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -130,14 +151,14 @@ public class TelaCaixa
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de uma Caixa: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Caixa: ");
             idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 EditarCaixa();
                 return;
@@ -148,8 +169,8 @@ public class TelaCaixa
 
         if (caixaEscolhida == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarCaixa();
             return;
@@ -161,8 +182,8 @@ public class TelaCaixa
 
         if (erros.Length > 0)
         {
-            Console.WriteLine(erros);
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarCaixa();
             return;
@@ -170,22 +191,22 @@ public class TelaCaixa
 
         if (RepositorioCaixa.VerificarEtiquetas(dadosEditados))
         {
-            Console.WriteLine("\nJá existe uma caixa com essa etiqueta!");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             EditarCaixa();
         }
 
         RepositorioCaixa.EditarCaixa(caixaEscolhida, dadosEditados);
 
-        Console.WriteLine("\nCaixa editada com sucesso!");
+        Notificador.ExibirMensagem("\nCaixa editada com sucesso!", ConsoleColor.Green);
     }
     public void ExcluirCaixa()
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Excluindo Caixa...");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Excluindo Caixa...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         MostrarListaRegistrados(false, true);
 
@@ -197,14 +218,14 @@ public class TelaCaixa
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione o ID de uma Caixa: ");
+            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
+            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Caixa: ");
             idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
 
             if (!idValido)
             {
-                Console.WriteLine("\nO ID selecionado é inválido!");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 ExcluirCaixa();
                 return;
@@ -215,8 +236,8 @@ public class TelaCaixa
 
         if (caixaEscolhida == null)
         {
-            Console.WriteLine("\nO ID escolhido não está registrado.");
-            Console.Write("\nPressione [Enter] para tentar novamente!");
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
             ExcluirCaixa();
             return;
@@ -224,28 +245,40 @@ public class TelaCaixa
 
         if (RepositorioCaixa.VerificarRevistasCaixa(caixaEscolhida))
         {
-            Console.WriteLine($"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.");
+            Notificador.ExibirMensagem($"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.", ConsoleColor.Red);
             return;
         }
 
         RepositorioCaixa.ExcluirCaixa(caixaEscolhida);
 
-        Console.WriteLine("\nCaixa excluída com sucesso!");
+        Notificador.ExibirMensagem("\nCaixa excluída com sucesso!", ConsoleColor.Green);
     }
     public Caixa ObterDadosCaixa()
     {
-        Console.Write("Digite o Nome da Etiqueta da Caixa: ");
+        ColorirEscrita.SemQuebraLinha("Digite o Nome da Etiqueta da Caixa: ");
         string etiqueta = Console.ReadLine()!;
 
         int cor = PegarCorPaletaCores();
 
         ExibirCabecalho();
 
-        Console.WriteLine("Registrando Caixa...");
-        Console.WriteLine("--------------------------------------------\n");
+        ColorirEscrita.ComQuebraLinha("Registrando Caixa...");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
-        Console.Write("Digite o número de Dias de Empréstimo das Revistas nesta Caixa (3 para revistas comuns e 7 para revistas raras): ");
-        int diasEmprestimo = Convert.ToInt32(Console.ReadLine()!);
+        bool numeroValido;
+        int diasEmprestimo;
+
+        do
+        {
+            ColorirEscrita.SemQuebraLinha("Digite o número de Dias de Empréstimo das Revistas nesta Caixa (3 para revistas comuns e 7 para revistas raras): ");
+            numeroValido = int.TryParse(Console.ReadLine(), out diasEmprestimo);
+
+            if (!numeroValido)
+            {
+                Console.WriteLine("\nEsse não é um número válido!");
+                return null!;
+            }
+        } while (!numeroValido);
 
         Caixa caixa = new Caixa(etiqueta, cor, diasEmprestimo);
 
@@ -255,8 +288,8 @@ public class TelaCaixa
     {
         ExibirCabecalho();
 
-        Console.WriteLine("Paleta de Cores");
-        Console.WriteLine("--------------------------------------------");
+        ColorirEscrita.ComQuebraLinha("Paleta de Cores");
+        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
         for (int i = 0; i <= 15; i++)
         {
@@ -270,14 +303,15 @@ public class TelaCaixa
 
         do
         {
-            Console.WriteLine("\n--------------------------------------------");
-            Console.Write("Selecione uma cor da paleta: ");
+            ColorirEscrita.ComQuebraLinha("--------------------------------------------");
+
+            ColorirEscrita.SemQuebraLinha("Selecione uma cor da paleta: ");
             idValido = int.TryParse(Console.ReadLine(), out cor);
 
             if (!idValido)
             {
-                Console.WriteLine("\nEssa não é uma opção da paleta de cores.");
-                Console.Write("\nPressione [Enter] para tentar novamente!");
+                Notificador.ExibirMensagem("\nEssa não é uma opção da paleta de cores.", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
                 PegarCorPaletaCores();
                 break;
