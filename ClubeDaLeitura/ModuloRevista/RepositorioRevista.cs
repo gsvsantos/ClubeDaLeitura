@@ -19,6 +19,9 @@ public class RepositorioRevista
     }
     public void EditarRevista(Revista revistaEscolhida, Revista dadosEditados)
     {
+        revistaEscolhida.Caixa.RemoverRevista(revistaEscolhida);
+        dadosEditados.Caixa.AdicionarRevista(revistaEscolhida);
+        revistaEscolhida.Caixa = dadosEditados.Caixa;
         revistaEscolhida.Titulo = dadosEditados.Titulo;
         revistaEscolhida.NumeroEdicao = dadosEditados.NumeroEdicao;
         revistaEscolhida.AnoPublicacao = dadosEditados.AnoPublicacao;
