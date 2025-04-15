@@ -71,7 +71,7 @@ public class Caixa : Entidade
             if (Revistas[i] == null)
                 continue;
 
-            if (Revistas[i].Id == revistaEscolhida.Id)
+            if (Revistas[i] == revistaEscolhida)
             {
                 Revistas[i] = null!;
                 return;

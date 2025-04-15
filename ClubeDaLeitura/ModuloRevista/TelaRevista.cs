@@ -169,6 +169,7 @@ public class TelaRevista
         } while (!idValido);
 
         Revista revistaEscolhida = RepositorioRevista.SelecionarPorId(idRevistaEscolhida);
+        Caixa caixaAntiga = revistaEscolhida.Caixa;
 
         if (revistaEscolhida == null)
         {
@@ -183,6 +184,8 @@ public class TelaRevista
 
         if (dadosEditados == null)
             return;
+
+        Caixa caixaNova = dadosEditados.Caixa;
 
         string erros = dadosEditados.Validar();
 
@@ -202,6 +205,12 @@ public class TelaRevista
             Console.ReadKey();
             EditarRevista();
             return;
+        }
+
+        if (caixaAntiga != caixaNova)
+        {
+            caixaAntiga.RemoverRevista(revistaEscolhida);
+            caixaNova.AdicionarRevista(dadosEditados);
         }
 
         RepositorioRevista.EditarRevista(revistaEscolhida, dadosEditados);
