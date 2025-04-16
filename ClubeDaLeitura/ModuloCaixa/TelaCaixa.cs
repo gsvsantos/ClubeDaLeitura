@@ -44,9 +44,6 @@ public class TelaCaixa
 
         Caixa novaCaixa = ObterDadosCaixa();
 
-        if (novaCaixa == null)
-            return;
-
         string erros = novaCaixa.Validar();
 
         if (erros.Length > 0)
@@ -274,10 +271,7 @@ public class TelaCaixa
             numeroValido = int.TryParse(Console.ReadLine(), out diasEmprestimo);
 
             if (!numeroValido)
-            {
                 Notificador.ExibirMensagem("\nEsse não é um número válido!", ConsoleColor.Red);
-                return null!;
-            }
         } while (!numeroValido);
 
         Caixa caixa = new Caixa(etiqueta, cor, diasEmprestimo);

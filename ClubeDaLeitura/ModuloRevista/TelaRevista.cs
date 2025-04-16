@@ -354,19 +354,10 @@ public class TelaRevista
             idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
 
             if (!idValido)
-            {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                return null!;
-            }
         } while (!idValido);
 
         Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
-
-        if (caixaEscolhida == null)
-        {
-            Notificador.ExibirMensagem("\nO ID selecionado não está registrado!", ConsoleColor.Red);
-            return null!;
-        }
 
         ColorirEscrita.SemQuebraLinha("\nDigite o Título da Revista: ");
         string titulo = Console.ReadLine()!;
@@ -380,15 +371,11 @@ public class TelaRevista
             numeroValido = int.TryParse(Console.ReadLine(), out numeroEdicao);
 
             if (!numeroValido)
-            {
                 Notificador.ExibirMensagem("\nEsse não é um número válido!", ConsoleColor.Red);
-                return null!;
-            }
         } while (!numeroValido);
 
         ColorirEscrita.SemQuebraLinha("Digite o Ano de Publicação da Revista: ");
         string anoPublicacao = Console.ReadLine()!;
-
 
         Revista revista = new Revista(titulo, numeroEdicao, anoPublicacao, caixaEscolhida);
 
