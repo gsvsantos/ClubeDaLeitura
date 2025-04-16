@@ -301,13 +301,7 @@ public class TelaMulta
             idValido = int.TryParse(Console.ReadLine(), out idMultaEscolhida);
 
             if (!idValido)
-            {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                PagarMulta();
-                return;
-            }
         } while (!idValido);
 
         Multa multaEscolhida = RepositorioMulta.SelecionarPorId(idMultaEscolhida);

@@ -52,7 +52,7 @@ public class Revista : Entidade
             erros += "O campo 'Ano de Publicação' é obrigatório.\n";
         else
         {
-            if (AnoPublicacao.Length != 4 && !AnoPublicacao.All(char.IsDigit))
+            if (AnoPublicacao.Length != 4 && AnoPublicacao.All(char.IsDigit))
                 erros += "O campo 'Ano de Publicação' está inválido! Insira somente o ano (yyyy).\n";
 
             if (!DateTime.TryParse($"01/01/{AnoPublicacao}", CultureInfo.InvariantCulture, out DateTime anoPublicacao))
@@ -66,6 +66,9 @@ public class Revista : Entidade
                     erros += "O campo 'Ano de Publicação' não pode ser um ano futurístico.\n";
             }
         }
+
+        if (Caixa == null)
+            erros += "A caixa selecionada não está registrada!\n";
 
         return erros;
     }

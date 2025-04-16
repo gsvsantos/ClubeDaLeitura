@@ -28,13 +28,30 @@ public class Emprestimo : Entidade
         string erros = "";
 
         if (Amigo == null)
-            erros += "\nVocê precisa selecionar ao menos um Amigo.\n";
+            erros += "\nO amigo selecionado náo está registrado.\n";
+        else
+        {
+            if (Amigo.Multas.Any(m => m != null && m.Status == "Pendente"))
+                erros += "O amigo selecionado tem multas pendentes.\n";
+
+            if (Amigo.Emprestimos.Any(e => e != null && (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")))
+                erros += "O amigo selecionado tem um empréstimo em aberto.\n";
+
+        }
 
         if (Revista == null)
-            erros += "Você precisa selecionar ao menos uma Revista.\n";
+            erros += "\nA revista selecionada não está registrada.\n";
+        else
+        {
+            if (Revista.StatusEmprestimo != "Disponível")
+                erros += "A revista selecionada não está disponível.\n";
+
+            if (Revista.StatusEmprestimo == "Reservada")
+                erros += "A revista selecionada está reservada.\n";
+        }
 
         if (string.IsNullOrEmpty(Situacao))
-            erros += "Campo 'Situacao' é obrigatório.\n";
+            erros += "\nCampo 'Situacao' é obrigatório.\n";
         else
         {
             if (Situacao != "Aberto" && Situacao != "Concluído")

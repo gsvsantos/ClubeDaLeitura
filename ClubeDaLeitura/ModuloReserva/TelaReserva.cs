@@ -61,9 +61,6 @@ public class TelaReserva
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            RegistrarReserva();
             return;
         }
 
@@ -388,32 +385,10 @@ public class TelaReserva
             idAmigoValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
 
             if (!idAmigoValido)
-            {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                return null!;
-            }
         } while (!idAmigoValido);
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
-
-
-        if (amigoEscolhido.Multas.Any(m => m != null && m.Status == "Pendente"))
-        {
-            Notificador.ExibirMensagem("\nEsse amigo tem multas pendentes!", ConsoleColor.Red);
-            return null!;
-        }
-
-        if (RepositorioEmprestimo.VerificarEmprestimoAtivo(amigoEscolhido))
-        {
-            Notificador.ExibirMensagem("\nEsse amigo já tem um empréstimo em aberto!", ConsoleColor.Red);
-            return null!;
-        }
-
-        if (RepositorioAmigo.VerificarReservaAtiva(amigoEscolhido))
-        {
-            Notificador.ExibirMensagem("\nEsse amigo já tem uma reserva ativa!", ConsoleColor.Red);
-            return null!;
-        }
 
         MostrarListaRevistas(true, true);
 
@@ -430,31 +405,10 @@ public class TelaReserva
             idRevistaValido = int.TryParse(Console.ReadLine(), out idRevistaEscolhida);
 
             if (!idRevistaValido)
-            {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                return null!;
-            }
         } while (!idRevistaValido);
 
         Revista revistaEscolhida = RepositorioRevista.SelecionarPorId(idRevistaEscolhida);
-
-        if (revistaEscolhida == null)
-        {
-            Notificador.ExibirMensagem("\nO ID selecionado não está registrado!", ConsoleColor.Red);
-            return null!;
-        }
-
-        if (!RepositorioRevista.VerificarRevistaDisponivel(revistaEscolhida))
-        {
-            Notificador.ExibirMensagem("\nEssa revista não está disponível!", ConsoleColor.Red);
-            return null!;
-        }
-
-        if (revistaEscolhida.StatusEmprestimo == "Reservada")
-        {
-            Notificador.ExibirMensagem("\nEssa revista está reservada!", ConsoleColor.Red);
-            return null!;
-        }
 
         Reserva reserva = new Reserva(amigoEscolhido, revistaEscolhida);
 
