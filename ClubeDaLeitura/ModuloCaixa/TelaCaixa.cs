@@ -44,9 +44,6 @@ public class TelaCaixa
 
         Caixa novaCaixa = ObterDadosCaixa();
 
-        if (novaCaixa == null)
-            return;
-
         string erros = novaCaixa.Validar();
 
         if (erros.Length > 0)
