@@ -362,6 +362,12 @@ public class TelaRevista
 
         Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
 
+        if (caixaEscolhida == null)
+        {
+            Notificador.ExibirMensagem("\nO ID selecionado não está registrado!", ConsoleColor.Red);
+            return null!;
+        }
+
         ColorirEscrita.SemQuebraLinha("\nDigite o Título da Revista: ");
         string titulo = Console.ReadLine()!;
 
