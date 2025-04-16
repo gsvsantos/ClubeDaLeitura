@@ -3,7 +3,7 @@
 namespace ClubeDaLeitura.ModuloCaixa;
 public class RepositorioCaixa
 {
-    public Caixa[] Caixas = new Caixa[100];
+    public Caixa[] Caixas = new Caixa[40];
     public int IndiceListaCaixa = 0;
     public bool ListaVazia = false;
 

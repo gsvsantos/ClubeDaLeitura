@@ -1,5 +1,6 @@
 ﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
+using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
@@ -7,13 +8,15 @@ namespace ClubeDaLeitura.ModuloEmprestimo;
 public class TelaEmprestimo
 {
     public RepositorioAmigo RepositorioAmigo;
-    public RepositorioRevista RepositorioRevista;
     public RepositorioEmprestimo RepositorioEmprestimo;
+    public RepositorioRevista RepositorioRevista;
+    public RepositorioMulta RepositorioMulta;
 
-    public TelaEmprestimo(RepositorioEmprestimo repositorioEmprestimo, RepositorioAmigo repositorioAmigo, RepositorioRevista repositorioRevista)
+    public TelaEmprestimo(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta, RepositorioRevista repositorioRevista)
     {
-        RepositorioEmprestimo = repositorioEmprestimo;
         RepositorioAmigo = repositorioAmigo;
+        RepositorioEmprestimo = repositorioEmprestimo;
+        RepositorioMulta = repositorioMulta;
         RepositorioRevista = repositorioRevista;
     }
     public string ApresentarMenu()
@@ -178,6 +181,9 @@ public class TelaEmprestimo
 
         Emprestimo dadosEditados = ObterDadosEmprestimo();
 
+        if (dadosEditados == null)
+            return;
+
         string erros = dadosEditados.Validar();
 
         if (erros.Length > 0)
@@ -249,6 +255,14 @@ public class TelaEmprestimo
             Notificador.ExibirMensagem("\nEsse empréstimo ainda está em aberto!", ConsoleColor.Red);
             return;
         }
+
+        if (emprestimoEscolhido.Situacao == "ATRASADO")
+        {
+            Notificador.ExibirMensagem("\nEsse empréstimo está atrasado!", ConsoleColor.Red);
+            return;
+        }
+
+        RepositorioEmprestimo.ExcluirEmprestimo(emprestimoEscolhido);
 
         Notificador.ExibirMensagem("\nEmpréstimo excluído com sucesso!", ConsoleColor.Green);
     }
@@ -423,19 +437,22 @@ public class TelaEmprestimo
         if (RepositorioEmprestimo.VerificarDevolucao(emprestimoEscolhido))
         {
             Notificador.ExibirMensagem("\nA devolução escolhida não está em aberto!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            RegistrarDevolucao();
+            return;
+        }
+
+        if (emprestimoEscolhido.Situacao == "ATRASADO" && !emprestimoEscolhido.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == emprestimoEscolhido.Id))
+        {
+            Multa novaMulta = new Multa(emprestimoEscolhido);
+            RepositorioMulta.RegistrarMulta(novaMulta);
+            emprestimoEscolhido.Amigo.ReceberMulta(novaMulta);
         }
 
         emprestimoEscolhido.RegistrarDevolucao();
 
         Notificador.ExibirMensagem("\nDevolução feita com sucesso!", ConsoleColor.Green);
-
     }
     public Emprestimo ObterDadosEmprestimo()
     {
-
         MostrarListaAmigos(true, true);
 
         if (RepositorioAmigo.ListaVazia)
@@ -458,6 +475,18 @@ public class TelaEmprestimo
         } while (!idAmigoValido);
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+
+        if (amigoEscolhido == null)
+        {
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            return null!;
+        }
+
+        if (amigoEscolhido.Multas.Any(m => m != null && m.Status == "Pendente"))
+        {
+            Notificador.ExibirMensagem("\nEsse amigo tem multas pendentes!", ConsoleColor.Red);
+            return null!;
+        }
 
         if (RepositorioEmprestimo.VerificarEmprestimoAtivo(amigoEscolhido))
         {
@@ -494,7 +523,13 @@ public class TelaEmprestimo
             return null!;
         }
 
-        Emprestimo emprestimo = new Emprestimo(amigoEscolhido, revistaEscolhida, "Aberto");
+        if (revistaEscolhida.StatusEmprestimo == "Reservada")
+        {
+            Notificador.ExibirMensagem("\nEssa revista está reservada!", ConsoleColor.Red);
+            return null!;
+        }
+
+        Emprestimo emprestimo = new Emprestimo(amigoEscolhido, revistaEscolhida);
 
         return emprestimo;
     }

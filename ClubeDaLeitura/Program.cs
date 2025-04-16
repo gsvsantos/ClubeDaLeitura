@@ -2,6 +2,8 @@
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloCaixa;
 using ClubeDaLeitura.ModuloEmprestimo;
+using ClubeDaLeitura.ModuloMulta;
+using ClubeDaLeitura.ModuloReserva;
 using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura;
@@ -13,16 +15,20 @@ public class Program
         RepositorioAmigo repositorioAmigo = new RepositorioAmigo();
         RepositorioCaixa repositorioCaixa = new RepositorioCaixa();
         RepositorioEmprestimo repositorioEmprestimo = new RepositorioEmprestimo();
+        RepositorioMulta repositorioMulta = new RepositorioMulta();
+        RepositorioReserva repositorioReserva = new RepositorioReserva();
         RepositorioRevista repositorioRevista = new RepositorioRevista();
 
-        TelaAmigo telaAmigo = new TelaAmigo(repositorioAmigo);
+        TelaAmigo telaAmigo = new TelaAmigo(repositorioAmigo, repositorioEmprestimo);
         TelaCaixa telaCaixa = new TelaCaixa(repositorioCaixa);
-        TelaEmprestimo telaEmprestimo = new TelaEmprestimo(repositorioEmprestimo, repositorioAmigo, repositorioRevista);
-        TelaRevista telaRevista = new TelaRevista(repositorioRevista, repositorioCaixa);
+        TelaEmprestimo telaEmprestimo = new TelaEmprestimo(repositorioAmigo, repositorioEmprestimo, repositorioMulta, repositorioRevista);
+        TelaMulta telaMulta = new TelaMulta(repositorioAmigo, repositorioEmprestimo, repositorioMulta);
+        TelaReserva telaReserva = new TelaReserva(repositorioAmigo, repositorioEmprestimo, repositorioReserva, repositorioRevista);
+        TelaRevista telaRevista = new TelaRevista(repositorioCaixa, repositorioRevista);
 
         do
         {
-            string[] opcoesValidas = ["1", "2", "3", "4", "S"];
+            string[] opcoesValidas = ["1", "2", "3", "4", "5", "6", "S"];
 
             string opcao = MenuPrincipal.ApresentarMenuPrincipal();
 
@@ -75,8 +81,8 @@ public class Program
                 bool menuCaixa = true;
                 while (menuCaixa)
                 {
-                    string opcaoMenuAmigo = telaCaixa.ApresentarMenu();
-                    switch (opcaoMenuAmigo)
+                    string opcaoMenuCaixa = telaCaixa.ApresentarMenu();
+                    switch (opcaoMenuCaixa)
                     {
                         case "1":
                             telaCaixa.RegistrarCaixa();
@@ -114,8 +120,8 @@ public class Program
                 bool menuRevista = true;
                 while (menuRevista)
                 {
-                    string opcaoMenuAmigo = telaRevista.ApresentarMenu();
-                    switch (opcaoMenuAmigo)
+                    string opcaoMenuRevista = telaRevista.ApresentarMenu();
+                    switch (opcaoMenuRevista)
                     {
                         case "1":
                             telaRevista.RegistrarRevista();
@@ -153,8 +159,8 @@ public class Program
                 bool menuEmprestimo = true;
                 while (menuEmprestimo)
                 {
-                    string opcaoMenuAmigo = telaEmprestimo.ApresentarMenu();
-                    switch (opcaoMenuAmigo)
+                    string opcaoMenuEmprestimo = telaEmprestimo.ApresentarMenu();
+                    switch (opcaoMenuEmprestimo)
                     {
                         case "1":
                             telaEmprestimo.RegistrarEmprestimo();
@@ -192,6 +198,79 @@ public class Program
                     }
                 }
             }
+            if (opcao == "5")
+            {
+                bool menuMulta = true;
+                while (menuMulta)
+                {
+                    string opcaoMenuMulta = telaMulta.ApresentarMenu();
+                    switch (opcaoMenuMulta)
+                    {
+                        case "1":
+                            telaMulta.MostrarMultasPendentes(true, false);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "2":
+                            telaMulta.PagarMulta();
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "3":
+                            telaMulta.MostrarMultasAmigo(true, false);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "S":
+                            menuMulta = false;
+                            continue;
+                        default:
+                            Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+            }
+            if (opcao == "6")
+            {
+                bool MenuReserva = true;
+                while (MenuReserva)
+                {
+                    string opcaoMenuReserva = telaReserva.ApresentarMenu();
+                    switch (opcaoMenuReserva)
+                    {
+                        case "1":
+                            telaReserva.RegistrarReserva();
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "2":
+                            telaReserva.CancelarReserva();
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "3":
+                            telaReserva.MostrarListaRegistrados(true, false);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "4":
+                            telaReserva.EmprestarRevistaReservada();
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                        case "S":
+                            MenuReserva = false;
+                            continue;
+                        default:
+                            Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
+                            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+            }
             if (opcao == "S")
             {
                 Console.Clear();
@@ -207,3 +286,4 @@ public class Program
         } while (true);
     }
 }
+

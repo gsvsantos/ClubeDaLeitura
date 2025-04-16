@@ -23,13 +23,24 @@ public class Reserva : Entidade
     {
         Id = ++id;
     }
-    public void Cancelar()
+    public string Validar()
     {
-        Revista.StatusEmprestimo = "Disponível";
+        string erros = "";
+
+        if (Amigo.Multas.Any(m => m != null && m.Status == "Pendente"))
+            erros += "\nEsse amigo tem multas pendentes!";
+
+        if (Revista.StatusEmprestimo != "Disponível")
+            erros += "\nEssa revista não está disponível.";
+
+        return erros;
     }
     public void Concluir()
     {
         Status = "Concluída";
+    }
+    public void Cancelar()
+    {
         Revista.StatusEmprestimo = "Disponível";
     }
 }

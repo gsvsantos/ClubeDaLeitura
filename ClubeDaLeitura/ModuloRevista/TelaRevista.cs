@@ -5,13 +5,13 @@ namespace ClubeDaLeitura.ModuloRevista;
 
 public class TelaRevista
 {
-    public RepositorioRevista RepositorioRevista;
     public RepositorioCaixa RepositorioCaixa;
+    public RepositorioRevista RepositorioRevista;
 
-    public TelaRevista(RepositorioRevista repositorioRevista, RepositorioCaixa repositorioCaixa)
+    public TelaRevista(RepositorioCaixa repositorioCaixa, RepositorioRevista repositorioRevista)
     {
-        RepositorioRevista = repositorioRevista;
         RepositorioCaixa = repositorioCaixa;
+        RepositorioRevista = repositorioRevista;
     }
     public string ApresentarMenu()
     {
@@ -210,7 +210,7 @@ public class TelaRevista
         if (caixaAntiga != caixaNova)
         {
             caixaAntiga.RemoverRevista(revistaEscolhida);
-            caixaNova.AdicionarRevista(dadosEditados);
+            caixaNova.AdicionarRevista(revistaEscolhida);
         }
 
         RepositorioRevista.EditarRevista(revistaEscolhida, dadosEditados);
@@ -262,6 +262,11 @@ public class TelaRevista
         if (RepositorioRevista.VerificarRevistaEmprestada(revistaEscolhida))
         {
             Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} ainda está com um amigo!", ConsoleColor.Red);
+            return;
+        }
+        if (RepositorioRevista.VerificarRevistaReservada(revistaEscolhida))
+        {
+            Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} está reservada!", ConsoleColor.Red);
             return;
         }
 
