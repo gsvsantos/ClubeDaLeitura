@@ -517,6 +517,12 @@ public class TelaEmprestimo
 
         Revista revistaEscolhida = RepositorioRevista.SelecionarPorId(idRevistaEscolhida);
 
+        if (revistaEscolhida == null)
+        {
+            Notificador.ExibirMensagem("\nO ID selecionado não está registrado!", ConsoleColor.Red);
+            return null!;
+        }
+
         if (!RepositorioRevista.VerificarRevistaDisponivel(revistaEscolhida))
         {
             Notificador.ExibirMensagem("\nEssa revista não está disponível!", ConsoleColor.Red);
