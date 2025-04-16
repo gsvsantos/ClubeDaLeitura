@@ -12,11 +12,11 @@ public class Emprestimo : Entidade
     public string Situacao;
     private static int id = 0;
 
-    public Emprestimo(Amigo amigo, Revista revista, DateTime? data = null)
+    public Emprestimo(Amigo amigo, Revista revista)
     {
         Amigo = amigo;
-        Revista = revista;   // TRAZER VERSÃO CERTA APÓS TESTES!@!!!!!@!!!!
-        Data = data ?? DateTime.Now;
+        Revista = revista;
+        Data = DateTime.Now;
         Situacao = "Aberto";
     }
     public void GerarId()
