@@ -53,12 +53,18 @@ public class TelaAmigo
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            RegistrarAmigo();
             return;
         }
 
         if (RepositorioAmigo.VerificarTelefoneNovoRegistro(novoAmigo))
         {
             Notificador.ExibirMensagem("\nJá existe um cadastro com esse número!", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            RegistrarAmigo();
             return;
         }
 
@@ -151,10 +157,7 @@ public class TelaAmigo
             idValido = int.TryParse(Console.ReadLine(), out idAmigoEscolhido);
 
             if (!idValido)
-            {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                return;
-            }
         } while (!idValido);
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);

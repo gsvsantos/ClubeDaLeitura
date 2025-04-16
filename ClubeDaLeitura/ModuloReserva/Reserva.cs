@@ -27,11 +27,30 @@ public class Reserva : Entidade
     {
         string erros = "";
 
-        if (Amigo.Multas.Any(m => m != null && m.Status == "Pendente"))
-            erros += "\nEsse amigo tem multas pendentes!";
+        if (Amigo == null)
+            erros += "\nO amigo selecionado não está registrado.\n";
+        else
+        {
+            if (Amigo.Multas.Any(m => m != null && m.Status == "Pendente"))
+                erros += "O amigo selecionado tem multas pendentes.\n";
 
-        if (Revista.StatusEmprestimo != "Disponível")
-            erros += "\nEssa revista não está disponível.";
+            if (Amigo.Emprestimos.Any(e => e != null && (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")))
+                erros += "O amigo selecionado tem um empréstimo em aberto.\n";
+
+            if (Amigo.Reserva != null && Amigo.Reserva.Status == "Ativa")
+                erros += "O amigo selecionado já tem uma reserva ativa.\n";
+        }
+
+        if (Revista == null)
+            erros += "\nA revista selecionada não está registrada.\n";
+        else
+        {
+            if (Revista.StatusEmprestimo != "Disponível")
+                erros += "A revista selecionada não está disponível.\n";
+
+            if (Revista.StatusEmprestimo == "Reservada")
+                erros += "A revista selecionada está reservada.\n";
+        }
 
         return erros;
     }
