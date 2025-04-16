@@ -1,4 +1,5 @@
 ﻿
+
 namespace ClubeDaLeitura.ModuloRevista;
 
 public class RepositorioRevista
@@ -62,6 +63,13 @@ public class RepositorioRevista
     public bool VerificarRevistaEmprestada(Revista revistaEscolhida)
     {
         if (revistaEscolhida.StatusEmprestimo == "Emprestada")
+            return true;
+        else
+            return false;
+    }
+    public bool VerificarRevistaReservada(Revista revistaEscolhida)
+    {
+        if (revistaEscolhida.StatusEmprestimo == "Reservada")
             return true;
         else
             return false;

@@ -6,10 +6,12 @@ namespace ClubeDaLeitura.ModuloAmigo;
 public class TelaAmigo
 {
     public RepositorioAmigo RepositorioAmigo;
+    public RepositorioEmprestimo RepositorioEmprestimo;
 
-    public TelaAmigo(RepositorioAmigo repositorioAmigo)
+    public TelaAmigo(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo)
     {
         RepositorioAmigo = repositorioAmigo;
+        RepositorioEmprestimo = repositorioEmprestimo;
     }
     public string ApresentarMenu()
     {
@@ -51,18 +53,12 @@ public class TelaAmigo
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            RegistrarAmigo();
             return;
         }
 
         if (RepositorioAmigo.VerificarTelefoneNovoRegistro(novoAmigo))
         {
             Notificador.ExibirMensagem("\nJá existe um cadastro com esse número!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            RegistrarAmigo();
             return;
         }
 
@@ -157,9 +153,6 @@ public class TelaAmigo
             if (!idValido)
             {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                MostrarListaEmprestimos(true, false);
                 return;
             }
         } while (!idValido);
@@ -167,6 +160,8 @@ public class TelaAmigo
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
 
         Emprestimo[] emprestimosAmigoEscolhido = amigoEscolhido.ObterEmprestimos();
+
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosAmigoEscolhido);
 
         if (exibirCabecalho)
             ExibirCabecalho();
@@ -244,9 +239,6 @@ public class TelaAmigo
             if (!idValido)
             {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                EditarAmigo();
                 return;
             }
         } while (!idValido);
@@ -256,9 +248,6 @@ public class TelaAmigo
         if (amigoEscolhido == null)
         {
             Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarAmigo();
             return;
         }
 
@@ -269,8 +258,6 @@ public class TelaAmigo
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
             EditarAmigo();
             return;
         }
@@ -278,9 +265,6 @@ public class TelaAmigo
         if (RepositorioAmigo.VerificarTelefoneEditarRegistro(amigoEscolhido, dadosEditados))
         {
             Notificador.ExibirMensagem("\nJá existe um cadastro com esse número!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarAmigo();
             return;
         }
 
@@ -312,9 +296,6 @@ public class TelaAmigo
             if (!idValido)
             {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                ExcluirAmigo();
                 return;
             }
         } while (!idValido);
@@ -324,15 +305,24 @@ public class TelaAmigo
         if (amigoEscolhido == null)
         {
             Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            ExcluirAmigo();
             return;
         }
 
         if (RepositorioAmigo.VerificarEmprestimosAmigo(amigoEscolhido))
         {
             Notificador.ExibirMensagem($"\nO {amigoEscolhido.Nome} ainda possui empréstimos em aberto e não pode ser excluído.", ConsoleColor.Red);
+            return;
+        }
+
+        if (amigoEscolhido.Reserva != null)
+        {
+            Notificador.ExibirMensagem($"\nO {amigoEscolhido.Nome} ainda possui uma reservas ativa e não pode ser excluído.", ConsoleColor.Red);
+            return;
+        }
+
+        if (amigoEscolhido.Multas.Any(m => m != null && m.Status != "Quitada"))
+        {
+            Notificador.ExibirMensagem($"\nO {amigoEscolhido.Nome} ainda possui multas pendentes e não pode ser excluído.", ConsoleColor.Red);
             return;
         }
 

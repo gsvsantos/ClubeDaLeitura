@@ -9,6 +9,8 @@ public class RepositorioReserva
     public void RegistrarReserva(Reserva novaReserva)
     {
         novaReserva.GerarId();
+        novaReserva.Revista.Reservar();
+        novaReserva.Amigo.ReceberReserva(novaReserva);
         Reservas[IndiceListaReservas++] = novaReserva;
     }
     public Reserva[] PegarListaAtivas()
@@ -26,6 +28,20 @@ public class RepositorioReserva
 
         return reservasAtivas;
     }
+    public void ExcluirReserva(Reserva reservaEscolhida)
+    {
+        for (int i = 0; i < Reservas.Length; i++)
+        {
+            if (Reservas[i] == null)
+                continue;
+            else if (Reservas[i].Id == reservaEscolhida.Id)
+            {
+                reservaEscolhida.Cancelar();
+                Reservas[i] = null!;
+                break;
+            }
+        }
+    }
     public Reserva SelecionarPorId(int idReservaEscolhida)
     {
         foreach (Reserva r in Reservas)
@@ -38,5 +54,12 @@ public class RepositorioReserva
         }
 
         return null!;
+    }
+    public bool VerificarReservaAtiva(Reserva reservaEscolhida)
+    {
+        if (reservaEscolhida.Status != "Ativa")
+            return true;
+        else
+            return false;
     }
 }

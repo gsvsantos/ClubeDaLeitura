@@ -84,11 +84,21 @@ public class RepositorioAmigo
 
         foreach (Emprestimo e in amigoEscolhido.Emprestimos)
         {
-            if (e != null)
+            if (e != null && e.Situacao != "Concluído")
                 emprestimos++;
         }
 
         if (emprestimos > 0)
+            return true;
+        else
+            return false;
+    }
+    public bool VerificarReservaAtiva(Amigo amigoEscolhido)
+    {
+        if (amigoEscolhido.Reserva == null)
+            return false;
+
+        if (amigoEscolhido.Reserva.Status == "Ativa")
             return true;
         else
             return false;

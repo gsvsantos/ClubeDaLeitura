@@ -48,6 +48,7 @@ public class TelaMulta
         ColorirEscrita.ComQuebraLinha("Visualizando Multas...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
+
         if (comId)
         {
             string[] cabecalho = ["Id", "Amigo", "Revista Emprestada", "Valor da Multa", "Status"];
@@ -65,7 +66,22 @@ public class TelaMulta
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Multa[] multasPendentes = RepositorioMulta.SelecionarMultasPendentes();
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(RepositorioEmprestimo.Emprestimos);
+
+        foreach (Emprestimo e in RepositorioEmprestimo.Emprestimos)
+        {
+            if (e == null)
+                continue;
+
+            if (e.Situacao == "ATRASADO" && !e.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == e.Id))
+            {
+                Multa novaMulta = new Multa(e);
+                RepositorioMulta.RegistrarMulta(novaMulta);
+                e.Amigo.ReceberMulta(novaMulta);
+            }
+        }
+
+        Multa[] multasPendentes = RepositorioMulta.PegarListaMultasPendentes();
 
         int quantidadeMultas = 0;
 
@@ -99,7 +115,7 @@ public class TelaMulta
 
         if (quantidadeMultas == 0)
         {
-            Notificador.ExibirMensagem("\nNenhuma multa pendente!", ConsoleColor.Red);
+            Notificador.ExibirMensagem("\nNenhuma multa no histórico!", ConsoleColor.Red);
             RepositorioMulta.ListaVazia = true;
         }
     }
@@ -130,6 +146,21 @@ public class TelaMulta
         } while (!idAmigoValido);
 
         Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(RepositorioEmprestimo.Emprestimos);
+
+        foreach (Emprestimo e in amigoEscolhido.Emprestimos)
+        {
+            if (e == null)
+                continue;
+
+            if (e.Situacao == "ATRASADO" && !e.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == e.Id))
+            {
+                Multa novaMulta = new Multa(e);
+                RepositorioMulta.RegistrarMulta(novaMulta);
+                e.Amigo.ReceberMulta(novaMulta);
+            }
+        }
 
         Multa[] multasPendentesAmigo = amigoEscolhido.ObterMultas();
 
@@ -300,6 +331,6 @@ public class TelaMulta
 
         multaEscolhida.PagarMulta();
 
-        Notificador.ExibirMensagem("\nDevolução feita com sucesso!", ConsoleColor.Green);
+        Notificador.ExibirMensagem("\nMulta paga com sucesso!", ConsoleColor.Green);
     }
 }

@@ -34,8 +34,4 @@ public class Multa : Entidade
     {
         Status = "Quitada";
     }
-    public bool EstaPendente()
-    {
-        return Status == "Pendente";
-    }
 }

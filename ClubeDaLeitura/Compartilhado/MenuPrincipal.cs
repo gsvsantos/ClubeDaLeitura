@@ -13,6 +13,8 @@ public static class MenuPrincipal
         ColorirEscrita.ComQuebraLinha("2 >> Gerenciar Caixas");
         ColorirEscrita.ComQuebraLinha("3 >> Gerenciar Revistas");
         ColorirEscrita.ComQuebraLinha("4 >> Gerenciar Empréstimos");
+        ColorirEscrita.ComQuebraLinha("5 >> Gerenciar Multas");
+        ColorirEscrita.ComQuebraLinha("6 >> Gerenciar Reservas");
         ColorirEscrita.ComQuebraLinha("S >> Voltar");
 
         ColorirEscrita.SemQuebraLinha("\nOpção: ");

@@ -1,6 +1,4 @@
-﻿using ClubeDaLeitura.ModuloAmigo;
-
-namespace ClubeDaLeitura.ModuloMulta;
+﻿namespace ClubeDaLeitura.ModuloMulta;
 
 public class RepositorioMulta
 {
@@ -13,7 +11,7 @@ public class RepositorioMulta
         novaMulta.GerarId();
         Multas[IndiceListaMultas++] = novaMulta;
     }
-    public Multa[] SelecionarMultasPendentes()
+    public Multa[] PegarListaMultasPendentes()
     {
         Multa[] multasPendentes = new Multa[100];
 
@@ -28,38 +26,6 @@ public class RepositorioMulta
 
         return multasPendentes;
     }
-    public Multa[] SelecionarMultasAmigo(Amigo amigoEscolhido)
-    {
-        if (amigoEscolhido.Multas == null)
-            return null!;
-
-        Multa[] multasAmigoEscolhido = new Multa[100];
-
-        for (int i = 0; i < amigoEscolhido.Multas.Length; i++)
-        {
-            if (amigoEscolhido.Multas[i] == null)
-                continue;
-
-            else
-                multasAmigoEscolhido[i] = amigoEscolhido.Multas[i];
-        }
-
-        return multasAmigoEscolhido;
-    }
-    public void ExcluirMulta(Multa multaEscolhida)
-    {
-
-        for (int i = 0; i < Multas.Length; i++)
-        {
-            if (Multas[i] == null)
-                continue;
-            else if (Multas[i].Id == multaEscolhida.Id)
-            {
-                Multas[i] = null!;
-                break;
-            }
-        }
-    }
     public Multa SelecionarPorId(int idMultaEscolhida)
     {
         foreach (Multa m in Multas)
@@ -72,5 +38,15 @@ public class RepositorioMulta
         }
 
         return null!;
+    }
+    public bool VerificarMultaQuitada(Multa multaEscolhida)
+    {
+        if (multaEscolhida == null)
+            return false;
+
+        if (multaEscolhida.Status == "Quitada")
+            return true;
+        else
+            return false;
     }
 }

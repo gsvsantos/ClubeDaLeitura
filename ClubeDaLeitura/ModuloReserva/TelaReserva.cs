@@ -176,12 +176,19 @@ public class TelaReserva
             return;
         }
 
+        if (RepositorioEmprestimo.VerificarEmprestimoAtivo(reservaEscolhida.Amigo))
+        {
+            Notificador.ExibirMensagem("\nEsse amigo já tem um empréstimo em aberto!", ConsoleColor.Red);
+            return;
+        }
+
         if (RepositorioReserva.VerificarReservaAtiva(reservaEscolhida))
         {
             Notificador.ExibirMensagem($"\nA reserva escolhida não está 'Ativa'!", ConsoleColor.Red);
             return;
         }
 
+        reservaEscolhida.Concluir();
         RepositorioEmprestimo.RegistrarEmprestimo(new Emprestimo(reservaEscolhida.Amigo, reservaEscolhida.Revista));
 
         Notificador.ExibirMensagem("\nRevista reservada emprestada com sucesso!", ConsoleColor.Green);
@@ -360,9 +367,9 @@ public class TelaReserva
             return;
         }
 
-        reservaEscolhida.Cancelar();
+        RepositorioReserva.ExcluirReserva(reservaEscolhida);
 
-        Notificador.ExibirMensagem("\nRevista excluída com sucesso!", ConsoleColor.Green);
+        Notificador.ExibirMensagem("\nReserva cancelada com sucesso!", ConsoleColor.Green);
     }
     public Reserva ObterDadosReserva()
     {
@@ -399,6 +406,12 @@ public class TelaReserva
         if (RepositorioEmprestimo.VerificarEmprestimoAtivo(amigoEscolhido))
         {
             Notificador.ExibirMensagem("\nEsse amigo já tem um empréstimo em aberto!", ConsoleColor.Red);
+            return null!;
+        }
+
+        if (RepositorioAmigo.VerificarReservaAtiva(amigoEscolhido))
+        {
+            Notificador.ExibirMensagem("\nEsse amigo já tem uma reserva ativa!", ConsoleColor.Red);
             return null!;
         }
 
