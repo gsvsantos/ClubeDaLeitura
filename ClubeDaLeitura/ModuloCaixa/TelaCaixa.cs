@@ -275,7 +275,7 @@ public class TelaCaixa
 
             if (!numeroValido)
             {
-                Console.WriteLine("\nEsse não é um número válido!");
+                Notificador.ExibirMensagem("\nEsse não é um número válido!", ConsoleColor.Red);
                 return null!;
             }
         } while (!numeroValido);

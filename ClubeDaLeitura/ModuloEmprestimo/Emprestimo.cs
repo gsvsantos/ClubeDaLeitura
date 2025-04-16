@@ -12,12 +12,12 @@ public class Emprestimo : Entidade
     public string Situacao;
     private static int id = 0;
 
-    public Emprestimo(Amigo amigo, Revista revista, string situacao)
+    public Emprestimo(Amigo amigo, Revista revista)
     {
         Amigo = amigo;
         Revista = revista;
         Data = DateTime.Now;
-        Situacao = situacao;
+        Situacao = "Aberto";
     }
     public void GerarId()
     {
@@ -30,7 +30,7 @@ public class Emprestimo : Entidade
         if (Amigo == null)
             erros += "\nVocê precisa selecionar ao menos um Amigo.\n";
 
-        if (Revista == null) // Acrescentar verificação da disponibilidade da revista.
+        if (Revista == null)
             erros += "Você precisa selecionar ao menos uma Revista.\n";
 
         if (string.IsNullOrEmpty(Situacao))

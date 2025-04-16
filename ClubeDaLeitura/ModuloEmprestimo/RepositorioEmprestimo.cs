@@ -12,7 +12,7 @@ public class RepositorioEmprestimo
     {
         novoEmprestimo.GerarId();
         novoEmprestimo.Revista.Emprestar();
-        novoEmprestimo.Amigo.PegarEmprestimo(novoEmprestimo);
+        novoEmprestimo.Amigo.ReceberEmprestimo(novoEmprestimo);
         Emprestimos[IndiceListaEmprestimo++] = novoEmprestimo;
     }
     public Emprestimo[] PegarListaRegistrados()
@@ -30,7 +30,6 @@ public class RepositorioEmprestimo
         {
             if (Emprestimos[i] == null)
                 continue;
-
             else if (Emprestimos[i].Id == emprestimoEscolhido.Id)
             {
                 Emprestimos[i] = null!;
@@ -61,7 +60,7 @@ public class RepositorioEmprestimo
             if (e == null)
                 continue;
 
-            if (e.Situacao == "Aberto")
+            if (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")
                 return true;
         }
 

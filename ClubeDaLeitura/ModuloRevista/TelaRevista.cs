@@ -5,13 +5,13 @@ namespace ClubeDaLeitura.ModuloRevista;
 
 public class TelaRevista
 {
-    public RepositorioRevista RepositorioRevista;
     public RepositorioCaixa RepositorioCaixa;
+    public RepositorioRevista RepositorioRevista;
 
-    public TelaRevista(RepositorioRevista repositorioRevista, RepositorioCaixa repositorioCaixa)
+    public TelaRevista(RepositorioCaixa repositorioCaixa, RepositorioRevista repositorioRevista)
     {
-        RepositorioRevista = repositorioRevista;
         RepositorioCaixa = repositorioCaixa;
+        RepositorioRevista = repositorioRevista;
     }
     public string ApresentarMenu()
     {
@@ -169,6 +169,7 @@ public class TelaRevista
         } while (!idValido);
 
         Revista revistaEscolhida = RepositorioRevista.SelecionarPorId(idRevistaEscolhida);
+        Caixa caixaAntiga = revistaEscolhida.Caixa;
 
         if (revistaEscolhida == null)
         {
@@ -183,6 +184,8 @@ public class TelaRevista
 
         if (dadosEditados == null)
             return;
+
+        Caixa caixaNova = dadosEditados.Caixa;
 
         string erros = dadosEditados.Validar();
 
@@ -202,6 +205,12 @@ public class TelaRevista
             Console.ReadKey();
             EditarRevista();
             return;
+        }
+
+        if (caixaAntiga != caixaNova)
+        {
+            caixaAntiga.RemoverRevista(revistaEscolhida);
+            caixaNova.AdicionarRevista(revistaEscolhida);
         }
 
         RepositorioRevista.EditarRevista(revistaEscolhida, dadosEditados);
@@ -253,6 +262,11 @@ public class TelaRevista
         if (RepositorioRevista.VerificarRevistaEmprestada(revistaEscolhida))
         {
             Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} ainda está com um amigo!", ConsoleColor.Red);
+            return;
+        }
+        if (RepositorioRevista.VerificarRevistaReservada(revistaEscolhida))
+        {
+            Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} está reservada!", ConsoleColor.Red);
             return;
         }
 
@@ -347,6 +361,12 @@ public class TelaRevista
         } while (!idValido);
 
         Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
+
+        if (caixaEscolhida == null)
+        {
+            Notificador.ExibirMensagem("\nO ID selecionado não está registrado!", ConsoleColor.Red);
+            return null!;
+        }
 
         ColorirEscrita.SemQuebraLinha("\nDigite o Título da Revista: ");
         string titulo = Console.ReadLine()!;

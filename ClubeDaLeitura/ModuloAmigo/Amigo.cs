@@ -1,5 +1,7 @@
 ﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloEmprestimo;
+using ClubeDaLeitura.ModuloMulta;
+using ClubeDaLeitura.ModuloReserva;
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
@@ -9,6 +11,8 @@ public class Amigo : Entidade
     public string Responsavel;
     public string Telefone;
     public Emprestimo[] Emprestimos = new Emprestimo[100];
+    public Multa[] Multas = new Multa[100];
+    public Reserva? Reserva;
     private static int id = 0;
 
     public Amigo(string nome, string responsavel, string telefone)
@@ -41,7 +45,7 @@ public class Amigo : Entidade
         else
         {
             if (Responsavel.Length < 3 || !Responsavel.All(c => char.IsLetter(c) || c == ' '))
-                erros += "O campo 'Responsável' precisa conter ao menos 3 caracteres.\n";
+                erros += "O campo 'Responsável' precisa conter ao menos 3 caracteres.";
 
             if (Responsavel.Length > 100)
                 erros += "O campo 'Responsável' não pode ter mais que 100 caracteres.\n";
@@ -74,7 +78,7 @@ public class Amigo : Entidade
 
         return erros;
     }
-    public void PegarEmprestimo(Emprestimo novoEmprestimo)
+    public void ReceberEmprestimo(Emprestimo novoEmprestimo)
     {
         for (int i = 0; i < Emprestimos.Length; i++)
         {
@@ -88,5 +92,27 @@ public class Amigo : Entidade
     public Emprestimo[] ObterEmprestimos()
     {
         return Emprestimos;
+    }
+    public void ReceberMulta(Multa novaMulta)
+    {
+        for (int i = 0; i < Multas.Length; i++)
+        {
+            if (Multas[i] == null)
+            {
+                Multas[i] = novaMulta;
+                return;
+            }
+        }
+    }
+    public Multa[] ObterMultas()
+    {
+        return Multas;
+    }
+    public void ReceberReserva(Reserva novaReserva)
+    {
+        if (Reserva == null)
+            Reserva = novaReserva;
+        else
+            return;
     }
 }
