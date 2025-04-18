@@ -3,13 +3,12 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloCaixa;
 
-public class Caixa : Entidade
+public class Caixa : EntidadeBase
 {
     public string Etiqueta;
     public int Cor;
     public int DiasEmprestimo;
     public Revista[] Revistas = new Revista[40];
-    private static int id = 0;
 
     public Caixa(string etiqueta, int cor, int diasEmprestimo)
     {
@@ -17,11 +16,7 @@ public class Caixa : Entidade
         Cor = cor;
         DiasEmprestimo = diasEmprestimo;
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -77,5 +72,13 @@ public class Caixa : Entidade
                 return;
             }
         }
+    }
+    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    {
+        Caixa caixaEditada = (Caixa)dadosEditados;
+
+        Etiqueta = caixaEditada.Etiqueta;
+        Cor = caixaEditada.Cor;
+        DiasEmprestimo = caixaEditada.DiasEmprestimo;
     }
 }

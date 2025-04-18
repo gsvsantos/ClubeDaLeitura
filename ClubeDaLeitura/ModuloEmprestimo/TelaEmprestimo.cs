@@ -2,24 +2,25 @@
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloRevista;
+using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class TelaEmprestimo
+public class TelaEmprestimo : TelaBase
 {
     public RepositorioAmigo RepositorioAmigo;
     public RepositorioEmprestimo RepositorioEmprestimo;
     public RepositorioRevista RepositorioRevista;
     public RepositorioMulta RepositorioMulta;
 
-    public TelaEmprestimo(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta, RepositorioRevista repositorioRevista)
+    public TelaEmprestimo(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta, RepositorioRevista repositorioRevista) : base("Emprestimo", repositorioEmprestimo)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;
         RepositorioMulta = repositorioMulta;
         RepositorioRevista = repositorioRevista;
     }
-    public string ApresentarMenu()
+    public override string ApresentarMenu()
     {
         ExibirCabecalho();
 
@@ -38,38 +39,7 @@ public class TelaEmprestimo
         else
             return opcao.Trim().ToUpper();
     }
-    public void ExibirCabecalho()
-    {
-        Console.Clear();
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-        ColorirEscrita.ComQuebraLinha("Gestão de Empréstimos");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-    }
-    public void RegistrarEmprestimo()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Registrando Empréstimo...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-
-        Emprestimo novoEmprestimo = ObterDadosEmprestimo();
-
-        if (novoEmprestimo == null)
-            return;
-
-        string erros = novoEmprestimo.Validar();
-
-        if (erros.Length > 0)
-        {
-            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            return;
-        }
-
-        RepositorioEmprestimo.RegistrarEmprestimo(novoEmprestimo);
-
-        Notificador.ExibirMensagem("\nEmpréstimo registrado com sucesso!", ConsoleColor.Green);
-    }
-    public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
+    public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
@@ -94,7 +64,14 @@ public class TelaEmprestimo
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Emprestimo[] emprestimosRegistrados = RepositorioEmprestimo.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioEmprestimo.PegarListaRegistrados();
+        Emprestimo[] emprestimosRegistrados = new Emprestimo[registros.Length];
+
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            emprestimosRegistrados[i] = (Emprestimo)registros[i];
+        }
 
         RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosRegistrados);
 
@@ -134,7 +111,7 @@ public class TelaEmprestimo
             RepositorioEmprestimo.ListaVazia = true;
         }
     }
-    public void EditarEmprestimo()
+    public override void EditarRegistro()
     {
         ExibirCabecalho();
 
@@ -160,23 +137,23 @@ public class TelaEmprestimo
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
-                EditarEmprestimo();
+                EditarRegistro();
                 return;
             }
         } while (!idValido);
 
-        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarPorId(idEmprestimoEscolhido);
+        Emprestimo emprestimoEscolhido = (Emprestimo)RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
 
         if (emprestimoEscolhido == null)
         {
             Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            EditarEmprestimo();
+            EditarRegistro();
             return;
         }
 
-        Emprestimo dadosEditados = ObterDadosEmprestimo();
+        Emprestimo dadosEditados = (Emprestimo)ObterDados();
 
         if (dadosEditados == null)
             return;
@@ -188,7 +165,7 @@ public class TelaEmprestimo
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            EditarEmprestimo();
+            EditarRegistro();
             return;
         }
 
@@ -197,15 +174,15 @@ public class TelaEmprestimo
             Notificador.ExibirMensagem("\nEsse empréstimo já foi concluído.", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            EditarEmprestimo();
+            EditarRegistro();
             return;
         }
 
-        RepositorioEmprestimo.EditarEmprestimo(emprestimoEscolhido, dadosEditados);
+        RepositorioEmprestimo.EditarRegistro(emprestimoEscolhido, dadosEditados);
 
         Notificador.ExibirMensagem("\nEmpréstimo editado com sucesso!", ConsoleColor.Green);
     }
-    public void ExcluirEmprestimo()
+    public override void ExcluirRegistro()
     {
         ExibirCabecalho();
 
@@ -231,19 +208,19 @@ public class TelaEmprestimo
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
-                EditarEmprestimo();
+                ExcluirRegistro();
                 return;
             }
         } while (!idValido);
 
-        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarPorId(idEmprestimoEscolhido);
+        Emprestimo emprestimoEscolhido = (Emprestimo)RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
 
         if (emprestimoEscolhido == null)
         {
             Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            ExcluirEmprestimo();
+            ExcluirRegistro();
             return;
         }
 
@@ -259,7 +236,7 @@ public class TelaEmprestimo
             return;
         }
 
-        RepositorioEmprestimo.ExcluirEmprestimo(emprestimoEscolhido);
+        RepositorioEmprestimo.ExcluirRegistro(emprestimoEscolhido);
 
         Notificador.ExibirMensagem("\nEmpréstimo excluído com sucesso!", ConsoleColor.Green);
     }
@@ -274,7 +251,7 @@ public class TelaEmprestimo
         if (comId)
         {
             string[] cabecalho = ["Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
-            int[] espacamentos = [6, 25, 14, 18, 20, 20];
+            int[] espacamentos = [3, 24, 14, 18, 20, 18];
             ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
 
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
@@ -282,13 +259,19 @@ public class TelaEmprestimo
         else
         {
             string[] cabecalho = ["Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
-            int[] espacamentos = [25, 14, 18, 20, 20];
+            int[] espacamentos = [24, 14, 18, 20, 18];
             ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
 
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Revista[] revistasRegistradas = RepositorioRevista.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioRevista.PegarListaRegistrados();
+        Revista[] revistasRegistradas = new Revista[registros.Length];
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            revistasRegistradas[i] = (Revista)registros[i];
+        }
 
         int quantidadeRevistas = 0;
 
@@ -305,7 +288,7 @@ public class TelaEmprestimo
             if (comId)
             {
                 string[] cabecalho = [r.Id.ToString(), r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
-                int[] espacamentos = [6, 25, 14, 18, 20, 20];
+                int[] espacamentos = [3, 24, 14, 18, 20, 18];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
 
                 ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
@@ -313,7 +296,7 @@ public class TelaEmprestimo
             else
             {
                 string[] cabecalho = [r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
-                int[] espacamentos = [25, 14, 18, 20, 20];
+                int[] espacamentos = [24, 14, 18, 20, 18];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
 
                 ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
@@ -351,7 +334,13 @@ public class TelaEmprestimo
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Amigo[] amigosRegistrados = RepositorioAmigo.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
+        Amigo[] amigosRegistrados = new Amigo[registros.Length];
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            amigosRegistrados[i] = (Amigo)registros[i];
+        }
 
         int quantidadeAmigos = 0;
 
@@ -420,7 +409,7 @@ public class TelaEmprestimo
             }
         } while (!idValido);
 
-        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarPorId(idEmprestimoEscolhido);
+        Emprestimo emprestimoEscolhido = (Emprestimo)RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
 
         if (emprestimoEscolhido == null)
         {
@@ -440,7 +429,7 @@ public class TelaEmprestimo
         if (emprestimoEscolhido.Situacao == "ATRASADO" && !emprestimoEscolhido.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == emprestimoEscolhido.Id))
         {
             Multa novaMulta = new Multa(emprestimoEscolhido);
-            RepositorioMulta.RegistrarMulta(novaMulta);
+            RepositorioMulta.CadastrarRegistro(novaMulta);
             emprestimoEscolhido.Amigo.ReceberMulta(novaMulta);
         }
 
@@ -448,7 +437,7 @@ public class TelaEmprestimo
 
         Notificador.ExibirMensagem("\nDevolução feita com sucesso!", ConsoleColor.Green);
     }
-    public Emprestimo ObterDadosEmprestimo()
+    public override EntidadeBase ObterDados()
     {
         MostrarListaAmigos(true, true);
 
@@ -468,7 +457,7 @@ public class TelaEmprestimo
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idAmigoValido);
 
-        Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         MostrarListaRevistas(true, true);
 
@@ -488,7 +477,7 @@ public class TelaEmprestimo
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idRevistaValido);
 
-        Revista revistaEscolhida = RepositorioRevista.SelecionarPorId(idRevistaEscolhida);
+        Revista revistaEscolhida = (Revista)RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
 
         Emprestimo emprestimo = new Emprestimo(amigoEscolhido, revistaEscolhida);
 

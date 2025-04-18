@@ -4,13 +4,12 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class Reserva : Entidade
+public class Reserva : EntidadeBase
 {
     public Amigo Amigo;
     public Revista Revista;
     public DateTime DataReserva;
     public string Status;
-    private static int id = 0;
 
     public Reserva(Amigo amigo, Revista revista)
     {
@@ -19,11 +18,7 @@ public class Reserva : Entidade
         DataReserva = DateTime.Now;
         Status = "Ativa";
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -62,4 +57,5 @@ public class Reserva : Entidade
     {
         Revista.StatusEmprestimo = "Disponível";
     }
+    public override void AtualizarRegistro(EntidadeBase dadosEditados) { }
 }

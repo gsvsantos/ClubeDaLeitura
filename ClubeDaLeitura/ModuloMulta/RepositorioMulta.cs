@@ -1,43 +1,25 @@
-﻿namespace ClubeDaLeitura.ModuloMulta;
+﻿using ClubeDaLeitura.Compartilhado;
 
-public class RepositorioMulta
+namespace ClubeDaLeitura.ModuloMulta;
+
+public class RepositorioMulta : RepositorioBase
 {
-    public Multa[] Multas = new Multa[100];
-    public int IndiceListaMultas = 0;
-    public bool ListaVazia = false;
-
-    public void RegistrarMulta(Multa novaMulta)
-    {
-        novaMulta.GerarId();
-        Multas[IndiceListaMultas++] = novaMulta;
-    }
     public Multa[] PegarListaMultasPendentes()
     {
-        Multa[] multasPendentes = new Multa[100];
+        Multa[] multasPendentes = new Multa[Registros.Length];
 
-        for (int i = 0; i < Multas.Length; i++)
+        for (int i = 0; i < Registros.Length; i++)
         {
-            if (Multas[i] == null)
+            if (Registros[i] == null)
                 continue;
 
-            if (Multas[i].Status == "Pendente")
-                multasPendentes[i] = Multas[i];
+            Multa multa = (Multa)Registros[i];
+
+            if (multa.Status == "Pendente")
+                multasPendentes[i] = multa;
         }
 
         return multasPendentes;
-    }
-    public Multa SelecionarPorId(int idMultaEscolhida)
-    {
-        foreach (Multa m in Multas)
-        {
-            if (m == null)
-                continue;
-
-            if (m.Id == idMultaEscolhida)
-                return m;
-        }
-
-        return null!;
     }
     public bool VerificarMultaQuitada(Multa multaEscolhida)
     {

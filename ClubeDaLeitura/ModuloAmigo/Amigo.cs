@@ -5,7 +5,7 @@ using ClubeDaLeitura.ModuloReserva;
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
-public class Amigo : Entidade
+public class Amigo : EntidadeBase
 {
     public string Nome;
     public string Responsavel;
@@ -13,7 +13,6 @@ public class Amigo : Entidade
     public Emprestimo[] Emprestimos = new Emprestimo[100];
     public Multa[] Multas = new Multa[100];
     public Reserva? Reserva;
-    private static int id = 0;
 
     public Amigo(string nome, string responsavel, string telefone)
     {
@@ -21,11 +20,7 @@ public class Amigo : Entidade
         Responsavel = responsavel;
         Telefone = telefone;
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -114,5 +109,13 @@ public class Amigo : Entidade
             Reserva = novaReserva;
         else
             return;
+    }
+    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    {
+        Amigo amigoEditado = (Amigo)dadosEditados;
+
+        Nome = amigoEditado.Nome;
+        Responsavel = amigoEditado.Responsavel;
+        Telefone = amigoEditado.Telefone;
     }
 }

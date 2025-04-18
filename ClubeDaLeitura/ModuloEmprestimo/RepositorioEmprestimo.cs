@@ -1,54 +1,17 @@
-﻿using ClubeDaLeitura.ModuloAmigo;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloAmigo;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class RepositorioEmprestimo
+public class RepositorioEmprestimo : RepositorioBase
 {
-    public Emprestimo[] Emprestimos = new Emprestimo[100];
-    public int IndiceListaEmprestimo = 0;
-    public bool ListaVazia = false;
-
-    public void RegistrarEmprestimo(Emprestimo novoEmprestimo)
+    public override void CadastrarRegistro(EntidadeBase novoRegistro)
     {
-        novoEmprestimo.GerarId();
+        Emprestimo novoEmprestimo = (Emprestimo)novoRegistro;
+
         novoEmprestimo.Revista.Emprestar();
         novoEmprestimo.Amigo.ReceberEmprestimo(novoEmprestimo);
-        Emprestimos[IndiceListaEmprestimo++] = novoEmprestimo;
-    }
-    public Emprestimo[] PegarListaRegistrados()
-    {
-        return Emprestimos;
-    }
-    public void EditarEmprestimo(Emprestimo emprestimoEscolhido, Emprestimo dadosEditados)
-    {
-        emprestimoEscolhido.Amigo = dadosEditados.Amigo;
-        emprestimoEscolhido.Revista = dadosEditados.Revista;
-    }
-    public void ExcluirEmprestimo(Emprestimo emprestimoEscolhido)
-    {
-        for (int i = 0; i < Emprestimos.Length; i++)
-        {
-            if (Emprestimos[i] == null)
-                continue;
-            else if (Emprestimos[i].Id == emprestimoEscolhido.Id)
-            {
-                Emprestimos[i] = null!;
-                break;
-            }
-        }
-    }
-    public Emprestimo SelecionarPorId(int idEmprestimoEscolhido)
-    {
-        foreach (Emprestimo e in Emprestimos)
-        {
-            if (e == null)
-                continue;
-
-            if (e.Id == idEmprestimoEscolhido)
-                return e;
-        }
-
-        return null!;
+        base.CadastrarRegistro(novoEmprestimo);
     }
     public bool VerificarEmprestimoAtivo(Amigo amigoEscolhido)
     {
@@ -82,12 +45,14 @@ public class RepositorioEmprestimo
     }
     public bool VerificarDevolucao(Emprestimo emprestimoEscolhido)
     {
-        for (int i = 0; i < Emprestimos.Length; i++)
+        for (int i = 0; i < Registros.Length; i++)
         {
-            if (Emprestimos[i] == null)
+            if (Registros[i] == null)
                 continue;
 
-            if (emprestimoEscolhido.Id == Emprestimos[i].Id && emprestimoEscolhido.Situacao == "Concluído")
+            Emprestimo emprestimo = (Emprestimo)Registros[i];
+
+            if (emprestimoEscolhido.Id == emprestimo.Id && emprestimoEscolhido.Situacao == "Concluído")
                 return true;
         }
 

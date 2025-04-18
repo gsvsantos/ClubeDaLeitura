@@ -2,24 +2,25 @@
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloRevista;
+using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class TelaReserva
+public class TelaReserva : TelaBase
 {
     public RepositorioAmigo RepositorioAmigo;
     public RepositorioEmprestimo RepositorioEmprestimo;
     public RepositorioReserva RepositorioReserva;
     public RepositorioRevista RepositorioRevista;
 
-    public TelaReserva(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioReserva repositorioReserva, RepositorioRevista repositorioRevista)
+    public TelaReserva(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioReserva repositorioReserva, RepositorioRevista repositorioRevista) : base("Reserva", repositorioReserva)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;
         RepositorioReserva = repositorioReserva;
         RepositorioRevista = repositorioRevista;
     }
-    public string ApresentarMenu()
+    public override string ApresentarMenu()
     {
         ExibirCabecalho();
 
@@ -37,38 +38,7 @@ public class TelaReserva
         else
             return opcao.Trim().ToUpper();
     }
-    public void ExibirCabecalho()
-    {
-        Console.Clear();
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-        ColorirEscrita.ComQuebraLinha("Gestão de Reservas");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-    }
-    public void RegistrarReserva()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Registrando Reserva...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-
-        Reserva novoReserva = ObterDadosReserva();
-
-        if (novoReserva == null)
-            return;
-
-        string erros = novoReserva.Validar();
-
-        if (erros.Length > 0)
-        {
-            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            return;
-        }
-
-        RepositorioReserva.RegistrarReserva(novoReserva);
-
-        Notificador.ExibirMensagem("\nReserva registrada com sucesso!", ConsoleColor.Green);
-    }
-    public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
+    public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
@@ -93,7 +63,13 @@ public class TelaReserva
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Reserva[] reservasAtivas = RepositorioReserva.PegarListaAtivas();
+        EntidadeBase[] registros = RepositorioReserva.PegarListaRegistrados();
+        Reserva[] reservasAtivas = new Reserva[registros.Length];
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            reservasAtivas[i] = (Reserva)registros[i];
+        }
 
         int quantidadeReservas = 0;
 
@@ -157,19 +133,19 @@ public class TelaReserva
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para tentar novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
-                CancelarReserva();
+                EmprestarRevistaReservada();
                 return;
             }
         } while (!idValido);
 
-        Reserva reservaEscolhida = RepositorioReserva.SelecionarPorId(idRevistaEscolhida);
+        Reserva reservaEscolhida = (Reserva)RepositorioReserva.SelecionarRegistroPorId(idRevistaEscolhida);
 
         if (reservaEscolhida == null)
         {
             Notificador.ExibirMensagem("\nReserva não encontrada!", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para tentar novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            CancelarReserva();
+            EmprestarRevistaReservada();
             return;
         }
 
@@ -186,7 +162,7 @@ public class TelaReserva
         }
 
         reservaEscolhida.Concluir();
-        RepositorioEmprestimo.RegistrarEmprestimo(new Emprestimo(reservaEscolhida.Amigo, reservaEscolhida.Revista));
+        RepositorioEmprestimo.CadastrarRegistro(new Emprestimo(reservaEscolhida.Amigo, reservaEscolhida.Revista));
 
         Notificador.ExibirMensagem("\nRevista reservada emprestada com sucesso!", ConsoleColor.Green);
     }
@@ -201,7 +177,7 @@ public class TelaReserva
         if (comId)
         {
             string[] cabecalho = ["Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
-            int[] espacamentos = [6, 25, 14, 18, 20, 20];
+            int[] espacamentos = [3, 24, 14, 18, 20, 18];
             ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
 
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
@@ -209,13 +185,19 @@ public class TelaReserva
         else
         {
             string[] cabecalho = ["Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
-            int[] espacamentos = [25, 14, 18, 20, 20];
+            int[] espacamentos = [24, 14, 18, 20, 18];
             ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
 
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Revista[] revistasRegistradas = RepositorioRevista.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioRevista.PegarListaRegistrados();
+        Revista[] revistasRegistradas = new Revista[registros.Length];
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            revistasRegistradas[i] = (Revista)registros[i];
+        }
 
         int quantidadeRevistas = 0;
 
@@ -232,7 +214,7 @@ public class TelaReserva
             if (comId)
             {
                 string[] cabecalho = [r.Id.ToString(), r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
-                int[] espacamentos = [6, 25, 14, 18, 20, 20];
+                int[] espacamentos = [3, 24, 14, 18, 20, 18];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
 
                 ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
@@ -240,7 +222,7 @@ public class TelaReserva
             else
             {
                 string[] cabecalho = [r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
-                int[] espacamentos = [25, 14, 18, 20, 20];
+                int[] espacamentos = [24, 14, 18, 20, 18];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
 
                 ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
@@ -278,7 +260,13 @@ public class TelaReserva
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Amigo[] amigosRegistrados = RepositorioAmigo.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
+        Amigo[] amigosRegistrados = new Amigo[registros.Length];
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            amigosRegistrados[i] = (Amigo)registros[i];
+        }
 
         int quantidadeAmigos = 0;
 
@@ -347,7 +335,7 @@ public class TelaReserva
             }
         } while (!idValido);
 
-        Reserva reservaEscolhida = RepositorioReserva.SelecionarPorId(idRevistaEscolhida);
+        Reserva reservaEscolhida = (Reserva)RepositorioReserva.SelecionarRegistroPorId(idRevistaEscolhida);
 
         if (reservaEscolhida == null)
         {
@@ -364,11 +352,11 @@ public class TelaReserva
             return;
         }
 
-        RepositorioReserva.ExcluirReserva(reservaEscolhida);
+        RepositorioReserva.ExcluirRegistro(reservaEscolhida);
 
         Notificador.ExibirMensagem("\nReserva cancelada com sucesso!", ConsoleColor.Green);
     }
-    public Reserva ObterDadosReserva()
+    public override EntidadeBase ObterDados()
     {
         MostrarListaAmigos(true, true);
 
@@ -388,7 +376,7 @@ public class TelaReserva
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idAmigoValido);
 
-        Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         MostrarListaRevistas(true, true);
 
@@ -408,7 +396,7 @@ public class TelaReserva
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idRevistaValido);
 
-        Revista revistaEscolhida = RepositorioRevista.SelecionarPorId(idRevistaEscolhida);
+        Revista revistaEscolhida = (Revista)RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
 
         Reserva reserva = new Reserva(amigoEscolhido, revistaEscolhida);
 

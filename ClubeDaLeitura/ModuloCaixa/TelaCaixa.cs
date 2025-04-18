@@ -1,48 +1,24 @@
 ﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloCaixa;
 
-public class TelaCaixa
+public class TelaCaixa : TelaBase
 {
     public RepositorioCaixa RepositorioCaixa;
 
-    public TelaCaixa(RepositorioCaixa repositorioCaixa)
+    public TelaCaixa(RepositorioCaixa repositorioCaixa) : base("Caixa", repositorioCaixa)
     {
         RepositorioCaixa = repositorioCaixa;
     }
-    public string ApresentarMenu()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("1 >> Registrar Caixa");
-        ColorirEscrita.ComQuebraLinha("2 >> Visualizar Lista de Caixas");
-        ColorirEscrita.ComQuebraLinha("3 >> Editar Caixa");
-        ColorirEscrita.ComQuebraLinha("4 >> Excluir Caixa");
-        ColorirEscrita.ComQuebraLinha("S >> Voltar");
-
-        ColorirEscrita.SemQuebraLinha("\nOpção: ");
-        string opcao = Console.ReadLine()!;
-
-        if (opcao == null)
-            return null!;
-        else
-            return opcao.Trim().ToUpper();
-    }
-    public void ExibirCabecalho()
-    {
-        Console.Clear();
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-        ColorirEscrita.ComQuebraLinha("Gestão de Caixas");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-    }
-    public void RegistrarCaixa()
+    public override void CadastrarRegistro()
     {
         ExibirCabecalho();
 
         ColorirEscrita.ComQuebraLinha("Registrando Caixa...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
-        Caixa novaCaixa = ObterDadosCaixa();
+        Caixa novaCaixa = (Caixa)ObterDados();
 
         string erros = novaCaixa.Validar();
 
@@ -51,7 +27,7 @@ public class TelaCaixa
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            RegistrarCaixa();
+            CadastrarRegistro();
             return;
         }
 
@@ -60,15 +36,15 @@ public class TelaCaixa
             Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            RegistrarCaixa();
+            CadastrarRegistro();
             return;
         }
 
-        RepositorioCaixa.RegistrarCaixa(novaCaixa);
+        RepositorioCaixa.CadastrarRegistro(novaCaixa);
 
         Notificador.ExibirMensagem("\nCaixa registrada com sucesso!", ConsoleColor.Green);
     }
-    public void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
+    public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
@@ -93,9 +69,15 @@ public class TelaCaixa
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Caixa[] caixasRegistradas = RepositorioCaixa.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioCaixa.PegarListaRegistrados();
+        Caixa[] caixasRegistradas = new Caixa[registros.Length];
 
         int quantidadeCaixas = 0;
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            caixasRegistradas[i] = (Caixa)registros[i];
+        }
 
         for (int i = 0; i < caixasRegistradas.Length; i++)
         {
@@ -131,7 +113,7 @@ public class TelaCaixa
             RepositorioCaixa.ListaVazia = true;
         }
     }
-    public void EditarCaixa()
+    public override void EditarRegistro()
     {
         ExibirCabecalho();
 
@@ -157,23 +139,23 @@ public class TelaCaixa
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
-                EditarCaixa();
+                EditarRegistro();
                 return;
             }
         } while (!idValido);
 
-        Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
+        Caixa caixaEscolhida = (Caixa)RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
 
         if (caixaEscolhida == null)
         {
             Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            EditarCaixa();
+            EditarRegistro();
             return;
         }
 
-        Caixa dadosEditados = ObterDadosCaixa();
+        Caixa dadosEditados = (Caixa)ObterDados();
 
         string erros = dadosEditados.Validar();
 
@@ -182,7 +164,7 @@ public class TelaCaixa
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            EditarCaixa();
+            EditarRegistro();
             return;
         }
 
@@ -191,14 +173,14 @@ public class TelaCaixa
             Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            EditarCaixa();
+            EditarRegistro();
         }
 
-        RepositorioCaixa.EditarCaixa(caixaEscolhida, dadosEditados);
+        RepositorioCaixa.EditarRegistro(caixaEscolhida, dadosEditados);
 
         Notificador.ExibirMensagem("\nCaixa editada com sucesso!", ConsoleColor.Green);
     }
-    public void ExcluirCaixa()
+    public override void ExcluirRegistro()
     {
         ExibirCabecalho();
 
@@ -224,19 +206,19 @@ public class TelaCaixa
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
                 ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
                 Console.ReadKey();
-                ExcluirCaixa();
+                ExcluirRegistro();
                 return;
             }
         } while (!idValido);
 
-        Caixa caixaEscolhida = RepositorioCaixa.SelecionarPorId(idCaixaEscolhida);
+        Caixa caixaEscolhida = (Caixa)RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
 
         if (caixaEscolhida == null)
         {
             Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
             Console.ReadKey();
-            ExcluirCaixa();
+            ExcluirRegistro();
             return;
         }
 
@@ -246,11 +228,11 @@ public class TelaCaixa
             return;
         }
 
-        RepositorioCaixa.ExcluirCaixa(caixaEscolhida);
+        RepositorioCaixa.ExcluirRegistro(caixaEscolhida);
 
         Notificador.ExibirMensagem("\nCaixa excluída com sucesso!", ConsoleColor.Green);
     }
-    public Caixa ObterDadosCaixa()
+    public override EntidadeBase ObterDados()
     {
         ColorirEscrita.SemQuebraLinha("Digite o Nome da Etiqueta da Caixa: ");
         string etiqueta = Console.ReadLine()!;

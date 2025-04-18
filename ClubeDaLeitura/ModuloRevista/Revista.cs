@@ -4,14 +4,13 @@ using ClubeDaLeitura.ModuloCaixa;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
-public class Revista : Entidade
+public class Revista : EntidadeBase
 {
     public string Titulo;
     public int NumeroEdicao;
     public string AnoPublicacao;
     public string StatusEmprestimo;
     public Caixa Caixa;
-    private static int id = 0;
 
     public Revista(string titulo, int numeroEdicao, string anoPublicacao, Caixa caixa)
     {
@@ -21,11 +20,7 @@ public class Revista : Entidade
         StatusEmprestimo = "Disponível";
         Caixa = caixa;
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -83,5 +78,14 @@ public class Revista : Entidade
     public void Reservar()
     {
         StatusEmprestimo = "Reservada";
+    }
+    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    {
+        Revista revistaEditada = (Revista)dadosEditados;
+
+        Titulo = revistaEditada.Titulo;
+        NumeroEdicao = revistaEditada.NumeroEdicao;
+        AnoPublicacao = revistaEditada.AnoPublicacao;
+        Caixa = revistaEditada.Caixa;
     }
 }

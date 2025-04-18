@@ -1,22 +1,23 @@
 ﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloEmprestimo;
+using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloMulta;
 
-public class TelaMulta
+public class TelaMulta : TelaBase
 {
     public RepositorioAmigo RepositorioAmigo;
     public RepositorioEmprestimo RepositorioEmprestimo;
     public RepositorioMulta RepositorioMulta;
 
-    public TelaMulta(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta)
+    public TelaMulta(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta) : base("Multa", repositorioMulta)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;
         RepositorioMulta = repositorioMulta;
     }
-    public string ApresentarMenu()
+    public override string ApresentarMenu()
     {
         ExibirCabecalho();
 
@@ -33,14 +34,7 @@ public class TelaMulta
         else
             return opcao.Trim().ToUpper();
     }
-    public void ExibirCabecalho()
-    {
-        Console.Clear();
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-        ColorirEscrita.ComQuebraLinha("Gestão de Multas");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-    }
-    public void MostrarMultasPendentes(bool exibirCabecalho, bool comId)
+    public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
             ExibirCabecalho();
@@ -66,9 +60,17 @@ public class TelaMulta
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        RepositorioEmprestimo.VerificarEmprestimosAtrasados(RepositorioEmprestimo.Emprestimos);
+        EntidadeBase[] registrosEmprestimos = RepositorioEmprestimo.PegarListaRegistrados();
+        Emprestimo[] emprestimos = new Emprestimo[registrosEmprestimos.Length];
 
-        foreach (Emprestimo e in RepositorioEmprestimo.Emprestimos)
+        for (int i = 0; i < registrosEmprestimos.Length; i++)
+        {
+            emprestimos[i] = (Emprestimo)registrosEmprestimos[i];
+        }
+
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimos);
+
+        foreach (Emprestimo e in emprestimos)
         {
             if (e == null)
                 continue;
@@ -76,12 +78,18 @@ public class TelaMulta
             if (e.Situacao == "ATRASADO" && !e.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == e.Id))
             {
                 Multa novaMulta = new Multa(e);
-                RepositorioMulta.RegistrarMulta(novaMulta);
+                RepositorioMulta.CadastrarRegistro(novaMulta);
                 e.Amigo.ReceberMulta(novaMulta);
             }
         }
 
-        Multa[] multasPendentes = RepositorioMulta.PegarListaMultasPendentes();
+        EntidadeBase[] registrosMultas = RepositorioMulta.PegarListaRegistrados();
+        Multa[] multasPendentes = new Multa[registrosMultas.Length];
+
+        for (int i = 0; i < registrosMultas.Length; i++)
+        {
+            multasPendentes[i] = (Multa)registrosMultas[i];
+        }
 
         int quantidadeMultas = 0;
 
@@ -141,13 +149,28 @@ public class TelaMulta
             if (!idAmigoValido)
             {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+                Console.ReadKey();
+                MostrarMultasAmigo(true, false);
                 return;
             }
         } while (!idAmigoValido);
 
-        Amigo amigoEscolhido = RepositorioAmigo.SelecionarPorId(idAmigoEscolhido);
+        EntidadeBase[] registros = RepositorioEmprestimo.PegarListaRegistrados();
+        Emprestimo[] emprestimosRegistrados = new Emprestimo[registros.Length];
 
-        RepositorioEmprestimo.VerificarEmprestimosAtrasados(RepositorioEmprestimo.Emprestimos);
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosRegistrados);
+
+        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
+
+        if (amigoEscolhido == null)
+        {
+            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
+            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+            Console.ReadKey();
+            MostrarMultasAmigo(true, false);
+            return;
+        }
 
         foreach (Emprestimo e in amigoEscolhido.Emprestimos)
         {
@@ -157,7 +180,7 @@ public class TelaMulta
             if (e.Situacao == "ATRASADO" && !e.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == e.Id))
             {
                 Multa novaMulta = new Multa(e);
-                RepositorioMulta.RegistrarMulta(novaMulta);
+                RepositorioMulta.CadastrarRegistro(novaMulta);
                 e.Amigo.ReceberMulta(novaMulta);
             }
         }
@@ -241,7 +264,13 @@ public class TelaMulta
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        Amigo[] amigosRegistrados = RepositorioAmigo.PegarListaRegistrados();
+        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
+        Amigo[] amigosRegistrados = new Amigo[registros.Length];
+
+        for (int i = 0; i < registros.Length; i++)
+        {
+            amigosRegistrados[i] = (Amigo)registros[i];
+        }
 
         int quantidadeAmigos = 0;
 
@@ -286,7 +315,7 @@ public class TelaMulta
         ColorirEscrita.ComQuebraLinha("Pagamento de Multas...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------");
 
-        MostrarMultasPendentes(true, true);
+        MostrarListaRegistrados(true, true);
 
         if (RepositorioMulta.ListaVazia)
             return;
@@ -301,10 +330,16 @@ public class TelaMulta
             idValido = int.TryParse(Console.ReadLine(), out idMultaEscolhida);
 
             if (!idValido)
+            {
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
+                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
+                Console.ReadKey();
+                PagarMulta();
+                return;
+            }
         } while (!idValido);
 
-        Multa multaEscolhida = RepositorioMulta.SelecionarPorId(idMultaEscolhida);
+        Multa multaEscolhida = (Multa)RepositorioMulta.SelecionarRegistroPorId(idMultaEscolhida);
 
         if (multaEscolhida == null)
         {
@@ -326,5 +361,9 @@ public class TelaMulta
         multaEscolhida.PagarMulta();
 
         Notificador.ExibirMensagem("\nMulta paga com sucesso!", ConsoleColor.Green);
+    }
+    public override EntidadeBase ObterDados()
+    {
+        return null!;
     }
 }

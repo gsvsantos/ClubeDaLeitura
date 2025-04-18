@@ -4,26 +4,21 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class Emprestimo : Entidade
+public class Emprestimo : EntidadeBase
 {
     public Amigo Amigo;
     public Revista Revista;
     public DateTime Data;
     public string Situacao;
-    private static int id = 0;
 
-    public Emprestimo(Amigo amigo, Revista revista)
+    public Emprestimo(Amigo amigo, Revista revista, DateTime? data = null)
     {
         Amigo = amigo;
-        Revista = revista;
-        Data = DateTime.Now;
+        Revista = revista;   // TRAZER VERSÃO CERTA APÓS TESTES!@!!!!!@!!!!
+        Data = data ?? DateTime.Now;
         Situacao = "Aberto";
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -68,5 +63,14 @@ public class Emprestimo : Entidade
     public DateTime ObterDataDevolucao()
     {
         return Data.AddDays(Revista.Caixa.DiasEmprestimo);
+    }
+
+    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    {
+        Emprestimo empretimoEditado = (Emprestimo)dadosEditados;
+
+        Amigo = empretimoEditado.Amigo;
+        Revista = empretimoEditado.Revista;
+        Situacao = empretimoEditado.Situacao;
     }
 }
