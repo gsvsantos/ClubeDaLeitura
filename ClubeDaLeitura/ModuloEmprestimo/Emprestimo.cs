@@ -11,11 +11,11 @@ public class Emprestimo : EntidadeBase
     public DateTime Data;
     public string Situacao;
 
-    public Emprestimo(Amigo amigo, Revista revista, DateTime? data = null)
+    public Emprestimo(Amigo amigo, Revista revista)
     {
         Amigo = amigo;
-        Revista = revista;   // TRAZER VERSÃO CERTA APÓS TESTES!@!!!!!@!!!!
-        Data = data ?? DateTime.Now;
+        Revista = revista;
+        Data = DateTime.Now;
         Situacao = "Aberto";
     }
     public override string Validar()
