@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloCaixa;
@@ -8,7 +9,7 @@ public class Caixa : EntidadeBase
     public string Etiqueta;
     public int Cor;
     public int DiasEmprestimo;
-    public Revista[] Revistas = new Revista[40];
+    public ArrayList Revistas = new ArrayList();
 
     public Caixa(string etiqueta, int cor, int diasEmprestimo)
     {
@@ -50,28 +51,33 @@ public class Caixa : EntidadeBase
     }
     public void AdicionarRevista(Revista novaRevista)
     {
-        for (int i = 0; i < Revistas.Length; i++)
-        {
-            if (Revistas[i] == null)
-            {
-                Revistas[i] = novaRevista;
-                return;
-            }
-        }
+        Revistas.Add(novaRevista);
     }
     public void RemoverRevista(Revista revistaEscolhida)
     {
-        for (int i = 0; i < Revistas.Length; i++)
+        foreach (Revista revista in Revistas)
         {
-            if (Revistas[i] == null)
-                continue;
-
-            if (Revistas[i] == revistaEscolhida)
-            {
-                Revistas[i] = null!;
-                return;
-            }
+            if (revistaEscolhida == revista)
+                Revistas.Remove(revistaEscolhida);
         }
+    }
+    public bool VerificarRevistasCaixa()
+    {
+        int revistas = 0;
+
+        if (Revistas == null)
+            return false;
+
+        foreach (Revista r in Revistas)
+        {
+            if (r != null)
+                revistas++;
+        }
+
+        if (revistas > 0)
+            return true;
+        else
+            return false;
     }
     public override void AtualizarRegistro(EntidadeBase dadosEditados)
     {

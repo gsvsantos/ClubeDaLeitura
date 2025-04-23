@@ -1,17 +1,19 @@
-﻿namespace ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+
+namespace ClubeDaLeitura.Compartilhado;
 
 public abstract class RepositorioBase
 {
-    public EntidadeBase[] Registros { get; protected set; } = new EntidadeBase[100];
+    public ArrayList Registros { get; protected set; } = new ArrayList();
     private int id = 0;
     public bool ListaVazia { get; set; } = false;
 
     public virtual void CadastrarRegistro(EntidadeBase novoRegistro)
     {
         novoRegistro.Id = ++id;
-        InserirRegistro(novoRegistro);
+        Registros.Add(novoRegistro);
     }
-    public EntidadeBase[] PegarListaRegistrados()
+    public ArrayList PegarListaRegistrados()
     {
         return Registros;
     }
@@ -21,39 +23,20 @@ public abstract class RepositorioBase
     }
     public void ExcluirRegistro(EntidadeBase registroEscolhido)
     {
-        for (int i = 0; i < Registros.Length; i++)
+        foreach (EntidadeBase registro in Registros)
         {
-            if (Registros[i] == null)
-                continue;
-            else if (Registros[i].Id == registroEscolhido.Id)
-            {
-                Registros[i] = null!;
-                break;
-            }
+            if (registroEscolhido == registro)
+                Registros.Remove(registroEscolhido);
         }
     }
     public EntidadeBase SelecionarRegistroPorId(int idRegistroEscolhida)
     {
         foreach (EntidadeBase e in Registros)
         {
-            if (e == null)
-                continue;
-
             if (e.Id == idRegistroEscolhida)
                 return e;
         }
 
         return null!;
-    }
-    protected void InserirRegistro(EntidadeBase registro)
-    {
-        for (int i = 0; i < Registros.Length; i++)
-        {
-            if (Registros[i] == null)
-            {
-                Registros[i] = registro;
-                return;
-            }
-        }
     }
 }

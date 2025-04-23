@@ -1,40 +1,36 @@
 ﻿using ClubeDaLeitura.Compartilhado;
-using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloCaixa;
 public class RepositorioCaixa : RepositorioBase
 {
-    public bool VerificarEtiquetas(Caixa caixaVerificar)
+    public bool VerificarEtiquetasNovoRegistro(Caixa novaCaixa)
     {
-        for (int i = 0; i < Registros.Length; i++)
+        for (int i = 0; i < Registros.Count; i++)
         {
             if (Registros[i] == null)
                 continue;
 
-            Caixa caixa = (Caixa)Registros[i];
+            Caixa caixa = (Caixa)Registros[i]!;
 
-            if (caixaVerificar.Etiqueta == caixa.Etiqueta)
+            if (novaCaixa.Etiqueta == caixa.Etiqueta)
                 return true;
         }
 
         return false;
     }
-    public bool VerificarRevistasCaixa(Caixa caixaEscolhida)
+    public bool VerificarEtiquetasEditarRegistro(Caixa caixaEscolhida, Caixa dadosEditados)
     {
-        int revistas = 0;
-
-        if (caixaEscolhida.Revistas == null)
-            return false;
-
-        foreach (Revista r in caixaEscolhida.Revistas)
+        for (int i = 0; i < Registros.Count; i++)
         {
-            if (r != null)
-                revistas++;
+            if (Registros[i] == null)
+                continue;
+
+            Caixa caixa = (Caixa)Registros[i]!;
+
+            if (dadosEditados.Etiqueta == caixa.Etiqueta && caixaEscolhida.Id != caixa.Id)
+                return true;
         }
 
-        if (revistas > 0)
-            return true;
-        else
-            return false;
+        return false;
     }
 }

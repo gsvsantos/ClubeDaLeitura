@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
@@ -29,7 +30,7 @@ public class RepositorioEmprestimo : RepositorioBase
 
         return false;
     }
-    public void VerificarEmprestimosAtrasados(Emprestimo[] emprestimosRegistrados)
+    public void VerificarEmprestimosAtrasados(ArrayList emprestimosRegistrados)
     {
         foreach (Emprestimo e in emprestimosRegistrados)
         {
@@ -45,12 +46,12 @@ public class RepositorioEmprestimo : RepositorioBase
     }
     public bool VerificarDevolucao(Emprestimo emprestimoEscolhido)
     {
-        for (int i = 0; i < Registros.Length; i++)
+        for (int i = 0; i < Registros.Count; i++)
         {
             if (Registros[i] == null)
                 continue;
 
-            Emprestimo emprestimo = (Emprestimo)Registros[i];
+            Emprestimo emprestimo = (Emprestimo)Registros[i]!;
 
             if (emprestimoEscolhido.Id == emprestimo.Id && emprestimoEscolhido.Situacao == "Concluído")
                 return true;

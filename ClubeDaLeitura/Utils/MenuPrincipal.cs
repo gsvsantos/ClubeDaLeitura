@@ -10,7 +10,7 @@ namespace ClubeDaLeitura.Utils;
 
 public class MenuPrincipal
 {
-    public string OpcaoPrincipal;
+    public string? OpcaoPrincipal;
     private RepositorioAmigo RepositorioAmigo;
     private RepositorioCaixa RepositorioCaixa;
     private RepositorioEmprestimo RepositorioEmprestimo;

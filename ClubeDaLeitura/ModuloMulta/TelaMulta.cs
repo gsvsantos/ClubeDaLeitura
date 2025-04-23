@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.Utils;
@@ -60,22 +61,16 @@ public class TelaMulta : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registrosEmprestimos = RepositorioEmprestimo.PegarListaRegistrados();
-        Emprestimo[] emprestimos = new Emprestimo[registrosEmprestimos.Length];
+        ArrayList registrosEmprestimos = RepositorioEmprestimo.PegarListaRegistrados();
 
-        for (int i = 0; i < registrosEmprestimos.Length; i++)
-        {
-            emprestimos[i] = (Emprestimo)registrosEmprestimos[i];
-        }
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(registrosEmprestimos);
 
-        RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimos);
-
-        foreach (Emprestimo e in emprestimos)
+        foreach (Emprestimo e in registrosEmprestimos)
         {
             if (e == null)
                 continue;
 
-            if (e.Situacao == "ATRASADO" && !e.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == e.Id))
+            if (e.Situacao == "ATRASADO" && !RepositorioMulta.VerificarMultaExistente(e))
             {
                 Multa novaMulta = new Multa(e);
                 RepositorioMulta.CadastrarRegistro(novaMulta);
@@ -83,23 +78,12 @@ public class TelaMulta : TelaBase
             }
         }
 
-        EntidadeBase[] registrosMultas = RepositorioMulta.PegarListaRegistrados();
-        Multa[] multasPendentes = new Multa[registrosMultas.Length];
-
-        for (int i = 0; i < registrosMultas.Length; i++)
-        {
-            multasPendentes[i] = (Multa)registrosMultas[i];
-        }
+        ArrayList registrosMultas = RepositorioMulta.PegarListaRegistrados();
 
         int quantidadeMultas = 0;
 
-        for (int i = 0; i < multasPendentes.Length; i++)
+        foreach (Multa m in registrosMultas)
         {
-            Multa m = multasPendentes[i];
-
-            if (m == null)
-                continue;
-
             quantidadeMultas++;
             RepositorioMulta.ListaVazia = false;
 
@@ -156,10 +140,9 @@ public class TelaMulta : TelaBase
             }
         } while (!idAmigoValido);
 
-        EntidadeBase[] registros = RepositorioEmprestimo.PegarListaRegistrados();
-        Emprestimo[] emprestimosRegistrados = new Emprestimo[registros.Length];
+        ArrayList registrosEmprestimos = RepositorioEmprestimo.PegarListaRegistrados();
 
-        RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosRegistrados);
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(registrosEmprestimos);
 
         Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
@@ -177,7 +160,7 @@ public class TelaMulta : TelaBase
             if (e == null)
                 continue;
 
-            if (e.Situacao == "ATRASADO" && !e.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == e.Id))
+            if (e.Situacao == "ATRASADO" && !RepositorioMulta.VerificarMultaExistente(e))
             {
                 Multa novaMulta = new Multa(e);
                 RepositorioMulta.CadastrarRegistro(novaMulta);
@@ -185,7 +168,7 @@ public class TelaMulta : TelaBase
             }
         }
 
-        Multa[] multasPendentesAmigo = amigoEscolhido.ObterMultas();
+        ArrayList multasPendentesAmigo = amigoEscolhido.ObterMultas();
 
         if (exibirCabecalho)
             ExibirCabecalho();
@@ -193,7 +176,7 @@ public class TelaMulta : TelaBase
         ColorirEscrita.ComQuebraLinha($"Visualizando Multas de {amigoEscolhido.Nome}...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
-        if (multasPendentesAmigo.All(m => m == null))
+        if (multasPendentesAmigo.Count == 0)
         {
             Notificador.ExibirMensagem($"O {amigoEscolhido.Nome} não tem multas no histórico.", ConsoleColor.Red);
             return;
@@ -264,23 +247,12 @@ public class TelaMulta : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
-        Amigo[] amigosRegistrados = new Amigo[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            amigosRegistrados[i] = (Amigo)registros[i];
-        }
+        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
 
-        for (int i = 0; i < amigosRegistrados.Length; i++)
+        foreach (Amigo a in registros)
         {
-            Amigo a = amigosRegistrados[i];
-
-            if (a == null)
-                continue;
-
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
 

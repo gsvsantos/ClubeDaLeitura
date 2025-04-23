@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloCaixa;
 using ClubeDaLeitura.Utils;
 
@@ -31,18 +32,12 @@ public class TelaRevista : TelaBase
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            CadastrarRegistro();
             return;
         }
 
         if (RepositorioRevista.VerificarTituloNovoRegistro(novaRevista))
         {
             Notificador.ExibirMensagem("\nJá existe uma revista dessa edição!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            CadastrarRegistro();
             return;
         }
 
@@ -75,23 +70,12 @@ public class TelaRevista : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioRevista.PegarListaRegistrados();
-        Revista[] revistasRegistradas = new Revista[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            revistasRegistradas[i] = (Revista)registros[i];
-        }
+        ArrayList registros = RepositorioRevista.PegarListaRegistrados();
 
         int quantidadeRevistas = 0;
 
-        for (int i = 0; i < revistasRegistradas.Length; i++)
+        foreach (Revista r in registros)
         {
-            Revista r = revistasRegistradas[i];
-
-            if (r == null)
-                continue;
-
             quantidadeRevistas++;
             RepositorioRevista.ListaVazia = false;
 
@@ -282,29 +266,18 @@ public class TelaRevista : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioCaixa.PegarListaRegistrados();
-        Caixa[] caixasRegistradas = new Caixa[registros.Length];
+        ArrayList registros = RepositorioCaixa.PegarListaRegistrados();
 
         int quantidadeCaixas = 0;
 
-        for (int i = 0; i < registros.Length; i++)
+        foreach (Caixa c in registros)
         {
-            caixasRegistradas[i] = (Caixa)registros[i];
-        }
-
-        for (int i = 0; i < caixasRegistradas.Length; i++)
-        {
-            Caixa c = caixasRegistradas[i];
-
-            if (c == null)
-                continue;
-
             quantidadeCaixas++;
             RepositorioCaixa.ListaVazia = false;
 
             if (comId)
             {
-                string[] linha = [c.Id.ToString(), c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                string[] linha = [c.Id.ToString(), c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count.ToString()];
                 int[] espacamentos = [6, 20, 20, 20,];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, (ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
 
@@ -312,7 +285,7 @@ public class TelaRevista : TelaBase
             }
             else
             {
-                string[] linha = [c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                string[] linha = [c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count.ToString()];
                 int[] espacamentos = [20, 20, 20];
                 ConsoleColor[] coresCabecalho = [(ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
 

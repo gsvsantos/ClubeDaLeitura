@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloCaixa;
@@ -25,18 +26,12 @@ public class TelaCaixa : TelaBase
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            CadastrarRegistro();
             return;
         }
 
-        if (RepositorioCaixa.VerificarEtiquetas(novaCaixa))
+        if (RepositorioCaixa.VerificarEtiquetasNovoRegistro(novaCaixa))
         {
             Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            CadastrarRegistro();
             return;
         }
 
@@ -69,29 +64,18 @@ public class TelaCaixa : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioCaixa.PegarListaRegistrados();
-        Caixa[] caixasRegistradas = new Caixa[registros.Length];
+        ArrayList registros = RepositorioCaixa.PegarListaRegistrados();
 
         int quantidadeCaixas = 0;
 
-        for (int i = 0; i < registros.Length; i++)
+        foreach (Caixa c in registros)
         {
-            caixasRegistradas[i] = (Caixa)registros[i];
-        }
-
-        for (int i = 0; i < caixasRegistradas.Length; i++)
-        {
-            Caixa c = caixasRegistradas[i];
-
-            if (c == null)
-                continue;
-
             quantidadeCaixas++;
             RepositorioCaixa.ListaVazia = false;
 
             if (comId)
             {
-                string[] linha = [c.Id.ToString(), c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                string[] linha = [c.Id.ToString(), c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count.ToString()];
                 int[] espacamentos = [6, 20, 20, 20,];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, (ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
 
@@ -99,7 +83,7 @@ public class TelaCaixa : TelaBase
             }
             else
             {
-                string[] linha = [c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count(r => r != null).ToString()];
+                string[] linha = [c.Etiqueta, c.DiasEmprestimo.ToString(), c.Revistas.Count.ToString()];
                 int[] espacamentos = [20, 20, 20];
                 ConsoleColor[] coresCabecalho = [(ConsoleColor)c.Cor, ConsoleColor.Blue, ConsoleColor.Blue];
 
@@ -168,7 +152,7 @@ public class TelaCaixa : TelaBase
             return;
         }
 
-        if (RepositorioCaixa.VerificarEtiquetas(dadosEditados))
+        if (RepositorioCaixa.VerificarEtiquetasEditarRegistro(caixaEscolhida, dadosEditados))
         {
             Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
@@ -222,7 +206,7 @@ public class TelaCaixa : TelaBase
             return;
         }
 
-        if (RepositorioCaixa.VerificarRevistasCaixa(caixaEscolhida))
+        if (caixaEscolhida.VerificarRevistasCaixa())
         {
             Notificador.ExibirMensagem($"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.", ConsoleColor.Red);
             return;

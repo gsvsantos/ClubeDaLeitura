@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloRevista;
@@ -64,26 +65,14 @@ public class TelaEmprestimo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioEmprestimo.PegarListaRegistrados();
-        Emprestimo[] emprestimosRegistrados = new Emprestimo[registros.Length];
+        ArrayList registros = RepositorioEmprestimo.PegarListaRegistrados();
 
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            emprestimosRegistrados[i] = (Emprestimo)registros[i];
-        }
-
-        RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosRegistrados);
+        RepositorioEmprestimo.VerificarEmprestimosAtrasados(registros);
 
         int quantidadeEmprestimos = 0;
 
-        for (int i = 0; i < emprestimosRegistrados.Length; i++)
+        foreach (Emprestimo e in registros)
         {
-            Emprestimo e = emprestimosRegistrados[i];
-
-            if (e == null)
-                continue;
-
             quantidadeEmprestimos++;
             RepositorioEmprestimo.ListaVazia = false;
 
@@ -224,7 +213,7 @@ public class TelaEmprestimo : TelaBase
             return;
         }
 
-        if (RepositorioEmprestimo.VerificarEmprestimoAtivo(emprestimoEscolhido.Amigo))
+        if (emprestimoEscolhido.VerificarEmprestimoAtivo())
         {
             Notificador.ExibirMensagem("\nEsse empréstimo ainda está em aberto!", ConsoleColor.Red);
             return;
@@ -265,23 +254,12 @@ public class TelaEmprestimo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioRevista.PegarListaRegistrados();
-        Revista[] revistasRegistradas = new Revista[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            revistasRegistradas[i] = (Revista)registros[i];
-        }
+        ArrayList registros = RepositorioRevista.PegarListaRegistrados();
 
         int quantidadeRevistas = 0;
 
-        for (int i = 0; i < revistasRegistradas.Length; i++)
+        foreach (Revista r in registros)
         {
-            Revista r = revistasRegistradas[i];
-
-            if (r == null)
-                continue;
-
             quantidadeRevistas++;
             RepositorioRevista.ListaVazia = false;
 
@@ -334,23 +312,12 @@ public class TelaEmprestimo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
-        Amigo[] amigosRegistrados = new Amigo[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            amigosRegistrados[i] = (Amigo)registros[i];
-        }
+        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
 
-        for (int i = 0; i < amigosRegistrados.Length; i++)
+        foreach (Amigo a in registros)
         {
-            Amigo a = amigosRegistrados[i];
-
-            if (a == null)
-                continue;
-
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
 
@@ -426,7 +393,7 @@ public class TelaEmprestimo : TelaBase
             return;
         }
 
-        if (emprestimoEscolhido.Situacao == "ATRASADO" && !emprestimoEscolhido.Amigo.Multas.Any(m => m != null && m.Emprestimo.Id == emprestimoEscolhido.Id))
+        if (emprestimoEscolhido.Situacao == "ATRASADO" && !RepositorioMulta.VerificarMultaExistente(emprestimoEscolhido))
         {
             Multa novaMulta = new Multa(emprestimoEscolhido);
             RepositorioMulta.CadastrarRegistro(novaMulta);

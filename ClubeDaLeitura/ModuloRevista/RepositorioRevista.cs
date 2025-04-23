@@ -29,12 +29,12 @@ public class RepositorioRevista : RepositorioBase
     }
     public bool VerificarTituloNovoRegistro(Revista novaRevista)
     {
-        for (int i = 0; i < Registros.Length; i++)
+        for (int i = 0; i < Registros.Count; i++)
         {
             if (Registros[i] == null)
                 continue;
 
-            Revista revista = (Revista)Registros[i];
+            Revista revista = (Revista)Registros[i]!;
 
             if (novaRevista.Titulo == revista.Titulo && novaRevista.NumeroEdicao == revista.NumeroEdicao && novaRevista.Id == 0)
                 return true;
@@ -44,12 +44,12 @@ public class RepositorioRevista : RepositorioBase
     }
     public bool VerificarTituloEditarRegistro(Revista revistaEscolhida, Revista dadosEditados)
     {
-        for (int i = 0; i < Registros.Length; i++)
+        for (int i = 0; i < Registros.Count; i++)
         {
             if (Registros[i] == null)
                 continue;
 
-            Revista revista = (Revista)Registros[i];
+            Revista revista = (Revista)Registros[i]!;
 
             if (dadosEditados.Titulo == revista.Titulo && dadosEditados.NumeroEdicao == revista.NumeroEdicao && revistaEscolhida.Id != revista.Id)
                 return true;

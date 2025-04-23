@@ -83,20 +83,20 @@ public class Program
                             telaMulta.MostrarListaRegistrados(true, false);
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                         case "2":
                             telaMulta.PagarMulta();
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                         case "3":
                             telaMulta.MostrarMultasAmigo(true, false);
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                     }
                 }
-                else if (telaSelecionada is TelaMulta)
+                else if (telaSelecionada is TelaReserva)
                 {
                     TelaReserva telaReserva = (TelaReserva)telaSelecionada;
 
@@ -106,22 +106,22 @@ public class Program
                             telaReserva.CadastrarRegistro();
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                         case "2":
                             telaReserva.CancelarReserva();
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                         case "3":
                             telaReserva.MostrarListaRegistrados(true, false);
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                         case "4":
                             telaReserva.EmprestarRevistaReservada();
                             ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para continuar.", ConsoleColor.Yellow);
                             Console.ReadKey();
-                            break;
+                            continue;
                     }
                 }
 

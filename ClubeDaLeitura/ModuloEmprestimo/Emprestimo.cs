@@ -26,10 +26,10 @@ public class Emprestimo : EntidadeBase
             erros += "\nO amigo selecionado náo está registrado.\n";
         else
         {
-            if (Amigo.Multas.Any(m => m != null && m.Status == "Pendente"))
+            if (Amigo.VerificarMultas())
                 erros += "O amigo selecionado tem multas pendentes.\n";
 
-            if (Amigo.Emprestimos.Any(e => e != null && (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")))
+            if (Amigo.VerificarEmprestimos())
                 erros += "O amigo selecionado tem um empréstimo em aberto.\n";
 
         }
@@ -64,7 +64,22 @@ public class Emprestimo : EntidadeBase
     {
         return Data.AddDays(Revista.Caixa.DiasEmprestimo);
     }
+    public bool VerificarEmprestimoAtivo()
+    {
+        if (Amigo.Emprestimos == null)
+            return false;
 
+        foreach (Emprestimo e in Amigo.Emprestimos)
+        {
+            if (e == null)
+                continue;
+
+            if (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")
+                return true;
+        }
+
+        return false;
+    }
     public override void AtualizarRegistro(EntidadeBase dadosEditados)
     {
         Emprestimo empretimoEditado = (Emprestimo)dadosEditados;

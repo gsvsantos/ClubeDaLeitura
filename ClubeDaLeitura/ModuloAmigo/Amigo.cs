@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloReserva;
@@ -10,8 +11,8 @@ public class Amigo : EntidadeBase
     public string Nome;
     public string Responsavel;
     public string Telefone;
-    public Emprestimo[] Emprestimos = new Emprestimo[100];
-    public Multa[] Multas = new Multa[100];
+    public ArrayList Emprestimos = new ArrayList();
+    public ArrayList Multas = new ArrayList();
     public Reserva? Reserva;
 
     public Amigo(string nome, string responsavel, string telefone)
@@ -75,33 +76,55 @@ public class Amigo : EntidadeBase
     }
     public void ReceberEmprestimo(Emprestimo novoEmprestimo)
     {
-        for (int i = 0; i < Emprestimos.Length; i++)
-        {
-            if (Emprestimos[i] == null)
-            {
-                Emprestimos[i] = novoEmprestimo;
-                return;
-            }
-        }
+        Emprestimos.Add(novoEmprestimo);
     }
-    public Emprestimo[] ObterEmprestimos()
+    public ArrayList ObterEmprestimos()
     {
         return Emprestimos;
     }
+    public bool VerificarEmprestimos()
+    {
+        int emprestimos = 0;
+
+        if (Emprestimos == null)
+            return false;
+
+        foreach (Emprestimo e in Emprestimos)
+        {
+            if (e != null && e.Situacao != "Concluído")
+                emprestimos++;
+        }
+
+        if (emprestimos > 0)
+            return true;
+        else
+            return false;
+    }
     public void ReceberMulta(Multa novaMulta)
     {
-        for (int i = 0; i < Multas.Length; i++)
-        {
-            if (Multas[i] == null)
-            {
-                Multas[i] = novaMulta;
-                return;
-            }
-        }
+        Multas.Add(novaMulta);
     }
-    public Multa[] ObterMultas()
+    public ArrayList ObterMultas()
     {
         return Multas;
+    }
+    public bool VerificarMultas()
+    {
+        int multas = 0;
+
+        if (Multas == null)
+            return false;
+
+        foreach (Multa m in Multas)
+        {
+            if (m != null && m.Status != "Quitada")
+                multas++;
+        }
+
+        if (multas > 0)
+            return true;
+        else
+            return false;
     }
     public void ReceberReserva(Reserva novaReserva)
     {

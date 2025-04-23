@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloRevista;
@@ -63,23 +64,12 @@ public class TelaReserva : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioReserva.PegarListaRegistrados();
-        Reserva[] reservasAtivas = new Reserva[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            reservasAtivas[i] = (Reserva)registros[i];
-        }
+        ArrayList registros = RepositorioReserva.PegarListaRegistrados();
 
         int quantidadeReservas = 0;
 
-        for (int i = 0; i < reservasAtivas.Length; i++)
+        foreach (Reserva r in registros)
         {
-            Reserva r = reservasAtivas[i];
-
-            if (r == null)
-                continue;
-
             quantidadeReservas++;
             RepositorioReserva.ListaVazia = false;
 
@@ -99,6 +89,7 @@ public class TelaReserva : TelaBase
 
                 ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
             }
+
         }
 
         if (quantidadeReservas == 0)
@@ -149,7 +140,7 @@ public class TelaReserva : TelaBase
             return;
         }
 
-        if (RepositorioEmprestimo.VerificarEmprestimoAtivo(reservaEscolhida.Amigo))
+        if (reservaEscolhida.Amigo.VerificarEmprestimos())
         {
             Notificador.ExibirMensagem("\nEsse amigo já tem um empréstimo em aberto!", ConsoleColor.Red);
             return;
@@ -191,23 +182,12 @@ public class TelaReserva : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioRevista.PegarListaRegistrados();
-        Revista[] revistasRegistradas = new Revista[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            revistasRegistradas[i] = (Revista)registros[i];
-        }
+        ArrayList registros = RepositorioRevista.PegarListaRegistrados();
 
         int quantidadeRevistas = 0;
 
-        for (int i = 0; i < revistasRegistradas.Length; i++)
+        foreach (Revista r in registros)
         {
-            Revista r = revistasRegistradas[i];
-
-            if (r == null)
-                continue;
-
             quantidadeRevistas++;
             RepositorioRevista.ListaVazia = false;
 
@@ -260,23 +240,11 @@ public class TelaReserva : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
-        Amigo[] amigosRegistrados = new Amigo[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            amigosRegistrados[i] = (Amigo)registros[i];
-        }
+        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
-
-        for (int i = 0; i < amigosRegistrados.Length; i++)
+        foreach (Amigo a in registros)
         {
-            Amigo a = amigosRegistrados[i];
-
-            if (a == null)
-                continue;
-
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
 

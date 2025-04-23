@@ -1,4 +1,5 @@
-﻿using ClubeDaLeitura.Compartilhado;
+﻿using System.Collections;
+using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.Utils;
 
@@ -47,18 +48,12 @@ public class TelaAmigo : TelaBase
         if (erros.Length > 0)
         {
             Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            CadastrarRegistro();
             return;
         }
 
         if (RepositorioAmigo.VerificarTelefoneNovoRegistro(novoAmigo))
         {
             Notificador.ExibirMensagem("\nJá existe um cadastro com esse número!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            CadastrarRegistro();
             return;
         }
 
@@ -91,23 +86,12 @@ public class TelaAmigo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        EntidadeBase[] registros = RepositorioAmigo.PegarListaRegistrados();
-        Amigo[] amigosRegistrados = new Amigo[registros.Length];
-
-        for (int i = 0; i < registros.Length; i++)
-        {
-            amigosRegistrados[i] = (Amigo)registros[i];
-        }
+        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
 
-        for (int i = 0; i < amigosRegistrados.Length; i++)
+        foreach (Amigo a in registros)
         {
-            Amigo a = amigosRegistrados[i];
-
-            if (a == null)
-                continue;
-
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
 
@@ -177,7 +161,7 @@ public class TelaAmigo : TelaBase
             return;
         }
 
-        Emprestimo[] emprestimosAmigoEscolhido = amigoEscolhido.ObterEmprestimos();
+        ArrayList emprestimosAmigoEscolhido = amigoEscolhido.ObterEmprestimos();
 
         RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosAmigoEscolhido);
 
@@ -187,7 +171,7 @@ public class TelaAmigo : TelaBase
         ColorirEscrita.ComQuebraLinha($"Visualizando Empréstimos de {amigoEscolhido.Nome}...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
-        if (emprestimosAmigoEscolhido.All(e => e == null))
+        if (!amigoEscolhido.VerificarEmprestimos())
         {
             Notificador.ExibirMensagem($"O {amigoEscolhido.Nome} ainda não fez nenhum empréstimo.", ConsoleColor.Red);
             return;
@@ -338,7 +322,7 @@ public class TelaAmigo : TelaBase
             return;
         }
 
-        if (RepositorioAmigo.VerificarEmprestimosAmigo(amigoEscolhido))
+        if (amigoEscolhido.VerificarEmprestimos())
         {
             Notificador.ExibirMensagem($"\nO {amigoEscolhido.Nome} ainda possui empréstimos em aberto e não pode ser excluído.", ConsoleColor.Red);
             return;
@@ -350,7 +334,7 @@ public class TelaAmigo : TelaBase
             return;
         }
 
-        if (amigoEscolhido.Multas.Any(m => m != null && m.Status != "Quitada"))
+        if (amigoEscolhido.VerificarMultas())
         {
             Notificador.ExibirMensagem($"\nO {amigoEscolhido.Nome} ainda possui multas pendentes e não pode ser excluído.", ConsoleColor.Red);
             return;
