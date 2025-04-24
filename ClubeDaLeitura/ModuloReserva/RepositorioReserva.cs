@@ -2,15 +2,13 @@
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class RepositorioReserva : RepositorioBase
+public class RepositorioReserva : RepositorioBase<Reserva>
 {
-    public override void CadastrarRegistro(EntidadeBase novoRegistro)
+    public override void CadastrarRegistro(Reserva novoRegistro)
     {
-        Reserva novaReserva = (Reserva)novoRegistro;
-
-        novaReserva.Revista.Reservar();
-        novaReserva.Amigo.ReceberReserva(novaReserva);
-        base.CadastrarRegistro(novaReserva);
+        novoRegistro.Revista.Reservar();
+        novoRegistro.Amigo.ReceberReserva(novoRegistro);
+        base.CadastrarRegistro(novoRegistro);
     }
     public bool VerificarReservaAtiva(Reserva reservaEscolhida)
     {

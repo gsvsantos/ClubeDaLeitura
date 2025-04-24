@@ -1,24 +1,21 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ModuloMulta;
 
-public class RepositorioMulta : RepositorioBase
+public class RepositorioMulta : RepositorioBase<Multa>
 {
-    public ArrayList PegarListaMultasPendentes()
+    public List<Multa> PegarListaMultasPendentes()
     {
-        ArrayList multasPendentes = new ArrayList();
+        List<Multa> multasPendentes = new List<Multa>();
 
         for (int i = 0; i < Registros.Count; i++)
         {
             if (Registros[i] == null)
                 continue;
 
-            Multa multa = (Multa)Registros[i]!;
-
-            if (multa.Status == "Pendente")
-                multasPendentes[i] = multa;
+            if (Registros[i].Status == "Pendente")
+                multasPendentes[i] = Registros[i];
         }
 
         return multasPendentes;

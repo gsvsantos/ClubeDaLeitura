@@ -4,7 +4,7 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloCaixa;
 
-public class Caixa : EntidadeBase
+public class Caixa : EntidadeBase<Caixa>
 {
     public string Etiqueta;
     public int Cor;
@@ -79,12 +79,10 @@ public class Caixa : EntidadeBase
         else
             return false;
     }
-    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    public override void AtualizarRegistro(Caixa dadosEditados)
     {
-        Caixa caixaEditada = (Caixa)dadosEditados;
-
-        Etiqueta = caixaEditada.Etiqueta;
-        Cor = caixaEditada.Cor;
-        DiasEmprestimo = caixaEditada.DiasEmprestimo;
+        Etiqueta = dadosEditados.Etiqueta;
+        Cor = dadosEditados.Cor;
+        DiasEmprestimo = dadosEditados.DiasEmprestimo;
     }
 }

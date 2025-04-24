@@ -4,7 +4,7 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class Emprestimo : EntidadeBase
+public class Emprestimo : EntidadeBase<Emprestimo>
 {
     public Amigo Amigo;
     public Revista Revista;
@@ -80,12 +80,10 @@ public class Emprestimo : EntidadeBase
 
         return false;
     }
-    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    public override void AtualizarRegistro(Emprestimo dadosEditados)
     {
-        Emprestimo empretimoEditado = (Emprestimo)dadosEditados;
-
-        Amigo = empretimoEditado.Amigo;
-        Revista = empretimoEditado.Revista;
-        Situacao = empretimoEditado.Situacao;
+        Amigo = dadosEditados.Amigo;
+        Revista = dadosEditados.Revista;
+        Situacao = dadosEditados.Situacao;
     }
 }

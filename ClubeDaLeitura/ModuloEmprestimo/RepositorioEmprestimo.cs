@@ -1,18 +1,15 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class RepositorioEmprestimo : RepositorioBase
+public class RepositorioEmprestimo : RepositorioBase<Emprestimo>
 {
-    public override void CadastrarRegistro(EntidadeBase novoRegistro)
+    public override void CadastrarRegistro(Emprestimo novoRegistro)
     {
-        Emprestimo novoEmprestimo = (Emprestimo)novoRegistro;
-
-        novoEmprestimo.Revista.Emprestar();
-        novoEmprestimo.Amigo.ReceberEmprestimo(novoEmprestimo);
-        base.CadastrarRegistro(novoEmprestimo);
+        novoRegistro.Revista.Emprestar();
+        novoRegistro.Amigo.ReceberEmprestimo(novoRegistro);
+        base.CadastrarRegistro(novoRegistro);
     }
     public bool VerificarEmprestimoAtivo(Amigo amigoEscolhido)
     {
@@ -30,7 +27,7 @@ public class RepositorioEmprestimo : RepositorioBase
 
         return false;
     }
-    public void VerificarEmprestimosAtrasados(ArrayList emprestimosRegistrados)
+    public void VerificarEmprestimosAtrasados(List<Emprestimo> emprestimosRegistrados)
     {
         foreach (Emprestimo e in emprestimosRegistrados)
         {
@@ -51,9 +48,7 @@ public class RepositorioEmprestimo : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Emprestimo emprestimo = (Emprestimo)Registros[i]!;
-
-            if (emprestimoEscolhido.Id == emprestimo.Id && emprestimoEscolhido.Situacao == "Concluído")
+            if (emprestimoEscolhido.Id == Registros[i].Id && emprestimoEscolhido.Situacao == "Concluído")
                 return true;
         }
 

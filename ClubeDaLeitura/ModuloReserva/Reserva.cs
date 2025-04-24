@@ -4,7 +4,7 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class Reserva : EntidadeBase
+public class Reserva : EntidadeBase<Reserva>
 {
     public Amigo Amigo;
     public Revista Revista;
@@ -57,5 +57,5 @@ public class Reserva : EntidadeBase
     {
         Revista.StatusEmprestimo = "Disponível";
     }
-    public override void AtualizarRegistro(EntidadeBase dadosEditados) { }
+    public override void AtualizarRegistro(Reserva dadosEditados) { }
 }

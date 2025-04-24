@@ -3,7 +3,7 @@ using ClubeDaLeitura.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ModuloMulta;
 
-public class Multa : EntidadeBase
+public class Multa : EntidadeBase<Multa>
 {
     public Emprestimo Emprestimo;
     public int DiasAtraso;
@@ -33,5 +33,5 @@ public class Multa : EntidadeBase
     {
         Status = "Quitada";
     }
-    public override void AtualizarRegistro(EntidadeBase dadosEditados) { }
+    public override void AtualizarRegistro(Multa dadosEditados) { }
 }

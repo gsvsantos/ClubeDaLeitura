@@ -1,18 +1,17 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloReserva;
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
-public class Amigo : EntidadeBase
+public class Amigo : EntidadeBase<Amigo>
 {
     public string Nome;
     public string Responsavel;
     public string Telefone;
-    public ArrayList Emprestimos = new ArrayList();
-    public ArrayList Multas = new ArrayList();
+    public List<Emprestimo> Emprestimos = new List<Emprestimo>();
+    public List<Multa> Multas = new List<Multa>();
     public Reserva? Reserva;
 
     public Amigo(string nome, string responsavel, string telefone)
@@ -78,7 +77,7 @@ public class Amigo : EntidadeBase
     {
         Emprestimos.Add(novoEmprestimo);
     }
-    public ArrayList ObterEmprestimos()
+    public List<Emprestimo> ObterEmprestimos()
     {
         return Emprestimos;
     }
@@ -104,7 +103,7 @@ public class Amigo : EntidadeBase
     {
         Multas.Add(novaMulta);
     }
-    public ArrayList ObterMultas()
+    public List<Multa> ObterMultas()
     {
         return Multas;
     }
@@ -133,12 +132,10 @@ public class Amigo : EntidadeBase
         else
             return;
     }
-    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    public override void AtualizarRegistro(Amigo dadosEditados)
     {
-        Amigo amigoEditado = (Amigo)dadosEditados;
-
-        Nome = amigoEditado.Nome;
-        Responsavel = amigoEditado.Responsavel;
-        Telefone = amigoEditado.Telefone;
+        Nome = dadosEditados.Nome;
+        Responsavel = dadosEditados.Responsavel;
+        Telefone = dadosEditados.Telefone;
     }
 }

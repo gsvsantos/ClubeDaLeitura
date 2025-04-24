@@ -45,7 +45,7 @@ public class MenuPrincipal
         ColorirEscrita.SemQuebraLinha("\nOpção: ");
         OpcaoPrincipal = Console.ReadLine()!;
     }
-    public TelaBase ObterTela()
+    public ITelaCrud ObterTela()
     {
         if (OpcaoPrincipal == "1")
             return new TelaAmigo(RepositorioAmigo, RepositorioEmprestimo);

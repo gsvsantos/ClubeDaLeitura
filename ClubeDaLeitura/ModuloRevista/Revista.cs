@@ -4,7 +4,7 @@ using ClubeDaLeitura.ModuloCaixa;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
-public class Revista : EntidadeBase
+public class Revista : EntidadeBase<Revista>
 {
     public string Titulo;
     public int NumeroEdicao;
@@ -79,13 +79,11 @@ public class Revista : EntidadeBase
     {
         StatusEmprestimo = "Reservada";
     }
-    public override void AtualizarRegistro(EntidadeBase dadosEditados)
+    public override void AtualizarRegistro(Revista dadosEditados)
     {
-        Revista revistaEditada = (Revista)dadosEditados;
-
-        Titulo = revistaEditada.Titulo;
-        NumeroEdicao = revistaEditada.NumeroEdicao;
-        AnoPublicacao = revistaEditada.AnoPublicacao;
-        Caixa = revistaEditada.Caixa;
+        Titulo = dadosEditados.Titulo;
+        NumeroEdicao = dadosEditados.NumeroEdicao;
+        AnoPublicacao = dadosEditados.AnoPublicacao;
+        Caixa = dadosEditados.Caixa;
     }
 }

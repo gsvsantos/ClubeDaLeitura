@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloRevista;
@@ -7,7 +6,7 @@ using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class TelaReserva : TelaBase
+public class TelaReserva : TelaBase<Reserva>, ITelaCrud
 {
     public RepositorioAmigo RepositorioAmigo;
     public RepositorioEmprestimo RepositorioEmprestimo;
@@ -64,11 +63,11 @@ public class TelaReserva : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioReserva.PegarListaRegistrados();
+        List<Reserva> registros = RepositorioReserva.PegarListaRegistrados();
 
         int quantidadeReservas = 0;
 
-        foreach (Reserva r in registros)
+        foreach (var r in registros)
         {
             quantidadeReservas++;
             RepositorioReserva.ListaVazia = false;
@@ -129,7 +128,7 @@ public class TelaReserva : TelaBase
             }
         } while (!idValido);
 
-        Reserva reservaEscolhida = (Reserva)RepositorioReserva.SelecionarRegistroPorId(idRevistaEscolhida);
+        Reserva reservaEscolhida = RepositorioReserva.SelecionarRegistroPorId(idRevistaEscolhida);
 
         if (reservaEscolhida == null)
         {
@@ -182,11 +181,11 @@ public class TelaReserva : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioRevista.PegarListaRegistrados();
+        List<Revista> registros = RepositorioRevista.PegarListaRegistrados();
 
         int quantidadeRevistas = 0;
 
-        foreach (Revista r in registros)
+        foreach (var r in registros)
         {
             quantidadeRevistas++;
             RepositorioRevista.ListaVazia = false;
@@ -240,10 +239,11 @@ public class TelaReserva : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
+        List<Amigo> registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
-        foreach (Amigo a in registros)
+
+        foreach (var a in registros)
         {
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
@@ -303,7 +303,7 @@ public class TelaReserva : TelaBase
             }
         } while (!idValido);
 
-        Reserva reservaEscolhida = (Reserva)RepositorioReserva.SelecionarRegistroPorId(idRevistaEscolhida);
+        Reserva reservaEscolhida = RepositorioReserva.SelecionarRegistroPorId(idRevistaEscolhida);
 
         if (reservaEscolhida == null)
         {
@@ -324,7 +324,7 @@ public class TelaReserva : TelaBase
 
         Notificador.ExibirMensagem("\nReserva cancelada com sucesso!", ConsoleColor.Green);
     }
-    public override EntidadeBase ObterDados()
+    public override Reserva ObterDados()
     {
         MostrarListaAmigos(true, true);
 
@@ -344,7 +344,7 @@ public class TelaReserva : TelaBase
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idAmigoValido);
 
-        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         MostrarListaRevistas(true, true);
 
@@ -364,7 +364,7 @@ public class TelaReserva : TelaBase
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idRevistaValido);
 
-        Revista revistaEscolhida = (Revista)RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
+        Revista revistaEscolhida = RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
 
         Reserva reserva = new Reserva(amigoEscolhido, revistaEscolhida);
 

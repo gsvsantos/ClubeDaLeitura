@@ -4,13 +4,11 @@ using ClubeDaLeitura.Compartilhado;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
-public class RepositorioRevista : RepositorioBase
+public class RepositorioRevista : RepositorioBase<Revista>
 {
-    public override void CadastrarRegistro(EntidadeBase novoRegistro)
+    public override void CadastrarRegistro(Revista novoRegistro)
     {
-        Revista novaRevista = (Revista)novoRegistro;
-
-        novaRevista.Caixa.AdicionarRevista(novaRevista);
+        novoRegistro.Caixa.AdicionarRevista(novoRegistro);
         base.CadastrarRegistro(novoRegistro);
     }
     public bool VerificarRevistaEmprestada(Revista revistaEscolhida)
@@ -34,9 +32,7 @@ public class RepositorioRevista : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Revista revista = (Revista)Registros[i]!;
-
-            if (novaRevista.Titulo == revista.Titulo && novaRevista.NumeroEdicao == revista.NumeroEdicao && novaRevista.Id == 0)
+            if (novaRevista.Titulo == Registros[i].Titulo && novaRevista.NumeroEdicao == Registros[i].NumeroEdicao && novaRevista.Id == 0)
                 return true;
         }
 
@@ -49,9 +45,7 @@ public class RepositorioRevista : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Revista revista = (Revista)Registros[i]!;
-
-            if (dadosEditados.Titulo == revista.Titulo && dadosEditados.NumeroEdicao == revista.NumeroEdicao && revistaEscolhida.Id != revista.Id)
+            if (dadosEditados.Titulo == Registros[i].Titulo && dadosEditados.NumeroEdicao == Registros[i].NumeroEdicao && revistaEscolhida.Id != Registros[i].Id)
                 return true;
         }
 

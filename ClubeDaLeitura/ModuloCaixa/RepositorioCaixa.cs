@@ -1,7 +1,7 @@
 ﻿using ClubeDaLeitura.Compartilhado;
 
 namespace ClubeDaLeitura.ModuloCaixa;
-public class RepositorioCaixa : RepositorioBase
+public class RepositorioCaixa : RepositorioBase<Caixa>
 {
     public bool VerificarEtiquetasNovoRegistro(Caixa novaCaixa)
     {
@@ -10,9 +10,7 @@ public class RepositorioCaixa : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Caixa caixa = (Caixa)Registros[i]!;
-
-            if (novaCaixa.Etiqueta == caixa.Etiqueta)
+            if (novaCaixa.Etiqueta == Registros[i].Etiqueta)
                 return true;
         }
 
@@ -25,9 +23,7 @@ public class RepositorioCaixa : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Caixa caixa = (Caixa)Registros[i]!;
-
-            if (dadosEditados.Etiqueta == caixa.Etiqueta && caixaEscolhida.Id != caixa.Id)
+            if (dadosEditados.Etiqueta == Registros[i].Etiqueta && caixaEscolhida.Id != Registros[i].Id)
                 return true;
         }
 

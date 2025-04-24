@@ -2,12 +2,12 @@
 
 namespace ClubeDaLeitura.Compartilhado;
 
-public abstract class TelaBase
+public abstract class TelaBase<T> where T : EntidadeBase<T>
 {
     protected string NomeEntidade;
-    private RepositorioBase Repositorio;
+    private RepositorioBase<T> Repositorio;
 
-    protected TelaBase(string nomeEntidade, RepositorioBase repositorio)
+    protected TelaBase(string nomeEntidade, RepositorioBase<T> repositorio)
     {
         NomeEntidade = nomeEntidade;
         Repositorio = repositorio;
@@ -44,7 +44,7 @@ public abstract class TelaBase
         ColorirEscrita.ComQuebraLinha($"Registrando {NomeEntidade}...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
-        EntidadeBase novoRegistro = ObterDados();
+        T novoRegistro = ObterDados();
 
         string erros = novoRegistro.Validar();
 
@@ -87,7 +87,7 @@ public abstract class TelaBase
             }
         } while (!idValido);
 
-        EntidadeBase registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
+        T registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
 
         if (registroEscolhido == null)
         {
@@ -95,7 +95,7 @@ public abstract class TelaBase
             return;
         }
 
-        EntidadeBase dadosEditados = ObterDados();
+        T dadosEditados = ObterDados();
 
         string erros = dadosEditados.Validar();
 
@@ -138,7 +138,7 @@ public abstract class TelaBase
             }
         } while (!idValido);
 
-        EntidadeBase registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
+        T registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
 
         if (registroEscolhido == null)
         {
@@ -150,5 +150,5 @@ public abstract class TelaBase
 
         Notificador.ExibirMensagem("\nAmigo excluído com sucesso!", ConsoleColor.Green);
     }
-    public abstract EntidadeBase ObterDados();
+    public abstract T ObterDados();
 }

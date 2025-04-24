@@ -2,7 +2,7 @@
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
-public class RepositorioAmigo : RepositorioBase
+public class RepositorioAmigo : RepositorioBase<Amigo>
 {
     public bool VerificarTelefoneNovoRegistro(Amigo novoAmigo)
     {
@@ -11,9 +11,7 @@ public class RepositorioAmigo : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Amigo amigo = (Amigo)Registros[i]!;
-
-            if (novoAmigo.Telefone == amigo.Telefone && novoAmigo.Id == 0)
+            if (novoAmigo.Telefone == Registros[i].Telefone && novoAmigo.Id == 0)
                 return true;
         }
 
@@ -26,9 +24,7 @@ public class RepositorioAmigo : RepositorioBase
             if (Registros[i] == null)
                 continue;
 
-            Amigo amigo = (Amigo)Registros[i]!;
-
-            if (dadosEditados.Telefone == amigo.Telefone && amigoEscolhido.Id != amigo.Id)
+            if (dadosEditados.Telefone == Registros[i].Telefone && amigoEscolhido.Id != Registros[i].Id)
                 return true;
         }
 

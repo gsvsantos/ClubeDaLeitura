@@ -19,7 +19,7 @@ public class Program
 
             menuPrincipal.ApresentarMenuPrincipal();
 
-            TelaBase telaSelecionada = menuPrincipal.ObterTela();
+            ITelaCrud telaSelecionada = menuPrincipal.ObterTela();
 
             if (menuPrincipal.OpcaoPrincipal != null && menuPrincipal.OpcaoPrincipal.ToUpper() == "S")
             {

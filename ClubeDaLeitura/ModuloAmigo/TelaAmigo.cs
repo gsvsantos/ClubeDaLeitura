@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
-public class TelaAmigo : TelaBase
+public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 {
     public RepositorioAmigo RepositorioAmigo;
     public RepositorioEmprestimo RepositorioEmprestimo;
@@ -86,11 +85,11 @@ public class TelaAmigo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
+        List<Amigo> registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
 
-        foreach (Amigo a in registros)
+        foreach (var a in registros)
         {
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
@@ -150,7 +149,7 @@ public class TelaAmigo : TelaBase
             }
         } while (!idValido);
 
-        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         if (amigoEscolhido == null)
         {
@@ -161,7 +160,7 @@ public class TelaAmigo : TelaBase
             return;
         }
 
-        ArrayList emprestimosAmigoEscolhido = amigoEscolhido.ObterEmprestimos();
+        List<Emprestimo> emprestimosAmigoEscolhido = amigoEscolhido.ObterEmprestimos();
 
         RepositorioEmprestimo.VerificarEmprestimosAtrasados(emprestimosAmigoEscolhido);
 
@@ -194,7 +193,7 @@ public class TelaAmigo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        foreach (Emprestimo e in emprestimosAmigoEscolhido)
+        foreach (var e in emprestimosAmigoEscolhido)
         {
             if (e == null)
                 continue;
@@ -248,7 +247,7 @@ public class TelaAmigo : TelaBase
             }
         } while (!idValido);
 
-        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         if (amigoEscolhido == null)
         {
@@ -311,7 +310,7 @@ public class TelaAmigo : TelaBase
             }
         } while (!idValido);
 
-        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         if (amigoEscolhido == null)
         {
@@ -344,7 +343,7 @@ public class TelaAmigo : TelaBase
 
         Notificador.ExibirMensagem("\nAmigo excluído com sucesso!", ConsoleColor.Green);
     }
-    public override EntidadeBase ObterDados()
+    public override Amigo ObterDados()
     {
         ColorirEscrita.SemQuebraLinha("Digite o Nome do Amigo: ");
         string nome = Console.ReadLine()!;

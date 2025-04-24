@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloAmigo;
 using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloRevista;
@@ -7,7 +6,7 @@ using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class TelaEmprestimo : TelaBase
+public class TelaEmprestimo : TelaBase<Emprestimo>, ITelaCrud
 {
     public RepositorioAmigo RepositorioAmigo;
     public RepositorioEmprestimo RepositorioEmprestimo;
@@ -65,13 +64,13 @@ public class TelaEmprestimo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioEmprestimo.PegarListaRegistrados();
+        List<Emprestimo> registros = RepositorioEmprestimo.PegarListaRegistrados();
 
         RepositorioEmprestimo.VerificarEmprestimosAtrasados(registros);
 
         int quantidadeEmprestimos = 0;
 
-        foreach (Emprestimo e in registros)
+        foreach (var e in registros)
         {
             quantidadeEmprestimos++;
             RepositorioEmprestimo.ListaVazia = false;
@@ -131,7 +130,7 @@ public class TelaEmprestimo : TelaBase
             }
         } while (!idValido);
 
-        Emprestimo emprestimoEscolhido = (Emprestimo)RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
+        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
 
         if (emprestimoEscolhido == null)
         {
@@ -202,7 +201,7 @@ public class TelaEmprestimo : TelaBase
             }
         } while (!idValido);
 
-        Emprestimo emprestimoEscolhido = (Emprestimo)RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
+        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
 
         if (emprestimoEscolhido == null)
         {
@@ -254,11 +253,11 @@ public class TelaEmprestimo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioRevista.PegarListaRegistrados();
+        List<Revista> registros = RepositorioRevista.PegarListaRegistrados();
 
         int quantidadeRevistas = 0;
 
-        foreach (Revista r in registros)
+        foreach (var r in registros)
         {
             quantidadeRevistas++;
             RepositorioRevista.ListaVazia = false;
@@ -312,11 +311,11 @@ public class TelaEmprestimo : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioAmigo.PegarListaRegistrados();
+        List<Amigo> registros = RepositorioAmigo.PegarListaRegistrados();
 
         int quantidadeAmigos = 0;
 
-        foreach (Amigo a in registros)
+        foreach (var a in registros)
         {
             quantidadeAmigos++;
             RepositorioAmigo.ListaVazia = false;
@@ -376,7 +375,7 @@ public class TelaEmprestimo : TelaBase
             }
         } while (!idValido);
 
-        Emprestimo emprestimoEscolhido = (Emprestimo)RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
+        Emprestimo emprestimoEscolhido = RepositorioEmprestimo.SelecionarRegistroPorId(idEmprestimoEscolhido);
 
         if (emprestimoEscolhido == null)
         {
@@ -404,7 +403,7 @@ public class TelaEmprestimo : TelaBase
 
         Notificador.ExibirMensagem("\nDevolução feita com sucesso!", ConsoleColor.Green);
     }
-    public override EntidadeBase ObterDados()
+    public override Emprestimo ObterDados()
     {
         MostrarListaAmigos(true, true);
 
@@ -424,7 +423,7 @@ public class TelaEmprestimo : TelaBase
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idAmigoValido);
 
-        Amigo amigoEscolhido = (Amigo)RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
+        Amigo amigoEscolhido = RepositorioAmigo.SelecionarRegistroPorId(idAmigoEscolhido);
 
         MostrarListaRevistas(true, true);
 
@@ -444,7 +443,7 @@ public class TelaEmprestimo : TelaBase
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idRevistaValido);
 
-        Revista revistaEscolhida = (Revista)RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
+        Revista revistaEscolhida = RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
 
         Emprestimo emprestimo = new Emprestimo(amigoEscolhido, revistaEscolhida);
 

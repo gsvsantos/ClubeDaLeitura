@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloCaixa;
 using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
-public class TelaRevista : TelaBase
+public class TelaRevista : TelaBase<Revista>, ITelaCrud
 {
     public RepositorioCaixa RepositorioCaixa;
     public RepositorioRevista RepositorioRevista;
@@ -70,11 +69,11 @@ public class TelaRevista : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioRevista.PegarListaRegistrados();
+        List<Revista> registros = RepositorioRevista.PegarListaRegistrados();
 
         int quantidadeRevistas = 0;
 
-        foreach (Revista r in registros)
+        foreach (var r in registros)
         {
             quantidadeRevistas++;
             RepositorioRevista.ListaVazia = false;
@@ -134,7 +133,7 @@ public class TelaRevista : TelaBase
             }
         } while (!idValido);
 
-        Revista revistaEscolhida = (Revista)RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
+        Revista revistaEscolhida = RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
 
         if (revistaEscolhida == null)
         {
@@ -215,7 +214,7 @@ public class TelaRevista : TelaBase
             }
         } while (!idValido);
 
-        Revista revistaEscolhida = (Revista)RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
+        Revista revistaEscolhida = RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
 
         if (revistaEscolhida == null)
         {
@@ -266,11 +265,11 @@ public class TelaRevista : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioCaixa.PegarListaRegistrados();
+        List<Caixa> registros = RepositorioCaixa.PegarListaRegistrados();
 
         int quantidadeCaixas = 0;
 
-        foreach (Caixa c in registros)
+        foreach (var c in registros)
         {
             quantidadeCaixas++;
             RepositorioCaixa.ListaVazia = false;
@@ -299,7 +298,7 @@ public class TelaRevista : TelaBase
             RepositorioCaixa.ListaVazia = true;
         }
     }
-    public override EntidadeBase ObterDados()
+    public override Revista ObterDados()
     {
         MostrarListaCaixas(true, true);
 
@@ -319,7 +318,7 @@ public class TelaRevista : TelaBase
                 Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
         } while (!idValido);
 
-        Caixa caixaEscolhida = (Caixa)RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
+        Caixa caixaEscolhida = RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
 
         ColorirEscrita.SemQuebraLinha("\nDigite o Título da Revista: ");
         string titulo = Console.ReadLine()!;

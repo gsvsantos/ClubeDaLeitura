@@ -1,37 +1,35 @@
-﻿using System.Collections;
+﻿namespace ClubeDaLeitura.Compartilhado;
 
-namespace ClubeDaLeitura.Compartilhado;
-
-public abstract class RepositorioBase
+public abstract class RepositorioBase<T> where T : EntidadeBase<T> // boxing
 {
-    public ArrayList Registros { get; protected set; } = new ArrayList();
+    public List<T> Registros { get; protected set; } = new List<T>();
     private int id = 0;
     public bool ListaVazia { get; set; } = false;
 
-    public virtual void CadastrarRegistro(EntidadeBase novoRegistro)
+    public virtual void CadastrarRegistro(T novoRegistro)
     {
         novoRegistro.Id = ++id;
         Registros.Add(novoRegistro);
     }
-    public ArrayList PegarListaRegistrados()
+    public List<T> PegarListaRegistrados()
     {
         return Registros;
     }
-    public void EditarRegistro(EntidadeBase registroEscolhido, EntidadeBase dadosEditados)
+    public void EditarRegistro(T registroEscolhido, T dadosEditados)
     {
         registroEscolhido.AtualizarRegistro(dadosEditados);
     }
-    public void ExcluirRegistro(EntidadeBase registroEscolhido)
+    public void ExcluirRegistro(T registroEscolhido)
     {
-        foreach (EntidadeBase registro in Registros)
+        foreach (T registro in Registros)
         {
             if (registroEscolhido == registro)
                 Registros.Remove(registroEscolhido);
         }
     }
-    public EntidadeBase SelecionarRegistroPorId(int idRegistroEscolhida)
+    public T SelecionarRegistroPorId(int idRegistroEscolhida)
     {
-        foreach (EntidadeBase e in Registros)
+        foreach (T e in Registros)
         {
             if (e.Id == idRegistroEscolhida)
                 return e;

@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.Utils;
 
 namespace ClubeDaLeitura.ModuloCaixa;
 
-public class TelaCaixa : TelaBase
+public class TelaCaixa : TelaBase<Caixa>, ITelaCrud
 {
     public RepositorioCaixa RepositorioCaixa;
 
@@ -64,11 +63,11 @@ public class TelaCaixa : TelaBase
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
         }
 
-        ArrayList registros = RepositorioCaixa.PegarListaRegistrados();
+        List<Caixa> registros = RepositorioCaixa.PegarListaRegistrados();
 
         int quantidadeCaixas = 0;
 
-        foreach (Caixa c in registros)
+        foreach (var c in registros)
         {
             quantidadeCaixas++;
             RepositorioCaixa.ListaVazia = false;
@@ -128,7 +127,7 @@ public class TelaCaixa : TelaBase
             }
         } while (!idValido);
 
-        Caixa caixaEscolhida = (Caixa)RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
+        Caixa caixaEscolhida = RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
 
         if (caixaEscolhida == null)
         {
@@ -195,7 +194,7 @@ public class TelaCaixa : TelaBase
             }
         } while (!idValido);
 
-        Caixa caixaEscolhida = (Caixa)RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
+        Caixa caixaEscolhida = RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
 
         if (caixaEscolhida == null)
         {
@@ -216,7 +215,7 @@ public class TelaCaixa : TelaBase
 
         Notificador.ExibirMensagem("\nCaixa excluída com sucesso!", ConsoleColor.Green);
     }
-    public override EntidadeBase ObterDados()
+    public override Caixa ObterDados()
     {
         ColorirEscrita.SemQuebraLinha("Digite o Nome da Etiqueta da Caixa: ");
         string etiqueta = Console.ReadLine()!;
