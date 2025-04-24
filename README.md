@@ -45,7 +45,7 @@ Planejamento da segunda versão do projeto: [Trabalho - Clube da Leitura v2 (Des
 
 *O sistema valida os dados inseridos para garantir que os dados inseridos estejam corretos.*
 
-## Estrutura do Projeto
+## Estrutura do Projeto _desatualizado_
 O projeto está organizado da seguinte forma:
 
 - **[Compartilhado/](https://github.com/gsvsantos/ClubeDaLeitura/tree/master/ClubeDaLeitura/Compartilhado)** Contém classes auxiliares e compartilhadas pelo sistema.
