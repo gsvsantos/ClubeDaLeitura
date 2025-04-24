@@ -1,43 +1,37 @@
-﻿namespace ClubeDaLeitura.ModuloMulta;
+﻿using ClubeDaLeitura.Compartilhado;
+using ClubeDaLeitura.ModuloEmprestimo;
 
-public class RepositorioMulta
+namespace ClubeDaLeitura.ModuloMulta;
+
+public class RepositorioMulta : RepositorioBase<Multa>
 {
-    public Multa[] Multas = new Multa[100];
-    public int IndiceListaMultas = 0;
-    public bool ListaVazia = false;
-
-    public void RegistrarMulta(Multa novaMulta)
+    public List<Multa> PegarListaMultasPendentes()
     {
-        novaMulta.GerarId();
-        Multas[IndiceListaMultas++] = novaMulta;
-    }
-    public Multa[] PegarListaMultasPendentes()
-    {
-        Multa[] multasPendentes = new Multa[100];
+        List<Multa> multasPendentes = new List<Multa>();
 
-        for (int i = 0; i < Multas.Length; i++)
+        for (int i = 0; i < Registros.Count; i++)
         {
-            if (Multas[i] == null)
+            if (Registros[i] == null)
                 continue;
 
-            if (Multas[i].Status == "Pendente")
-                multasPendentes[i] = Multas[i];
+            if (Registros[i].Status == "Pendente")
+                multasPendentes[i] = Registros[i];
         }
 
         return multasPendentes;
     }
-    public Multa SelecionarPorId(int idMultaEscolhida)
+    public bool VerificarMultaExistente(Emprestimo emprestimo)
     {
-        foreach (Multa m in Multas)
+        foreach (Multa m in emprestimo.Amigo.Multas)
         {
             if (m == null)
                 continue;
 
-            if (m.Id == idMultaEscolhida)
-                return m;
+            if (m.Emprestimo.Id == emprestimo.Id)
+                return true;
         }
 
-        return null!;
+        return false;
     }
     public bool VerificarMultaQuitada(Multa multaEscolhida)
     {

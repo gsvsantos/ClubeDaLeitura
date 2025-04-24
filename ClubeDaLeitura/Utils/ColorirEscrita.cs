@@ -1,4 +1,4 @@
-﻿namespace ClubeDaLeitura.Compartilhado;
+﻿namespace ClubeDaLeitura.Utils;
 
 public static class ColorirEscrita
 {

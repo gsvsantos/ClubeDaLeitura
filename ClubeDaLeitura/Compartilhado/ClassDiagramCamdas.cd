@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ClubeDaLeitura.ModuloAmigo.TelaAmigo">
+    <Position X="2.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAgAAAAAACIAAAAAAAAMAgBABAAAA=</HashCode>
+      <FileName>ModuloAmigo\TelaAmigo.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="RepositorioAmigo" />
+      <Field Name="RepositorioEmprestimo" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ClubeDaLeitura.ModuloAmigo.RepositorioAmigo">
+    <Position X="5.75" Y="6.75" Width="2.5" />
+    <InheritanceLine Type="ClubeDaLeitura.Compartilhado.RepositorioBase&lt;T&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="8.75" Y="1.312" />
+        <Point X="8.75" Y="2.801" />
+        <Point X="7" Y="2.801" />
+        <Point X="7" Y="6.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ModuloAmigo\RepositorioAmigo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClubeDaLeitura.ModuloEmprestimo.RepositorioEmprestimo">
+    <Position X="6.25" Y="4.5" Width="2.25" />
+    <InheritanceLine Type="ClubeDaLeitura.Compartilhado.RepositorioBase&lt;T&gt;" ManuallyRouted="true">
+      <Path>
+        <Point X="8.75" Y="1.312" />
+        <Point X="8.75" Y="2.792" />
+        <Point X="7.375" Y="2.792" />
+        <Point X="7.375" Y="4.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAEgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ModuloEmprestimo\RepositorioEmprestimo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ClubeDaLeitura.Compartilhado.TelaBase&lt;T&gt;">
+    <Position X="2.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACBAAAAAEAAAAoAAAgAAAAAAAAAAAAMAABABAAAA=</HashCode>
+      <FileName>Compartilhado\TelaBase.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="Repositorio" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ClubeDaLeitura.Compartilhado.RepositorioBase&lt;T&gt;" Collapsed="true">
+    <Position X="8" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAQAAAgIAAAAAAAAAAAAAAAAABBABAAgA=</HashCode>
+      <FileName>Compartilhado\RepositorioBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

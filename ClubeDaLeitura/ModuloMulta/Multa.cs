@@ -3,13 +3,12 @@ using ClubeDaLeitura.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ModuloMulta;
 
-public class Multa : Entidade
+public class Multa : EntidadeBase<Multa>
 {
     public Emprestimo Emprestimo;
     public int DiasAtraso;
     public double ValorMulta;
     public string Status;
-    private static int id = 0;
 
     public Multa(Emprestimo emprestimo)
     {
@@ -18,9 +17,9 @@ public class Multa : Entidade
         ValorMulta = CalcularValorMulta();
         Status = "Pendente";
     }
-    public void GerarId()
+    public override string Validar()
     {
-        Id = ++id;
+        throw new NotImplementedException();
     }
     public double CalcularValorMulta()
     {
@@ -34,4 +33,5 @@ public class Multa : Entidade
     {
         Status = "Quitada";
     }
+    public override void AtualizarRegistro(Multa dadosEditados) { }
 }
