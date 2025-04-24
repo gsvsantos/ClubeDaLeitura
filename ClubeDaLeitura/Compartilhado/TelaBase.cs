@@ -56,16 +56,16 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
 
         string mensagem;
         if (TemRestricoesNoInserir(novoRegistro, out mensagem))
-        {            
+        {
             Notificador.ExibirMensagem(mensagem, ConsoleColor.Red);
             return;
         }
 
         Repositorio.CadastrarRegistro(novoRegistro);
 
-        Notificador.ExibirMensagem($"\n{NomeEntidade} registrado com sucesso!", ConsoleColor.Green);
+        Notificador.ExibirMensagem($"\nRegistro cadastrado com sucesso!", ConsoleColor.Green);
     }
- 
+
     public abstract void MostrarListaRegistrados(bool exibirCabecalho, bool comId);
     public virtual void EditarRegistro()
     {
@@ -123,7 +123,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
 
         Repositorio.EditarRegistro(registroEscolhido, dadosEditados);
 
-        Notificador.ExibirMensagem($"\n{NomeEntidade} editado com sucesso!", ConsoleColor.Green);
+        Notificador.ExibirMensagem($"\nRegistro editado com sucesso!", ConsoleColor.Green);
     }
     public virtual void ExcluirRegistro()
     {
@@ -143,7 +143,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
         do
         {
             ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
-            ColorirEscrita.SemQuebraLinha("Digite o ID do registro que deseja editar: ");
+            ColorirEscrita.SemQuebraLinha("Digite o ID do registro que deseja excluir: ");
             idValido = int.TryParse(Console.ReadLine(), out idRegistroEscolhido);
 
             if (!idValido)
@@ -170,24 +170,27 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
 
         Repositorio.ExcluirRegistro(registroEscolhido);
 
-        Notificador.ExibirMensagem("\nAmigo excluído com sucesso!", ConsoleColor.Green);
+        Notificador.ExibirMensagem($"\nRegistro excluído com sucesso!", ConsoleColor.Green);
     }
 
-    public virtual bool TemRestricoesNoInserir(T registro, out string mensagem)
+    public virtual bool TemRestricoesNoInserir(T novoRegistro, out string mensagem)
     {
         mensagem = "";
+
         return false;
     }
 
-    public virtual bool TemRestricoesNoEditar(T registro, T novoRegistro, out string mensagem)
+    public virtual bool TemRestricoesNoEditar(T registroEscolhido, T dadosEditados, out string mensagem)
     {
         mensagem = "";
+
         return false;
     }
 
-    public virtual bool TemRestricoesNoExcluir(T registro, out string mensagem)
+    public virtual bool TemRestricoesNoExcluir(T registroEscolhido, out string mensagem)
     {
         mensagem = "";
+
         return false;
     }
 

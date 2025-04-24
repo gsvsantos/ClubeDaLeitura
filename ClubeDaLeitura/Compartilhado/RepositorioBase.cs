@@ -24,7 +24,10 @@ public abstract class RepositorioBase<T> where T : EntidadeBase<T> // boxing
         foreach (T registro in Registros)
         {
             if (registroEscolhido == registro)
+            {
                 Registros.Remove(registroEscolhido);
+                return;
+            }
         }
     }
     public T SelecionarRegistroPorId(int idRegistroEscolhida)

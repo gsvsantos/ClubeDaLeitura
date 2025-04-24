@@ -5,49 +5,49 @@ namespace ClubeDaLeitura.ModuloCaixa;
 
 public class TelaCaixa : TelaBase<Caixa>, ITelaCrud
 {
-    public RepositorioCaixa RepositorioCaixa;    
+    public RepositorioCaixa RepositorioCaixa;
 
     public TelaCaixa(RepositorioCaixa repositorioCaixa) : base("Caixa", repositorioCaixa)
     {
         RepositorioCaixa = repositorioCaixa;
     }
-    
-    public override bool TemRestricoesNoInserir(Caixa caixa, out string mensagem)
-    {        
-        if (RepositorioCaixa.VerificarEtiquetasNovoRegistro(caixa))
-        {
-            mensagem = "Já existe uma caixa com essa etiqueta!";
-            return true;
-        }        
 
-        mensagem = "";
-        return false;
-    }
-
-    public override bool TemRestricoesNoEditar(Caixa registro, Caixa novoRegistro, out string mensagem)
+    public override bool TemRestricoesNoInserir(Caixa novaCaixa, out string mensagem)
     {
-        if (RepositorioCaixa.VerificarEtiquetasEditarRegistro(registro, novoRegistro))
+        mensagem = "";
+
+        if (RepositorioCaixa.VerificarEtiquetasNovoRegistro(novaCaixa))
         {
-            mensagem = "Já existe uma caixa com essa etiqueta!";
+            mensagem = "\nJá existe uma caixa com essa etiqueta!";
             return true;
         }
 
-        mensagem = "";
         return false;
     }
-
-    public override bool TemRestricoesNoExcluir(Caixa registro, out string mensagem)
+    public override bool TemRestricoesNoEditar(Caixa caixaEscolhida, Caixa dadosEditados, out string mensagem)
     {
-        if (registro.VerificarRevistasCaixa())
-        {
-            mensagem = $"\nA caixa {registro.Etiqueta} ainda possui revistas e não pode ser excluída.";
-            return true;
-        }       
-
         mensagem = "";
+
+        if (RepositorioCaixa.VerificarEtiquetasEditarRegistro(caixaEscolhida, dadosEditados))
+        {
+            mensagem = "\nJá existe uma caixa com essa etiqueta!";
+            return true;
+        }
+
         return false;
     }
+    public override bool TemRestricoesNoExcluir(Caixa caixaEscolhida, out string mensagem)
+    {
+        mensagem = "";
 
+        if (caixaEscolhida.VerificarRevistasCaixa())
+        {
+            mensagem = $"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.";
+            return true;
+        }
+
+        return false;
+    }
     public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
@@ -106,8 +106,6 @@ public class TelaCaixa : TelaBase<Caixa>, ITelaCrud
             RepositorioCaixa.ListaVazia = true;
         }
     }
-   
-   
     public override Caixa ObterDados()
     {
         ColorirEscrita.SemQuebraLinha("Digite o Nome da Etiqueta da Caixa: ");

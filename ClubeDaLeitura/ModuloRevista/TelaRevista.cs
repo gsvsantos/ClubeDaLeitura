@@ -14,35 +14,57 @@ public class TelaRevista : TelaBase<Revista>, ITelaCrud
         RepositorioCaixa = repositorioCaixa;
         RepositorioRevista = repositorioRevista;
     }
-    public override void CadastrarRegistro()
+    public override bool TemRestricoesNoInserir(Revista novaRevista, out string mensagem)
     {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Registrando Revista...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-
-        Revista novaRevista = (Revista)ObterDados();
-
-        if (novaRevista == null)
-            return;
-
-        string erros = novaRevista.Validar();
-
-        if (erros.Length > 0)
-        {
-            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            return;
-        }
+        mensagem = "";
 
         if (RepositorioRevista.VerificarTituloNovoRegistro(novaRevista))
         {
-            Notificador.ExibirMensagem("\nJá existe uma revista dessa edição!", ConsoleColor.Red);
-            return;
+            mensagem = "\nJá existe uma revista dessa edição!";
+            return true;
         }
 
-        RepositorioRevista.CadastrarRegistro(novaRevista);
+        return false;
+    }
+    public override bool TemRestricoesNoEditar(Revista revistaEscolhida, Revista dadosEditados, out string mensagem)
+    {
+        Caixa caixaAntiga = revistaEscolhida.Caixa;
+        Caixa caixaNova = dadosEditados.Caixa;
 
-        Notificador.ExibirMensagem("\nRevista registrada com sucesso!", ConsoleColor.Green);
+        mensagem = "";
+
+        if (RepositorioRevista.VerificarTituloEditarRegistro(revistaEscolhida, dadosEditados))
+        {
+            mensagem = "\nJá existe uma revista dessa edição!";
+            return true;
+        }
+
+        if (caixaAntiga != caixaNova)
+        {
+            caixaAntiga.RemoverRevista(revistaEscolhida);
+            caixaNova.AdicionarRevista(revistaEscolhida);
+        }
+
+        return false;
+    }
+    public override bool TemRestricoesNoExcluir(Revista revistaEscolhida, out string mensagem)
+    {
+        mensagem = "";
+
+        if (RepositorioRevista.VerificarRevistaEmprestada(revistaEscolhida))
+        {
+            mensagem = $"\nA revista {revistaEscolhida.Titulo} ainda está com um amigo!";
+            return true;
+        }
+
+        if (RepositorioRevista.VerificarRevistaReservada(revistaEscolhida))
+        {
+            mensagem = $"\nA revista {revistaEscolhida.Titulo} está reservada!";
+            return true;
+        }
+
+        revistaEscolhida.Caixa.RemoverRevista(revistaEscolhida);
+        return false;
     }
     public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
@@ -55,7 +77,7 @@ public class TelaRevista : TelaBase<Revista>, ITelaCrud
         if (comId)
         {
             string[] cabecalho = ["Id", "Título", "N° de Edição", "Ano de Publicação", "Caixa", "Status"];
-            int[] espacamentos = [3, 24, 14, 18, 20, 18];
+            int[] espacamentos = [3, 22, 14, 18, 20, 18];
             ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, ConsoleColor.Cyan, ConsoleColor.White];
 
             ColorirEscrita.PintarCabecalho(cabecalho, espacamentos, coresCabecalho);
@@ -81,7 +103,7 @@ public class TelaRevista : TelaBase<Revista>, ITelaCrud
             if (comId)
             {
                 string[] cabecalho = [r.Id.ToString(), r.Titulo, r.NumeroEdicao.ToString(), r.AnoPublicacao, r.Caixa.Etiqueta, r.StatusEmprestimo];
-                int[] espacamentos = [3, 24, 14, 18, 20, 18];
+                int[] espacamentos = [3, 22, 14, 18, 20, 18];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.Blue, (ConsoleColor)r.Caixa.Cor, ConsoleColor.White];
 
                 ColorirEscrita.PintarLinha(cabecalho, espacamentos, coresCabecalho);
@@ -101,144 +123,6 @@ public class TelaRevista : TelaBase<Revista>, ITelaCrud
             Notificador.ExibirMensagem("\nNenhuma revista registrada!", ConsoleColor.Red);
             RepositorioRevista.ListaVazia = true;
         }
-    }
-    public override void EditarRegistro()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Editando Revista...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-
-        MostrarListaRegistrados(false, true);
-
-        if (RepositorioRevista.ListaVazia)
-            return;
-
-        bool idValido;
-        int idRevistaEscolhida;
-
-        do
-        {
-            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
-            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Revista: ");
-            idValido = int.TryParse(Console.ReadLine(), out idRevistaEscolhida);
-
-            if (!idValido)
-            {
-                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                EditarRegistro();
-                return;
-            }
-        } while (!idValido);
-
-        Revista revistaEscolhida = RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
-
-        if (revistaEscolhida == null)
-        {
-            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarRegistro();
-            return;
-        }
-
-        Caixa caixaAntiga = revistaEscolhida.Caixa;
-
-        Revista dadosEditados = (Revista)ObterDados();
-
-        if (dadosEditados == null)
-            return;
-
-        Caixa caixaNova = dadosEditados.Caixa;
-
-        string erros = dadosEditados.Validar();
-
-        if (erros.Length > 0)
-        {
-            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarRegistro();
-            return;
-        }
-
-        if (RepositorioRevista.VerificarTituloEditarRegistro(revistaEscolhida, dadosEditados))
-        {
-            Notificador.ExibirMensagem("\nJá existe uma revista dessa edição!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarRegistro();
-            return;
-        }
-
-        if (caixaAntiga != caixaNova)
-        {
-            caixaAntiga.RemoverRevista(revistaEscolhida);
-            caixaNova.AdicionarRevista(revistaEscolhida);
-        }
-
-        RepositorioRevista.EditarRegistro(revistaEscolhida, dadosEditados);
-
-        Notificador.ExibirMensagem("\nRevista editada com sucesso!", ConsoleColor.Green);
-    }
-    public override void ExcluirRegistro()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Excluindo Revista...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-
-        MostrarListaRegistrados(false, true);
-
-        if (RepositorioRevista.ListaVazia)
-            return;
-
-        bool idValido;
-        int idRevistaEscolhida;
-
-        do
-        {
-            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
-            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Revista: ");
-            idValido = int.TryParse(Console.ReadLine(), out idRevistaEscolhida);
-
-            if (!idValido)
-            {
-                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                ExcluirRegistro();
-                return;
-            }
-        } while (!idValido);
-
-        Revista revistaEscolhida = RepositorioRevista.SelecionarRegistroPorId(idRevistaEscolhida);
-
-        if (revistaEscolhida == null)
-        {
-            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            ExcluirRegistro();
-            return;
-        }
-
-        if (RepositorioRevista.VerificarRevistaEmprestada(revistaEscolhida))
-        {
-            Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} ainda está com um amigo!", ConsoleColor.Red);
-            return;
-        }
-        if (RepositorioRevista.VerificarRevistaReservada(revistaEscolhida))
-        {
-            Notificador.ExibirMensagem($"\nA revista {revistaEscolhida.Titulo} está reservada!", ConsoleColor.Red);
-            return;
-        }
-
-        RepositorioRevista.ExcluirRegistro(revistaEscolhida);
-
-        Notificador.ExibirMensagem("\nRevista excluída com sucesso!", ConsoleColor.Green);
     }
     public void MostrarListaCaixas(bool exibirCabecalho, bool comId)
     {

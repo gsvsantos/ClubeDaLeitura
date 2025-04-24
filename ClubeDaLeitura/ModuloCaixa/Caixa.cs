@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using ClubeDaLeitura.Compartilhado;
+﻿using ClubeDaLeitura.Compartilhado;
 using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloCaixa;
@@ -58,7 +57,10 @@ public class Caixa : EntidadeBase<Caixa>
         foreach (Revista revista in Revistas)
         {
             if (revistaEscolhida == revista)
+            {
                 Revistas.Remove(revistaEscolhida);
+                return;
+            }
         }
     }
     public bool VerificarRevistasCaixa()
