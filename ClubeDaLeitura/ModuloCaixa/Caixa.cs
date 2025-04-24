@@ -3,13 +3,12 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloCaixa;
 
-public class Caixa : Entidade
+public class Caixa : EntidadeBase<Caixa>
 {
     public string Etiqueta;
     public int Cor;
     public int DiasEmprestimo;
-    public Revista[] Revistas = new Revista[40];
-    private static int id = 0;
+    public List<Revista> Revistas = new List<Revista>();
 
     public Caixa(string etiqueta, int cor, int diasEmprestimo)
     {
@@ -17,11 +16,7 @@ public class Caixa : Entidade
         Cor = cor;
         DiasEmprestimo = diasEmprestimo;
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -55,27 +50,41 @@ public class Caixa : Entidade
     }
     public void AdicionarRevista(Revista novaRevista)
     {
-        for (int i = 0; i < Revistas.Length; i++)
+        Revistas.Add(novaRevista);
+    }
+    public void RemoverRevista(Revista revistaEscolhida)
+    {
+        foreach (Revista revista in Revistas)
         {
-            if (Revistas[i] == null)
+            if (revistaEscolhida == revista)
             {
-                Revistas[i] = novaRevista;
+                Revistas.Remove(revistaEscolhida);
                 return;
             }
         }
     }
-    public void RemoverRevista(Revista revistaEscolhida)
+    public bool VerificarRevistasCaixa()
     {
-        for (int i = 0; i < Revistas.Length; i++)
-        {
-            if (Revistas[i] == null)
-                continue;
+        int revistas = 0;
 
-            if (Revistas[i] == revistaEscolhida)
-            {
-                Revistas[i] = null!;
-                return;
-            }
+        if (Revistas == null)
+            return false;
+
+        foreach (Revista r in Revistas)
+        {
+            if (r != null)
+                revistas++;
         }
+
+        if (revistas > 0)
+            return true;
+        else
+            return false;
+    }
+    public override void AtualizarRegistro(Caixa dadosEditados)
+    {
+        Etiqueta = dadosEditados.Etiqueta;
+        Cor = dadosEditados.Cor;
+        DiasEmprestimo = dadosEditados.DiasEmprestimo;
     }
 }

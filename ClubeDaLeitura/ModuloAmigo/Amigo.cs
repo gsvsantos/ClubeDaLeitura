@@ -5,15 +5,14 @@ using ClubeDaLeitura.ModuloReserva;
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
-public class Amigo : Entidade
+public class Amigo : EntidadeBase<Amigo>
 {
     public string Nome;
     public string Responsavel;
     public string Telefone;
-    public Emprestimo[] Emprestimos = new Emprestimo[100];
-    public Multa[] Multas = new Multa[100];
+    public List<Emprestimo> Emprestimos = new List<Emprestimo>();
+    public List<Multa> Multas = new List<Multa>();
     public Reserva? Reserva;
-    private static int id = 0;
 
     public Amigo(string nome, string responsavel, string telefone)
     {
@@ -21,11 +20,7 @@ public class Amigo : Entidade
         Responsavel = responsavel;
         Telefone = telefone;
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -80,33 +75,55 @@ public class Amigo : Entidade
     }
     public void ReceberEmprestimo(Emprestimo novoEmprestimo)
     {
-        for (int i = 0; i < Emprestimos.Length; i++)
-        {
-            if (Emprestimos[i] == null)
-            {
-                Emprestimos[i] = novoEmprestimo;
-                return;
-            }
-        }
+        Emprestimos.Add(novoEmprestimo);
     }
-    public Emprestimo[] ObterEmprestimos()
+    public List<Emprestimo> ObterEmprestimos()
     {
         return Emprestimos;
     }
+    public bool VerificarEmprestimos()
+    {
+        int emprestimos = 0;
+
+        if (Emprestimos == null)
+            return false;
+
+        foreach (Emprestimo e in Emprestimos)
+        {
+            if (e != null && e.Situacao != "Concluído")
+                emprestimos++;
+        }
+
+        if (emprestimos > 0)
+            return true;
+        else
+            return false;
+    }
     public void ReceberMulta(Multa novaMulta)
     {
-        for (int i = 0; i < Multas.Length; i++)
-        {
-            if (Multas[i] == null)
-            {
-                Multas[i] = novaMulta;
-                return;
-            }
-        }
+        Multas.Add(novaMulta);
     }
-    public Multa[] ObterMultas()
+    public List<Multa> ObterMultas()
     {
         return Multas;
+    }
+    public bool VerificarMultas()
+    {
+        int multas = 0;
+
+        if (Multas == null)
+            return false;
+
+        foreach (Multa m in Multas)
+        {
+            if (m != null && m.Status != "Quitada")
+                multas++;
+        }
+
+        if (multas > 0)
+            return true;
+        else
+            return false;
     }
     public void ReceberReserva(Reserva novaReserva)
     {
@@ -114,5 +131,11 @@ public class Amigo : Entidade
             Reserva = novaReserva;
         else
             return;
+    }
+    public override void AtualizarRegistro(Amigo dadosEditados)
+    {
+        Nome = dadosEditados.Nome;
+        Responsavel = dadosEditados.Responsavel;
+        Telefone = dadosEditados.Telefone;
     }
 }

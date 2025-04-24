@@ -4,13 +4,12 @@ using ClubeDaLeitura.ModuloRevista;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class Emprestimo : Entidade
+public class Emprestimo : EntidadeBase<Emprestimo>
 {
     public Amigo Amigo;
     public Revista Revista;
     public DateTime Data;
     public string Situacao;
-    private static int id = 0;
 
     public Emprestimo(Amigo amigo, Revista revista)
     {
@@ -19,11 +18,7 @@ public class Emprestimo : Entidade
         Data = DateTime.Now;
         Situacao = "Aberto";
     }
-    public void GerarId()
-    {
-        Id = ++id;
-    }
-    public string Validar()
+    public override string Validar()
     {
         string erros = "";
 
@@ -31,10 +26,10 @@ public class Emprestimo : Entidade
             erros += "\nO amigo selecionado náo está registrado.\n";
         else
         {
-            if (Amigo.Multas.Any(m => m != null && m.Status == "Pendente"))
+            if (Amigo.VerificarMultas())
                 erros += "O amigo selecionado tem multas pendentes.\n";
 
-            if (Amigo.Emprestimos.Any(e => e != null && (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")))
+            if (Amigo.VerificarEmprestimos())
                 erros += "O amigo selecionado tem um empréstimo em aberto.\n";
 
         }
@@ -68,5 +63,27 @@ public class Emprestimo : Entidade
     public DateTime ObterDataDevolucao()
     {
         return Data.AddDays(Revista.Caixa.DiasEmprestimo);
+    }
+    public bool VerificarEmprestimoAtivo()
+    {
+        if (Amigo.Emprestimos == null)
+            return false;
+
+        foreach (Emprestimo e in Amigo.Emprestimos)
+        {
+            if (e == null)
+                continue;
+
+            if (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")
+                return true;
+        }
+
+        return false;
+    }
+    public override void AtualizarRegistro(Emprestimo dadosEditados)
+    {
+        Amigo = dadosEditados.Amigo;
+        Revista = dadosEditados.Revista;
+        Situacao = dadosEditados.Situacao;
     }
 }
