@@ -9,7 +9,7 @@ public class Caixa : EntidadeBase<Caixa>
     public string Etiqueta;
     public int Cor;
     public int DiasEmprestimo;
-    public ArrayList Revistas = new ArrayList();
+    public List<Revista> Revistas = new List<Revista>();
 
     public Caixa(string etiqueta, int cor, int diasEmprestimo)
     {

@@ -33,6 +33,7 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
         else
             return opcao.Trim().ToUpper();
     }
+
     public override void CadastrarRegistro()
     {
         ExibirCabecalho();

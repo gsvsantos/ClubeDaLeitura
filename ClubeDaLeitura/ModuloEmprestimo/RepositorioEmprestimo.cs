@@ -10,23 +10,7 @@ public class RepositorioEmprestimo : RepositorioBase<Emprestimo>
         novoRegistro.Revista.Emprestar();
         novoRegistro.Amigo.ReceberEmprestimo(novoRegistro);
         base.CadastrarRegistro(novoRegistro);
-    }
-    public bool VerificarEmprestimoAtivo(Amigo amigoEscolhido)
-    {
-        if (amigoEscolhido.Emprestimos == null)
-            return false;
-
-        foreach (Emprestimo e in amigoEscolhido.Emprestimos)
-        {
-            if (e == null)
-                continue;
-
-            if (e.Situacao == "Aberto" || e.Situacao == "ATRASADO")
-                return true;
-        }
-
-        return false;
-    }
+    }   
     public void VerificarEmprestimosAtrasados(List<Emprestimo> emprestimosRegistrados)
     {
         foreach (Emprestimo e in emprestimosRegistrados)

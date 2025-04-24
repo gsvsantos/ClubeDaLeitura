@@ -54,10 +54,18 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
             return;
         }
 
+        string mensagem;
+        if (TemRestricoesNoInserir(novoRegistro, out mensagem))
+        {            
+            Notificador.ExibirMensagem(mensagem, ConsoleColor.Red);
+            return;
+        }
+
         Repositorio.CadastrarRegistro(novoRegistro);
 
         Notificador.ExibirMensagem($"\n{NomeEntidade} registrado com sucesso!", ConsoleColor.Green);
     }
+ 
     public abstract void MostrarListaRegistrados(bool exibirCabecalho, bool comId);
     public virtual void EditarRegistro()
     {
@@ -106,6 +114,13 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
             return;
         }
 
+        string mensagem;
+        if (TemRestricoesNoEditar(registroEscolhido, dadosEditados, out mensagem))
+        {
+            Notificador.ExibirMensagem(mensagem, ConsoleColor.Red);
+            return;
+        }
+
         Repositorio.EditarRegistro(registroEscolhido, dadosEditados);
 
         Notificador.ExibirMensagem($"\n{NomeEntidade} editado com sucesso!", ConsoleColor.Green);
@@ -146,9 +161,35 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
             return;
         }
 
+        string mensagem;
+        if (TemRestricoesNoExcluir(registroEscolhido, out mensagem))
+        {
+            Notificador.ExibirMensagem(mensagem, ConsoleColor.Red);
+            return;
+        }
+
         Repositorio.ExcluirRegistro(registroEscolhido);
 
         Notificador.ExibirMensagem("\nAmigo excluído com sucesso!", ConsoleColor.Green);
     }
+
+    public virtual bool TemRestricoesNoInserir(T registro, out string mensagem)
+    {
+        mensagem = "";
+        return false;
+    }
+
+    public virtual bool TemRestricoesNoEditar(T registro, T novoRegistro, out string mensagem)
+    {
+        mensagem = "";
+        return false;
+    }
+
+    public virtual bool TemRestricoesNoExcluir(T registro, out string mensagem)
+    {
+        mensagem = "";
+        return false;
+    }
+
     public abstract T ObterDados();
 }

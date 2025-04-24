@@ -5,39 +5,49 @@ namespace ClubeDaLeitura.ModuloCaixa;
 
 public class TelaCaixa : TelaBase<Caixa>, ITelaCrud
 {
-    public RepositorioCaixa RepositorioCaixa;
+    public RepositorioCaixa RepositorioCaixa;    
 
     public TelaCaixa(RepositorioCaixa repositorioCaixa) : base("Caixa", repositorioCaixa)
     {
         RepositorioCaixa = repositorioCaixa;
     }
-    public override void CadastrarRegistro()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Registrando Caixa...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
-
-        Caixa novaCaixa = (Caixa)ObterDados();
-
-        string erros = novaCaixa.Validar();
-
-        if (erros.Length > 0)
+    
+    public override bool TemRestricoesNoInserir(Caixa caixa, out string mensagem)
+    {        
+        if (RepositorioCaixa.VerificarEtiquetasNovoRegistro(caixa))
         {
-            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            return;
-        }
+            mensagem = "Já existe uma caixa com essa etiqueta!";
+            return true;
+        }        
 
-        if (RepositorioCaixa.VerificarEtiquetasNovoRegistro(novaCaixa))
-        {
-            Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
-            return;
-        }
-
-        RepositorioCaixa.CadastrarRegistro(novaCaixa);
-
-        Notificador.ExibirMensagem("\nCaixa registrada com sucesso!", ConsoleColor.Green);
+        mensagem = "";
+        return false;
     }
+
+    public override bool TemRestricoesNoEditar(Caixa registro, Caixa novoRegistro, out string mensagem)
+    {
+        if (RepositorioCaixa.VerificarEtiquetasEditarRegistro(registro, novoRegistro))
+        {
+            mensagem = "Já existe uma caixa com essa etiqueta!";
+            return true;
+        }
+
+        mensagem = "";
+        return false;
+    }
+
+    public override bool TemRestricoesNoExcluir(Caixa registro, out string mensagem)
+    {
+        if (registro.VerificarRevistasCaixa())
+        {
+            mensagem = $"\nA caixa {registro.Etiqueta} ainda possui revistas e não pode ser excluída.";
+            return true;
+        }       
+
+        mensagem = "";
+        return false;
+    }
+
     public override void MostrarListaRegistrados(bool exibirCabecalho, bool comId)
     {
         if (exibirCabecalho)
@@ -96,125 +106,8 @@ public class TelaCaixa : TelaBase<Caixa>, ITelaCrud
             RepositorioCaixa.ListaVazia = true;
         }
     }
-    public override void EditarRegistro()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Editando Caixa...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-
-        MostrarListaRegistrados(false, true);
-
-        if (RepositorioCaixa.ListaVazia)
-            return;
-
-        bool idValido;
-        int idCaixaEscolhida;
-
-        do
-        {
-            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
-            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Caixa: ");
-            idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
-
-            if (!idValido)
-            {
-                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                EditarRegistro();
-                return;
-            }
-        } while (!idValido);
-
-        Caixa caixaEscolhida = RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
-
-        if (caixaEscolhida == null)
-        {
-            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarRegistro();
-            return;
-        }
-
-        Caixa dadosEditados = (Caixa)ObterDados();
-
-        string erros = dadosEditados.Validar();
-
-        if (erros.Length > 0)
-        {
-            Notificador.ExibirMensagem(erros, ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarRegistro();
-            return;
-        }
-
-        if (RepositorioCaixa.VerificarEtiquetasEditarRegistro(caixaEscolhida, dadosEditados))
-        {
-            Notificador.ExibirMensagem("\nJá existe uma caixa com essa etiqueta!", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            EditarRegistro();
-        }
-
-        RepositorioCaixa.EditarRegistro(caixaEscolhida, dadosEditados);
-
-        Notificador.ExibirMensagem("\nCaixa editada com sucesso!", ConsoleColor.Green);
-    }
-    public override void ExcluirRegistro()
-    {
-        ExibirCabecalho();
-
-        ColorirEscrita.ComQuebraLinha("Excluindo Caixa...");
-        ColorirEscrita.ComQuebraLinha("--------------------------------------------");
-
-        MostrarListaRegistrados(false, true);
-
-        if (RepositorioCaixa.ListaVazia)
-            return;
-
-        bool idValido;
-        int idCaixaEscolhida;
-
-        do
-        {
-            ColorirEscrita.ComQuebraLinha("\n--------------------------------------------");
-            ColorirEscrita.SemQuebraLinha("Selecione o ID de uma Caixa: ");
-            idValido = int.TryParse(Console.ReadLine(), out idCaixaEscolhida);
-
-            if (!idValido)
-            {
-                Notificador.ExibirMensagem("\nO ID selecionado é inválido!", ConsoleColor.Red);
-                ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-                Console.ReadKey();
-                ExcluirRegistro();
-                return;
-            }
-        } while (!idValido);
-
-        Caixa caixaEscolhida = RepositorioCaixa.SelecionarRegistroPorId(idCaixaEscolhida);
-
-        if (caixaEscolhida == null)
-        {
-            Notificador.ExibirMensagem("\nO ID escolhido não está registrado.", ConsoleColor.Red);
-            ColorirEscrita.SemQuebraLinha("\nPressione [Enter] para novamente.", ConsoleColor.Yellow);
-            Console.ReadKey();
-            ExcluirRegistro();
-            return;
-        }
-
-        if (caixaEscolhida.VerificarRevistasCaixa())
-        {
-            Notificador.ExibirMensagem($"\nA caixa {caixaEscolhida.Etiqueta} ainda possui revistas e não pode ser excluída.", ConsoleColor.Red);
-            return;
-        }
-
-        RepositorioCaixa.ExcluirRegistro(caixaEscolhida);
-
-        Notificador.ExibirMensagem("\nCaixa excluída com sucesso!", ConsoleColor.Green);
-    }
+   
+   
     public override Caixa ObterDados()
     {
         ColorirEscrita.SemQuebraLinha("Digite o Nome da Etiqueta da Caixa: ");
