@@ -8,12 +8,12 @@ namespace ClubeDaLeitura.ModuloEmprestimo;
 
 public class TelaEmprestimo : TelaBase<Emprestimo>, ITelaCrud
 {
-    public RepositorioAmigo RepositorioAmigo;
-    public RepositorioEmprestimo RepositorioEmprestimo;
-    public RepositorioRevista RepositorioRevista;
-    public RepositorioMulta RepositorioMulta;
+    public IRepositorioAmigo RepositorioAmigo;
+    public IRepositorioEmprestimo RepositorioEmprestimo;
+    public IRepositorioRevista RepositorioRevista;
+    public IRepositorioMulta RepositorioMulta;
 
-    public TelaEmprestimo(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta, RepositorioRevista repositorioRevista) : base("Emprestimo", repositorioEmprestimo)
+    public TelaEmprestimo(IRepositorioAmigo repositorioAmigo, IRepositorioEmprestimo repositorioEmprestimo, IRepositorioMulta repositorioMulta, IRepositorioRevista repositorioRevista) : base("Emprestimo", repositorioEmprestimo)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;

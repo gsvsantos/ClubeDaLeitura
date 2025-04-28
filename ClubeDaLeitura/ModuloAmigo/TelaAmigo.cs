@@ -6,10 +6,10 @@ namespace ClubeDaLeitura.ModuloAmigo;
 
 public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 {
-    public RepositorioAmigo RepositorioAmigo;
-    public RepositorioEmprestimo RepositorioEmprestimo;
+    public IRepositorioAmigo RepositorioAmigo;
+    public IRepositorioEmprestimo RepositorioEmprestimo;
 
-    public TelaAmigo(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo) : base("Amigo", repositorioAmigo)
+    public TelaAmigo(IRepositorioAmigo repositorioAmigo, IRepositorioEmprestimo repositorioEmprestimo) : base("Amigo", repositorioAmigo)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;

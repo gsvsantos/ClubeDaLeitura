@@ -4,7 +4,7 @@ using ClubeDaLeitura.Compartilhado;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
-public class RepositorioRevista : RepositorioBase<Revista>
+public class RepositorioRevistaEmMemoria : RepositorioBaseEmMemoria<Revista>, IRepositorioRevista
 {
     public override void CadastrarRegistro(Revista novoRegistro)
     {

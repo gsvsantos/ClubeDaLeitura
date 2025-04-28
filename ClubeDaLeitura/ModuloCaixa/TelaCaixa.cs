@@ -5,9 +5,9 @@ namespace ClubeDaLeitura.ModuloCaixa;
 
 public class TelaCaixa : TelaBase<Caixa>, ITelaCrud
 {
-    public RepositorioCaixa RepositorioCaixa;
+    public IRepositorioCaixa RepositorioCaixa;
 
-    public TelaCaixa(RepositorioCaixa repositorioCaixa) : base("Caixa", repositorioCaixa)
+    public TelaCaixa(IRepositorioCaixa repositorioCaixa) : base("Caixa", repositorioCaixa)
     {
         RepositorioCaixa = repositorioCaixa;
     }

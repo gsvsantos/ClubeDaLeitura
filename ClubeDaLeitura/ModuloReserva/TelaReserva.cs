@@ -8,12 +8,12 @@ namespace ClubeDaLeitura.ModuloReserva;
 
 public class TelaReserva : TelaBase<Reserva>, ITelaCrud
 {
-    public RepositorioAmigo RepositorioAmigo;
-    public RepositorioEmprestimo RepositorioEmprestimo;
-    public RepositorioReserva RepositorioReserva;
-    public RepositorioRevista RepositorioRevista;
+    public IRepositorioAmigo RepositorioAmigo;
+    public IRepositorioEmprestimo RepositorioEmprestimo;
+    public IRepositorioReserva RepositorioReserva;
+    public IRepositorioRevista RepositorioRevista;
 
-    public TelaReserva(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioReserva repositorioReserva, RepositorioRevista repositorioRevista) : base("Reserva", repositorioReserva)
+    public TelaReserva(IRepositorioAmigo repositorioAmigo, IRepositorioEmprestimo repositorioEmprestimo, IRepositorioReserva repositorioReserva, IRepositorioRevista repositorioRevista) : base("Reserva", repositorioReserva)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;

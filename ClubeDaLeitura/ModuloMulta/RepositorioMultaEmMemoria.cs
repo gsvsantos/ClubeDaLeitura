@@ -3,7 +3,7 @@ using ClubeDaLeitura.ModuloEmprestimo;
 
 namespace ClubeDaLeitura.ModuloMulta;
 
-public class RepositorioMulta : RepositorioBase<Multa>
+public class RepositorioMultaEmMemoria : RepositorioBaseEmMemoria<Multa>, IRepositorioMulta
 {
     public List<Multa> PegarListaMultasPendentes()
     {

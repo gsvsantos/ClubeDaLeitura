@@ -11,21 +11,21 @@ namespace ClubeDaLeitura.Utils;
 public class MenuPrincipal
 {
     public string? OpcaoPrincipal;
-    private RepositorioAmigo RepositorioAmigo;
-    private RepositorioCaixa RepositorioCaixa;
-    private RepositorioEmprestimo RepositorioEmprestimo;
-    private RepositorioMulta RepositorioMulta;
-    private RepositorioReserva RepositorioReserva;
-    private RepositorioRevista RepositorioRevista;
+    private IRepositorioAmigo RepositorioAmigo;
+    private IRepositorioCaixa RepositorioCaixa;
+    private IRepositorioEmprestimo RepositorioEmprestimo;
+    private IRepositorioMulta RepositorioMulta;
+    private IRepositorioReserva RepositorioReserva;
+    private IRepositorioRevista RepositorioRevista;
 
     public MenuPrincipal()
     {
-        RepositorioAmigo = new RepositorioAmigo();
-        RepositorioCaixa = new RepositorioCaixa();
-        RepositorioEmprestimo = new RepositorioEmprestimo();
-        RepositorioMulta = new RepositorioMulta();
-        RepositorioReserva = new RepositorioReserva();
-        RepositorioRevista = new RepositorioRevista();
+        RepositorioAmigo = new RepositorioAmigoEmMemoria();
+        RepositorioCaixa = new RepositorioCaixaEmMemoria();
+        RepositorioEmprestimo = new RepositorioEmprestimoEmMemoria();
+        RepositorioMulta = new RepositorioMultaEmMemoria();
+        RepositorioReserva = new RepositorioReservaEmMemoria();
+        RepositorioRevista = new RepositorioRevistaEmMemoria();
     }
     public void ApresentarMenuPrincipal()
     {

@@ -2,7 +2,7 @@
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class RepositorioReserva : RepositorioBase<Reserva>
+public class RepositorioReservaEmMemoria : RepositorioBaseEmMemoria<Reserva>, IRepositorioReserva
 {
     public override void CadastrarRegistro(Reserva novoRegistro)
     {

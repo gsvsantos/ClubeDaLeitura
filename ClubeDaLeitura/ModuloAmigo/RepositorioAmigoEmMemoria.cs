@@ -2,7 +2,7 @@
 
 namespace ClubeDaLeitura.ModuloAmigo;
 
-public class RepositorioAmigo : RepositorioBase<Amigo>
+public class RepositorioAmigoEmMemoria : RepositorioBaseEmMemoria<Amigo>, IRepositorioAmigo
 {
     public bool VerificarTelefoneNovoRegistro(Amigo novoAmigo)
     {

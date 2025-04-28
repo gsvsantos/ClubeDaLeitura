@@ -1,7 +1,7 @@
 ﻿using ClubeDaLeitura.Compartilhado;
 
 namespace ClubeDaLeitura.ModuloCaixa;
-public class RepositorioCaixa : RepositorioBase<Caixa>
+public class RepositorioCaixaEmMemoria : RepositorioBaseEmMemoria<Caixa>, IRepositorioCaixa
 {
     public bool VerificarEtiquetasNovoRegistro(Caixa novaCaixa)
     {

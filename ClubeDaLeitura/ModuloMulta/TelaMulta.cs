@@ -7,11 +7,11 @@ namespace ClubeDaLeitura.ModuloMulta;
 
 public class TelaMulta : TelaBase<Multa>, ITelaCrud
 {
-    public RepositorioAmigo RepositorioAmigo;
-    public RepositorioEmprestimo RepositorioEmprestimo;
-    public RepositorioMulta RepositorioMulta;
+    public IRepositorioAmigo RepositorioAmigo;
+    public IRepositorioEmprestimo RepositorioEmprestimo;
+    public IRepositorioMulta RepositorioMulta;
 
-    public TelaMulta(RepositorioAmigo repositorioAmigo, RepositorioEmprestimo repositorioEmprestimo, RepositorioMulta repositorioMulta) : base("Multa", repositorioMulta)
+    public TelaMulta(IRepositorioAmigo repositorioAmigo, IRepositorioEmprestimo repositorioEmprestimo, IRepositorioMulta repositorioMulta) : base("Multa", repositorioMulta)
     {
         RepositorioAmigo = repositorioAmigo;
         RepositorioEmprestimo = repositorioEmprestimo;

@@ -6,10 +6,10 @@ namespace ClubeDaLeitura.ModuloRevista;
 
 public class TelaRevista : TelaBase<Revista>, ITelaCrud
 {
-    public RepositorioCaixa RepositorioCaixa;
-    public RepositorioRevista RepositorioRevista;
+    public IRepositorioCaixa RepositorioCaixa;
+    public IRepositorioRevista RepositorioRevista;
 
-    public TelaRevista(RepositorioCaixa repositorioCaixa, RepositorioRevista repositorioRevista) : base("Revista", repositorioRevista)
+    public TelaRevista(IRepositorioCaixa repositorioCaixa, IRepositorioRevista repositorioRevista) : base("Revista", repositorioRevista)
     {
         RepositorioCaixa = repositorioCaixa;
         RepositorioRevista = repositorioRevista;

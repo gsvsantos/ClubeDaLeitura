@@ -2,12 +2,12 @@
 
 namespace ClubeDaLeitura.Compartilhado;
 
-public abstract class TelaBase<T> where T : EntidadeBase<T>
+public abstract class TelaBase<TTela> where TTela : EntidadeBase<TTela>
 {
     protected string NomeEntidade;
-    private RepositorioBase<T> Repositorio;
+    private IRepositorio<TTela> Repositorio;
 
-    protected TelaBase(string nomeEntidade, RepositorioBase<T> repositorio)
+    protected TelaBase(string nomeEntidade, IRepositorio<TTela> repositorio)
     {
         NomeEntidade = nomeEntidade;
         Repositorio = repositorio;
@@ -44,7 +44,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
         ColorirEscrita.ComQuebraLinha($"Registrando {NomeEntidade}...");
         ColorirEscrita.ComQuebraLinha("--------------------------------------------\n");
 
-        T novoRegistro = ObterDados();
+        TTela novoRegistro = ObterDados();
 
         string erros = novoRegistro.Validar();
 
@@ -95,7 +95,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
             }
         } while (!idValido);
 
-        T registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
+        TTela registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
 
         if (registroEscolhido == null)
         {
@@ -103,7 +103,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
             return;
         }
 
-        T dadosEditados = ObterDados();
+        TTela dadosEditados = ObterDados();
 
         string erros = dadosEditados.Validar();
 
@@ -153,7 +153,7 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
             }
         } while (!idValido);
 
-        T registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
+        TTela registroEscolhido = Repositorio.SelecionarRegistroPorId(idRegistroEscolhido);
 
         if (registroEscolhido == null)
         {
@@ -173,26 +173,26 @@ public abstract class TelaBase<T> where T : EntidadeBase<T>
         Notificador.ExibirMensagem($"\nRegistro excluído com sucesso!", ConsoleColor.Green);
     }
 
-    public virtual bool TemRestricoesNoInserir(T novoRegistro, out string mensagem)
+    public virtual bool TemRestricoesNoInserir(TTela novoRegistro, out string mensagem)
     {
         mensagem = "";
 
         return false;
     }
 
-    public virtual bool TemRestricoesNoEditar(T registroEscolhido, T dadosEditados, out string mensagem)
+    public virtual bool TemRestricoesNoEditar(TTela registroEscolhido, TTela dadosEditados, out string mensagem)
     {
         mensagem = "";
 
         return false;
     }
 
-    public virtual bool TemRestricoesNoExcluir(T registroEscolhido, out string mensagem)
+    public virtual bool TemRestricoesNoExcluir(TTela registroEscolhido, out string mensagem)
     {
         mensagem = "";
 
         return false;
     }
 
-    public abstract T ObterDados();
+    public abstract TTela ObterDados();
 }

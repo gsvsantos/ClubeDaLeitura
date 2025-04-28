@@ -1,16 +1,15 @@
 ﻿using ClubeDaLeitura.Compartilhado;
-using ClubeDaLeitura.ModuloAmigo;
 
 namespace ClubeDaLeitura.ModuloEmprestimo;
 
-public class RepositorioEmprestimo : RepositorioBase<Emprestimo>
+public class RepositorioEmprestimoEmMemoria : RepositorioBaseEmMemoria<Emprestimo>, IRepositorioEmprestimo
 {
     public override void CadastrarRegistro(Emprestimo novoRegistro)
     {
         novoRegistro.Revista.Emprestar();
         novoRegistro.Amigo.ReceberEmprestimo(novoRegistro);
         base.CadastrarRegistro(novoRegistro);
-    }   
+    }
     public void VerificarEmprestimosAtrasados(List<Emprestimo> emprestimosRegistrados)
     {
         foreach (Emprestimo e in emprestimosRegistrados)
