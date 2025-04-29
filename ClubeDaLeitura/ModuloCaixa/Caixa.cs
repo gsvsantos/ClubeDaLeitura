@@ -5,11 +5,12 @@ namespace ClubeDaLeitura.ModuloCaixa;
 
 public class Caixa : EntidadeBase<Caixa>
 {
-    public string Etiqueta;
-    public int Cor;
-    public int DiasEmprestimo;
-    public List<Revista> Revistas = new List<Revista>();
+    public string Etiqueta { get; set; }
+    public int Cor { get; set; }
+    public int DiasEmprestimo { get; set; }
+    public List<Revista> Revistas { get; set; } = new List<Revista>();
 
+    public Caixa() { }
     public Caixa(string etiqueta, int cor, int diasEmprestimo)
     {
         Etiqueta = etiqueta;

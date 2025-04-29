@@ -4,8 +4,9 @@ using ClubeDaLeitura.Compartilhado;
 
 namespace ClubeDaLeitura.ModuloRevista;
 
-public class RepositorioRevistaEmMemoria : RepositorioBaseEmMemoria<Revista>, IRepositorioRevista
+public class RepositorioRevistaEmArquivo : RepositorioBaseEmArquivo<Revista>, IRepositorioRevista
 {
+    public RepositorioRevistaEmArquivo(ContextoDados contexto) : base(contexto) { }
     public override void CadastrarRegistro(Revista novoRegistro)
     {
         novoRegistro.Caixa.AdicionarRevista(novoRegistro);
@@ -51,5 +52,8 @@ public class RepositorioRevistaEmMemoria : RepositorioBaseEmMemoria<Revista>, IR
 
         return false;
     }
+    protected override List<Revista> ObterListaContexto()
+    {
+        return Contexto.RegistroRevistas;
+    }
 }
-

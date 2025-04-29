@@ -88,7 +88,7 @@ public class TelaMulta : TelaBase<Multa>, ITelaCrud
 
             if (comId)
             {
-                string[] cabecalho = [m.Id.ToString(), m.Emprestimo.Amigo.Nome, m.Emprestimo.Revista.Titulo, m.ValorMulta.ToString(), m.Status];
+                string[] cabecalho = [m.Id.ToString(), m.Emprestimo.Amigo.Nome, m.Emprestimo.Revista.Titulo, $"R${m.ValorMulta:F2}", m.Status];
                 int[] espacamentos = [6, 20, 30, 20, 20];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Yellow, ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
 
@@ -96,7 +96,7 @@ public class TelaMulta : TelaBase<Multa>, ITelaCrud
             }
             else
             {
-                string[] cabecalho = [m.Emprestimo.Amigo.Nome, m.Emprestimo.Revista.Titulo, m.ValorMulta.ToString(), m.Status];
+                string[] cabecalho = [m.Emprestimo.Amigo.Nome, m.Emprestimo.Revista.Titulo, $"R${m.ValorMulta:F2}", m.Status];
                 int[] espacamentos = [20, 30, 20, 20];
                 ConsoleColor[] coresCabecalho = [ConsoleColor.Cyan, ConsoleColor.Cyan, ConsoleColor.Blue, ConsoleColor.White];
 

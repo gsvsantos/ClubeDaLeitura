@@ -5,11 +5,12 @@ namespace ClubeDaLeitura.ModuloMulta;
 
 public class Multa : EntidadeBase<Multa>
 {
-    public Emprestimo Emprestimo;
-    public int DiasAtraso;
-    public double ValorMulta;
-    public string Status;
+    public Emprestimo Emprestimo { get; set; }
+    public int DiasAtraso { get; set; }
+    public double ValorMulta { get; set; }
+    public string Status { get; set; }
 
+    public Multa() { }
     public Multa(Emprestimo emprestimo)
     {
         Emprestimo = emprestimo;

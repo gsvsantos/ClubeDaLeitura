@@ -6,11 +6,12 @@ namespace ClubeDaLeitura.ModuloEmprestimo;
 
 public class Emprestimo : EntidadeBase<Emprestimo>
 {
-    public Amigo Amigo;
-    public Revista Revista;
-    public DateTime Data;
-    public string Situacao;
+    public Amigo Amigo { get; set; }
+    public Revista Revista { get; set; }
+    public DateTime Data { get; set; }
+    public string Situacao { get; set; }
 
+    public Emprestimo() { }
     public Emprestimo(Amigo amigo, Revista revista)
     {
         Amigo = amigo;
@@ -29,7 +30,7 @@ public class Emprestimo : EntidadeBase<Emprestimo>
             if (Amigo.VerificarMultas())
                 erros += "O amigo selecionado tem multas pendentes.\n";
 
-            if (Amigo.VerificarEmprestimos())
+            if (Amigo.VerificarEmprestimosAbertos())
                 erros += "O amigo selecionado tem um empréstimo em aberto.\n";
 
         }

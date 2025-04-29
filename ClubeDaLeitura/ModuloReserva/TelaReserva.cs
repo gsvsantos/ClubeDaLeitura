@@ -139,7 +139,7 @@ public class TelaReserva : TelaBase<Reserva>, ITelaCrud
             return;
         }
 
-        if (reservaEscolhida.Amigo.VerificarEmprestimos())
+        if (reservaEscolhida.Amigo.VerificarEmprestimosAbertos())
         {
             Notificador.ExibirMensagem("\nEsse amigo já tem um empréstimo em aberto!", ConsoleColor.Red);
             return;

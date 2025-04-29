@@ -6,12 +6,13 @@ namespace ClubeDaLeitura.ModuloRevista;
 
 public class Revista : EntidadeBase<Revista>
 {
-    public string Titulo;
-    public int NumeroEdicao;
-    public string AnoPublicacao;
-    public string StatusEmprestimo;
-    public Caixa Caixa;
+    public string Titulo { get; set; }
+    public int NumeroEdicao { get; set; }
+    public string AnoPublicacao { get; set; }
+    public string StatusEmprestimo { get; set; }
+    public Caixa Caixa { get; set; }
 
+    public Revista() { }
     public Revista(string titulo, int numeroEdicao, string anoPublicacao, Caixa caixa)
     {
         Titulo = titulo;

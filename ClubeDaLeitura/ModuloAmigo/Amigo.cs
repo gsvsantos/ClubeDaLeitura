@@ -7,13 +7,14 @@ namespace ClubeDaLeitura.ModuloAmigo;
 
 public class Amigo : EntidadeBase<Amigo>
 {
-    public string Nome;
-    public string Responsavel;
-    public string Telefone;
-    public List<Emprestimo> Emprestimos = new List<Emprestimo>();
-    public List<Multa> Multas = new List<Multa>();
-    public Reserva? Reserva;
+    public string Nome { get; set; }
+    public string Responsavel { get; set; }
+    public string Telefone { get; set; }
+    public List<Emprestimo> Emprestimos { get; set; } = new List<Emprestimo>();
+    public List<Multa> Multas { get; set; } = new List<Multa>();
+    public Reserva? Reserva { get; set; }
 
+    public Amigo() { }
     public Amigo(string nome, string responsavel, string telefone)
     {
         Nome = nome;
@@ -90,11 +91,18 @@ public class Amigo : EntidadeBase<Amigo>
 
         foreach (Emprestimo e in Emprestimos)
         {
-            if (e != null && e.Situacao != "Concluído")
+            if (e != null)
                 emprestimos++;
         }
 
         if (emprestimos > 0)
+            return true;
+        else
+            return false;
+    }
+    public bool VerificarEmprestimosAbertos()
+    {
+        if (Emprestimos.Any(e => e != null && e.Situacao != "Concluído"))
             return true;
         else
             return false;

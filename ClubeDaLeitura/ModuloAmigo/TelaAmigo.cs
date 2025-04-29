@@ -63,7 +63,7 @@ public class TelaAmigo : TelaBase<Amigo>, ITelaCrud
 
         mensagem = "";
 
-        if (amigoEscolhido.VerificarEmprestimos())
+        if (amigoEscolhido.VerificarEmprestimosAbertos())
         {
             mensagem = $"\nO {amigoEscolhido.Nome} ainda possui empréstimos em aberto e não pode ser excluído.";
             houveRestricao = true;

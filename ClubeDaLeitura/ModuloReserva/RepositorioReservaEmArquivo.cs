@@ -2,8 +2,9 @@
 
 namespace ClubeDaLeitura.ModuloReserva;
 
-public class RepositorioReservaEmMemoria : RepositorioBaseEmMemoria<Reserva>, IRepositorioReserva
+public class RepositorioReservaEmArquivo : RepositorioBaseEmArquivo<Reserva>, IRepositorioReserva
 {
+    public RepositorioReservaEmArquivo(ContextoDados contexto) : base(contexto) { }
     public override void CadastrarRegistro(Reserva novoRegistro)
     {
         novoRegistro.Revista.Reservar();
@@ -17,5 +18,8 @@ public class RepositorioReservaEmMemoria : RepositorioBaseEmMemoria<Reserva>, IR
         else
             return false;
     }
+    protected override List<Reserva> ObterListaContexto()
+    {
+        return Contexto.RegistroReservas;
+    }
 }
-

@@ -6,11 +6,12 @@ namespace ClubeDaLeitura.ModuloReserva;
 
 public class Reserva : EntidadeBase<Reserva>
 {
-    public Amigo Amigo;
-    public Revista Revista;
-    public DateTime DataReserva;
-    public string Status;
+    public Amigo Amigo { get; set; }
+    public Revista Revista { get; set; }
+    public DateTime DataReserva { get; set; }
+    public string Status { get; set; }
 
+    public Reserva() { }
     public Reserva(Amigo amigo, Revista revista)
     {
         Amigo = amigo;
@@ -29,7 +30,7 @@ public class Reserva : EntidadeBase<Reserva>
             if (Amigo.VerificarMultas())
                 erros += "O amigo selecionado tem multas pendentes.\n";
 
-            if (Amigo.VerificarEmprestimos())
+            if (Amigo.VerificarEmprestimosAbertos())
                 erros += "O amigo selecionado tem um empréstimo em aberto.\n";
 
             if (Amigo.Reserva != null && Amigo.Reserva.Status == "Ativa")
