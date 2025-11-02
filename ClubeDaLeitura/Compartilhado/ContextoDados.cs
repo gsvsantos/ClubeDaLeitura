@@ -6,6 +6,8 @@ using ClubeDaLeitura.ModuloEmprestimo;
 using ClubeDaLeitura.ModuloMulta;
 using ClubeDaLeitura.ModuloReserva;
 using ClubeDaLeitura.ModuloRevista;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace ClubeDaLeitura.Compartilhado;
 
@@ -38,6 +40,7 @@ public class ContextoDados
     public void SalvarContexto()
     {
         string caminhoCompletoArquivo = Path.Combine(pastaRegistros, arquivoRegistros);
+        string caminhoPDF = Path.Combine(pastaRegistros, "registros.pdf");
 
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.WriteIndented = true;
@@ -50,6 +53,21 @@ public class ContextoDados
             Directory.CreateDirectory(pastaRegistros);
 
         File.WriteAllText(caminhoCompletoArquivo, registroJson);
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            using (Document doc = new Document())
+            {
+                PdfWriter writer = PdfWriter.GetInstance(doc, ms);
+
+                doc.Open();
+                doc.Add(new Paragraph(registroJson));
+                doc.Close();
+            }
+
+            byte[] pdfBytes = ms.ToArray();
+            File.WriteAllBytes(caminhoPDF, pdfBytes);
+        }
     }
     public void CarregarContexto()
     {

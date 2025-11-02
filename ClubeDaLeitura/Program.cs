@@ -26,8 +26,8 @@ public class Program
                 Console.Clear();
                 Notificador.ExibirMensagem("Adeus (T_T)/\n\n", ConsoleColor.Blue);
                 return;
-
             }
+
             if (telaSelecionada == null)
             {
                 Notificador.ExibirMensagem("\nOpção inválida!", ConsoleColor.Red);
